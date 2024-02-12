@@ -27,6 +27,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
 
   useEffect(() => {
     document.addEventListener('click', (e) => {
+
       // hiding usernav bar when clicked anywhere except usericon
       if (!(e.target as HTMLElement).closest('#userDisplayPic'))
         setShowAdminMenu(false)

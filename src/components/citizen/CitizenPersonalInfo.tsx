@@ -1,99 +1,182 @@
-'use client'
-import { cusSelector } from '@/redux_store/cusHooks'
-import { CommonBox } from '@/utils/CommonBox'
-import { FC } from 'react'
-import { BiLogoGmail } from 'react-icons/bi'
-import { FaTransgenderAlt } from 'react-icons/fa'
+"use client";
+import { cusSelector } from "@/redux_store/cusHooks";
+import { CommonBox } from "@/utils/CommonBox";
+import { FC, useEffect, useState } from "react";
+import { BiLogoGmail } from "react-icons/bi";
+import { FaTransgenderAlt } from "react-icons/fa";
 import {
   FaCakeCandles,
   FaGlobe,
   FaHandshake,
   FaPhone,
   FaUser,
-} from 'react-icons/fa6'
-import { MdBloodtype } from 'react-icons/md'
+} from "react-icons/fa6";
+import { MdBloodtype } from "react-icons/md";
+import { fetchGetSingleCitizen } from "../api/profile";
 
 interface CitizenPersonalInfoProps {}
+
+interface UserDetail {
+  token: string;
+  id: string;
+}
+
+interface UserDetails {
+  firstname: string;
+  email: string;
+  phoneNo: string;
+  gender: string;
+  dob: string;
+  bloodGroup: string;
+  higherEducation: string;
+  country: string;
+  socialMedia: {
+    facebook: string;
+    instagram: string;
+    twitter: string;
+  };
+  about: string;
+}
+
 export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
-  const { userDetails } = cusSelector((st) => st.auth)
+  const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
+  const [userData, setUserData] = useState<UserDetail>({
+    token: "",
+    id: "",
+  });
+
+  useEffect(() => {
+    var storedUserString = sessionStorage.getItem("user");
+    if (storedUserString !== null) {
+      var storedUser = JSON.parse(storedUserString);
+
+      setUserData(storedUser);
+    } else {
+      console.log("User data not found in session storage");
+    }
+  }, []);
+
+  console.log(userData);
+
+  useEffect(() => {
+    (async () => {
+      const citizenid = userData?.id;
+      const token = userData?.token;
+
+      console.log(citizenid?.length);
+      console.log(token);
+
+      if (citizenid?.length > 0) {
+        try {
+          const data = await fetchGetSingleCitizen(citizenid, token);
+
+          console.log(data);
+
+          const modifyData = {
+            firstname: data?.username || "",
+            email: data?.email || "",
+            phoneNo: data?.mobile || "",
+            gender: data?.gender || "",
+            dob: data?.dob || "",
+            bloodGroup: data?.blood_group || "",
+            higherEducation: data?.higher_education || "",
+            country: data?.country || "",
+            socialMedia: {
+              facebook: data?.fb_link || "",
+              instagram: data?.insta_link || "",
+              twitter: data?.twitter_link || "",
+            },
+            about: data?.about_me || "",
+          };
+
+          setUserDetails(modifyData);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    })();
+  }, []);
+
+  console.log(userDetails);
 
   return (
     <>
-      <CommonBox title='Personal info'>
-        <section className='py-6'>
+      <CommonBox title="Personal info">
+        <section className="py-6">
           {/* ABOUT */}
           <PersonalBriefInfo
             Icon={FaUser}
             data={userDetails?.about as string}
-            heading='About me:'
+            heading="About me:"
           />
 
           {/* MORE INFO */}
-          <div className='grid grid-cols-2 mt-8 gap-y-8 max-[400px]:grid-cols-1'>
+          <div className="grid grid-cols-2 mt-8 gap-y-8 max-[400px]:grid-cols-1">
             <PersonalBriefInfo
               Icon={FaCakeCandles}
               data={userDetails?.dob as string}
-              heading='Date of Birth:'
+              heading="Date of Birth:"
             />
 
             <PersonalBriefInfo
               Icon={FaPhone}
               data={`+91 ${userDetails?.phoneNo}`}
-              heading='(IN) Phone no:'
+              heading="(IN) Phone no:"
             />
 
             <PersonalBriefInfo
               Icon={FaTransgenderAlt}
               data={userDetails?.gender as string}
-              heading='Gender: '
+              heading="Gender: "
             />
 
             <PersonalBriefInfo
               Icon={MdBloodtype}
               data={userDetails?.bloodGroup as string}
-              heading='Blood Group: '
+              heading="Blood Group: "
             />
 
             <PersonalBriefInfo
               Icon={FaHandshake}
-              data='18-feb-2023'
-              heading='Joined: '
+              data="18-feb-2023"
+              heading="Joined: "
             />
 
-            <PersonalBriefInfo Icon={FaGlobe} data='India' heading='Country' />
+            <PersonalBriefInfo Icon={FaGlobe} data="India" heading="Country" />
 
             <PersonalBriefInfo
               Icon={BiLogoGmail}
               data={userDetails?.email as string}
-              heading='Email: '
+              heading="Email: "
             />
           </div>
         </section>
       </CommonBox>
     </>
-  )
-}
+  );
+};
 
 const PersonalBriefInfo: FC<{
-  Icon: JSX.ElementType
-  heading: string
-  data: string
+  Icon: JSX.ElementType;
+  heading: string;
+  data: string;
 }> = ({ Icon, data, heading }) => {
   return (
     <>
-      <article className='flex flex-col gap-1'>
-        <p className='flex items-end gap-3'>
-          <Icon className='text-[1rem]' />
+      <article className="flex flex-col gap-1">
+        <p className="flex items-end gap-3">
+          <Icon className="text-[1rem]" />
 
-          <span className='font-[500] capitalize text-[15px]'>{heading}</span>
+          <span className="font-[500] capitalize text-[15px]">{heading}</span>
         </p>
         <p
           className={`text-[14px] pl-7 ${
-            heading.toLowerCase().includes('about') && 'text-justify'
-          }`}>
+            heading.toLowerCase().includes("about") && "text-justify"
+          }`}
+        >
           {data}
         </p>
       </article>
     </>
-  )
-}
+  );
+};
