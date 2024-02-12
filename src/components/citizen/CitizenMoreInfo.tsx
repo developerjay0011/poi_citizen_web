@@ -52,13 +52,12 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
 
   useEffect(() => {
     (async () => {
-      const citizenid = userData?.id;
-      const token = userData?.token;
+      if (userData?.id?.length > 0) {
+        const citizenid = userData?.id;
+        const token = userData?.token;
 
-      console.log(citizenid?.length);
-      console.log(token);
-
-      if (citizenid?.length > 0) {
+        console.log(citizenid?.length);
+        console.log(token);
         try {
           const data = await fetchGetSingleCitizen(citizenid, token);
 
@@ -90,7 +89,6 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
   }, []);
 
   console.log(userDetails);
-  
 
   // Conditionally showing icons based on where certain link is present or not.
   const socialNetworks: (JSX.Element | string)[] = [

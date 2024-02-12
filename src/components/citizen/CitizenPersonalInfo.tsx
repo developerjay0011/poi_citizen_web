@@ -56,48 +56,44 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
     }
   }, []);
 
-  console.log(userData);
 
   useEffect(() => {
     (async () => {
-      const citizenid = userData?.id;
-      const token = userData?.token;
+      if (userData?.id.length > 0) {
+        const citizenid = userData?.id;
+        const token = userData?.token;
 
-      console.log(citizenid?.length);
-      console.log(token);
+        if (citizenid?.length > 0) {
+          try {
+            const data = await fetchGetSingleCitizen(citizenid, token);
 
-      if (citizenid?.length > 0) {
-        try {
-          const data = await fetchGetSingleCitizen(citizenid, token);
 
-          console.log(data);
+            const modifyData = {
+              firstname: data?.username || "",
+              email: data?.email || "",
+              phoneNo: data?.mobile || "",
+              gender: data?.gender || "",
+              dob: data?.dob || "",
+              bloodGroup: data?.blood_group || "",
+              higherEducation: data?.higher_education || "",
+              country: data?.country || "",
+              socialMedia: {
+                facebook: data?.fb_link || "",
+                instagram: data?.insta_link || "",
+                twitter: data?.twitter_link || "",
+              },
+              about: data?.about_me || "",
+            };
 
-          const modifyData = {
-            firstname: data?.username || "",
-            email: data?.email || "",
-            phoneNo: data?.mobile || "",
-            gender: data?.gender || "",
-            dob: data?.dob || "",
-            bloodGroup: data?.blood_group || "",
-            higherEducation: data?.higher_education || "",
-            country: data?.country || "",
-            socialMedia: {
-              facebook: data?.fb_link || "",
-              instagram: data?.insta_link || "",
-              twitter: data?.twitter_link || "",
-            },
-            about: data?.about_me || "",
-          };
-
-          setUserDetails(modifyData);
-        } catch (error) {
-          console.log(error);
+            setUserDetails(modifyData);
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     })();
   }, []);
 
-  console.log(userDetails);
 
   return (
     <>

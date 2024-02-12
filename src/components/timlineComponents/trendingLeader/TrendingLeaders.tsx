@@ -39,10 +39,10 @@ export const TrendingLeaders: FC = () => {
 
       if (citizenid?.length > 0) {
         const data = await fetchCitizenFollowingList(citizenid, token);
+        console.log(data);
 
         if (data.length > 0) {
           setFollowers(data);
- 
         }
       }
     })();
@@ -53,6 +53,8 @@ export const TrendingLeaders: FC = () => {
       (async () => {
         const token = userDetails?.token;
         const data = await fetchTrendingLeaderList(token);
+
+        console.log(data);
 
         if (data.length > 0) {
           setTrendingLeaders(data);
@@ -86,7 +88,6 @@ export const TrendingLeaders: FC = () => {
           <ul className="flex flex-col">
             {trendingLeaders?.length > 0 &&
               trendingLeaders.map((el: any, index) => {
-
                 return (
                   <TrendingLeader key={index} {...el} following={following} />
                 );
@@ -106,7 +107,6 @@ export const TrendingLeaders: FC = () => {
           <ul className="flex flex-col">
             {followers?.length > 0 &&
               followers.map((el: any, index) => {
-
                 return (
                   <TrendingLeader
                     key={index}
