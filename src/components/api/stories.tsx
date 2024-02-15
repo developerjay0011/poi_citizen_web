@@ -19,7 +19,7 @@ export const fetchAddStory = async (formData: any, token: any) => {
   }
 };
 
-export const fetchGetLeaderAddedStories = async (
+export const fetchGetStoriesForCitizen = async (
   citizenid: string,
   token: string
 ) => {

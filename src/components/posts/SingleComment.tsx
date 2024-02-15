@@ -125,7 +125,7 @@ export const SingleComment: FC<SingleCommentProps> = ({
       <li className="flex items-start gap-5 border-b pb-3 max-[400px]:gap-3">
         <Image
           alt="user pic"
-          src={userimg || ""}
+          src={userimg ? `${process.env.NEXT_PUBLIC_BASE_URL}${userimg}` :""}
           width={1000}
           height={1000}
           className="w-8 aspect-square rounded-full object-cover object-center"
@@ -324,7 +324,7 @@ const NestedCommentCmp: FC<NestedCommentCmpProps> = ({
     >
       <Image
         alt="user pic"
-        src={userImg}
+        src={`${process.env.NEXT_PUBLIC_BASE_URL}${userImg}`}
         width={1000}
         height={1000}
         className="w-8 aspect-square rounded-full object-cover object-center"

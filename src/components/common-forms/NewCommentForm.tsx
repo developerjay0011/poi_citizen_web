@@ -97,7 +97,7 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({
       >
         <Image
           alt="user dp"
-          src={userData?.data?.image || ("" as string)}
+          src={userData?.data?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userData?.data?.image}` : ''}
           width={1000}
           height={1000}
           className="w-10 aspect-square rounded-full object-center object-cover"

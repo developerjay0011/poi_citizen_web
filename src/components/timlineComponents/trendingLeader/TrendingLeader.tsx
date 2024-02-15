@@ -69,7 +69,7 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
   return (
     <li className="flex gap-3 py-3 px-3 last_noti items-center transition-all hover:bg-slate-50">
       <Image
-        src={image || ""}
+        src={image ? `${process.env.NEXT_PUBLIC_BASE_URL}${image}` : ''}
         alt="trending user"
         width={1000}
         height={1000}

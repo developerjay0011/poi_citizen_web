@@ -14,7 +14,7 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
         {/* USER PIC and BG pic*/}
         <figure className='relative rounded-tr-lg rounded-tl-lg overflow-hidden'>
           <Image
-            src={userDetails?.backgroundPic as string}
+            src={userDetails?.bgimage ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.bgimage}` : ''}
             alt='bg image'
             width={1000}
             height={1000}
@@ -22,7 +22,8 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
           />
 
           <Image
-            src={userDetails?.displayPic as string}
+            src={userDetails?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}` : ""}
+
             alt='display image'
             width={1000}
             height={1000}
@@ -33,7 +34,7 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
         <div className='bg-white py-5 px-14 flex items-center max-[1428px]:px-5 max-[1302px]:flex-wrap max-[950px]:gap-5 max-[450px]:flex-nowrap max-[450px]:flex-col'>
           <Link href={'/user/profile'}>
             <h5 className='flex flex-col items-center text-xl font-[600] capitalize'>
-              {userDetails?.firstname} {userDetails?.lastname}
+              {userDetails?.username} 
             </h5>
           </Link>
 

@@ -1,15 +1,19 @@
 'use client'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { LoginForm } from '@/components/login_register/LoginForm'
 import { LoginLayout } from '@/layouts/LoginLayout'
-import { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'POI | Citizens Login',
-  description: 'Explore Politician of india by logging in your account',
-}
+import { useRouter } from "next/navigation";
 
 const LoginPage: FC = () => {
+  const router = useRouter();
+  useEffect(() => {
+    var storedUserString = sessionStorage.getItem("user");
+    var storedUser = JSON.parse(storedUserString);
+    const token = storedUser?.token;
+    if (token != null) {
+      router.push("/user");
+    }
+  }, [])
   return (
     <>
       <LoginLayout>

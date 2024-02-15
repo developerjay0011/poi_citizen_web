@@ -66,6 +66,10 @@ export const LoginForm: FC<LoginFormProps> = () => {
     const resBody = {
       email: data?.userId,
       password: data?.password,
+      fcm_token: {
+        deviceid: "123",
+      token: ""
+      }
     };
 
     setLoggingIn(true);
@@ -85,9 +89,12 @@ export const LoginForm: FC<LoginFormProps> = () => {
         router.push("/user");
         dispatch(authActions.logIn(loginData));
         sessionStorage.setItem("user", JSON.stringify(storedData));
+      } else {
+        setErr({ errTxt: loginData?.message, isErr: true })
       }
       setLoggingIn(false);
     } catch (error) {
+    
       console.log(error);
       setLoggingIn(false);
     }

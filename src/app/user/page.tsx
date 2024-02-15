@@ -4,12 +4,6 @@ import { TimeLinePage } from '@/components/posts/TimeLinePage'
 import { BriefProfileInfoBox } from '@/components/timlineComponents/BriefProfileInfoBox'
 import { ShortcutsBox } from '@/components/timlineComponents/ShortcutsBox'
 import { TrendingLeaders } from '@/components/timlineComponents/trendingLeader/TrendingLeaders'
-import { Metadata } from 'next'
-
-/* export const metadata: Metadata = {
-  title: 'POI | Feed',
-  description: 'Politician of India User Feed.',
-} */
 
 const CitizenHomePage = () => {
   return (

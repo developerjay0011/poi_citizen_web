@@ -3,13 +3,13 @@ import { FC, useEffect, useState } from "react";
 import { NewPostBox } from "./NewPostBox";
 import { Post } from "./Post";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-
+import { authActions } from "@/redux_store/auth/authSlice"
 import { StoriesBox } from "../timlineComponents/StoriesBox";
 import { PollPost } from "./polls/PollPost";
 import { AgendaPost } from "./AgendaPost";
 import { RootState } from "@/redux_store";
 import { fetchGetPostsForCitizen } from "../api/posts";
-
+import { fetchGetSingleCitizen } from "../api/profile";
 interface TimeLinePageProps {}
 
 interface UserDetails {
@@ -20,6 +20,7 @@ interface UserDetails {
 export const TimeLinePage: FC<TimeLinePageProps> = () => {
   const [postData, setPostData] = useState([]);
   const [upPost, setUpPost] = useState();
+  const dispatch = cusDispatch();
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
@@ -28,7 +29,28 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
   const userData: any = cusSelector(
     (state: RootState) => state.auth.userDetails
   );
+  useEffect(() => {
+    (async () => {
+      var storedUserString = sessionStorage.getItem("user");
+      var storedUser = JSON.parse(storedUserString);
+      const citizenid = storedUser?.id;
+      const token = storedUser?.token;
+    
+       
+        try {
+          const data = await fetchGetSingleCitizen(citizenid, token);
 
+          console.log("fetchGetSingleCitizen",data);
+
+         
+          dispatch(authActions.logIn(data));
+          console.log("userData", userData)
+        } catch (error) {
+          console.log(error);
+        }
+      
+    })();
+  }, []);
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {
@@ -68,7 +90,7 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
       {/* CENTER FEED */}
       <div className="flex-1 flex flex-col gap-5 max-[1200px]:w-full">
         <StoriesBox />
-        <NewPostBox updatePost={updatePost} />
+       
 
         {/* <Post
           createdDatetime="2023-11-05"
@@ -195,7 +217,7 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
         })} */}
 
         {postData.map((el: any) => {
-          console.log(el);
+          console.log('createddate',el);
 
           const imageDta = el?.image;
 
@@ -206,7 +228,7 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
               media={el.posts?.flatMap((file: any) =>
                 file.media?.map(
                   (item: any) =>
-                    `http://203.92.43.166:4005${item.media}` as string
+                    `${process.env.NEXT_PUBLIC_BASE_URL}${item.media}`  as string
                 )
               )}
               likes={el.posts?.flatMap((file: any) => file?.likes) as string}

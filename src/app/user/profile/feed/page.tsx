@@ -1,5 +1,6 @@
 'use client'
 import { CitizenFeed } from '@/components/citizen/CitizenFeed'
+import { TimeLinePage } from '@/components/posts/TimeLinePage'
 import { BriefProfileInfoBox } from '@/components/timlineComponents/BriefProfileInfoBox'
 import { ShortcutsBox } from '@/components/timlineComponents/ShortcutsBox'
 import { TrendingLeaders } from '@/components/timlineComponents/trendingLeader/TrendingLeaders'
@@ -15,7 +16,8 @@ const CitizenProfileFeedPage: FC = () => {
           <ShortcutsBox />
         </div>
 
-        <CitizenFeed />
+        {/* <CitizenFeed /> */}
+        <TimeLinePage />
 
         {/* RIGHT FEED */}
         <div className='flex flex-col self-start gap-5 max-[1200px]:hidden'>

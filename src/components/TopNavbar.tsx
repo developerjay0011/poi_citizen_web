@@ -27,6 +27,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
 
   useEffect(() => {
     document.addEventListener('click', (e) => {
+
       // hiding usernav bar when clicked anywhere except usericon
       if (!(e.target as HTMLElement).closest('#userDisplayPic'))
         setShowAdminMenu(false)
@@ -111,10 +112,10 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
 
         {/* USER Profile */}
         <section className='flex items-center gap-4 ml-auto relative'>
-          <p className='capitalize'>{userDetails?.firstname}</p>
+          <p className='capitalize'>{userDetails?.username}</p>
           <button onClick={() => setShowAdminMenu((lst) => !lst)}>
             <Image
-              src={userDetails?.displayPic as string}
+              src={userDetails?.image ?`${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`:""}
               alt='user pic'
               className='w-14 aspect-square object-cover object-center rounded-full'
               id='userDisplayPic'
@@ -150,7 +151,8 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
 
           <button>
             <Image
-              src={userDetails?.displayPic as string}
+              src={userDetails?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}` : ""}
+
               alt='user pic'
               className='w-14 aspect-square object-cover object-center rounded-full'
               id='userDisplayPic'

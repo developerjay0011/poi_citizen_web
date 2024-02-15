@@ -22,7 +22,7 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
         {/* Profile info and pic */}
         <section className='flex items-center my-5 gap-3 text-sky-950 max-[1400px]:gap-2'>
           <Image
-            src={userDetails?.displayPic as string}
+            src={userDetails?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`: ""}
             alt='profile pic'
             width={100}
             height={100}
@@ -33,7 +33,7 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
             <Link
               href={`/user/profile`}
               className='text-lg font-[600] max-[1300px]:text-[1.05rem] hover:text-orange-500 transition-all capitalize'>
-              {userDetails?.firstname}
+              {userDetails?.username}
             </Link>
 
             {/* Messages */}

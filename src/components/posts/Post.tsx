@@ -5,7 +5,7 @@ import { dateConverter } from "@/utils/utility";
 import Image from "next/image";
 import { FC, useEffect, useState } from "react";
 import { BiGlobe, BiShareAlt, BiSolidMessageAltDetail } from "react-icons/bi";
-import { BsFillHeartFill, BsThreeDots } from "react-icons/bs";
+import { BsFillHeartFill, BsThreeDots, BsHeart } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import { motion as m } from "framer-motion";
 import { PostOptions } from "./PostOptions";
@@ -79,7 +79,7 @@ export const Post: FC<PostProps> = ({
   // const deletePostHandler = () => dispatch(deletePost(id))
 
   const likeChangeHandler = () => {};
-
+  console.log("liokkk",likes)
   const [showLikeAnimation, setShowLikeAnimation] = useState(
     (likes as Like[])?.some((el) => el.userId === userDetails?.id)
   );
@@ -134,7 +134,14 @@ export const Post: FC<PostProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showLikeAnimation]);
 
-
+  const islike = (list: any) => {
+    if (Array.isArray(list)) {
+      var listlikes = [...list]
+      listlikes = listlikes?.filter((item) => item?.userid == userDetails?.id)
+      return Array.isArray(listlikes) && listlikes?.length > 0 ? true : false
+    }
+    return false
+  }
 
   const handleLike = async (allData: any) => {
   
@@ -190,7 +197,7 @@ export const Post: FC<PostProps> = ({
         {/* User details and Date */}
         <div className="flex items-center gap-3 py-4 text-sky-950 border-b">
           <Image
-            src={userimages?.length > 0 ? userimages : ""}
+            src={userimages ? `${process.env.NEXT_PUBLIC_BASE_URL}${userimages}`  : ""}
             alt="user pic"
             className="w-12 aspect-square object-cover object-center rounded-full"
             width={100}
@@ -206,7 +213,7 @@ export const Post: FC<PostProps> = ({
               <BiGlobe />
               <span>
                 Published on:{" "}
-                {createdDatetime?.length > 0
+                {createdDatetime 
                   ? dateConverter(createdDatetime)
                   : ""}
               </span>
@@ -351,7 +358,9 @@ export const Post: FC<PostProps> = ({
               handleLike(allData);
             }}
           >
-            <BsFillHeartFill className="text-lg" />
+            {islike(likes) ?
+              <BsFillHeartFill className="text-lg" /> :<BsHeart className="text-lg" /> }
+            
 
             {!firstTime && (
               <BsFillHeartFill
