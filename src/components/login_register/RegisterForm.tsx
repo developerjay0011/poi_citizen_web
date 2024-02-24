@@ -13,7 +13,7 @@ import { LPInputField } from "@/utils/LPInputField";
 import { cusDispatch } from "@/redux_store/cusHooks";
 import { MdLock, MdMail, MdPerson, MdPhone } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import {
   CheckCitizenRegExists,
   fetchRegister,
@@ -31,6 +31,7 @@ export const RegisterForm: FC = () => {
   const [resendOTPTime, setResendOTPTime] = useState(OTP_TIME);
   const [registering, setRegistering] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [registerdata2, setRegisterdata] = useState({});
 
   // const { registering, verifyingOTP } = cusSelector((st) => st.auth)
   const dispatch = cusDispatch();
@@ -78,6 +79,8 @@ export const RegisterForm: FC = () => {
             clearInterval(interval);
           }
         }, 1000);
+      } else {
+        toast.success(sandOtp.message);
       }
 
       // await dispatch(registerUser({ data: userData }));
@@ -90,36 +93,27 @@ export const RegisterForm: FC = () => {
   const verifyOTP = async (otp: string) => {
     setVerifying(true);
     const userData = getValues() as RegisterFormFields;
-
     clearInterval(interval); // clearing resend timer
     setResendOTPTime(OTP_TIME); // Reset OTP time
-
     try {
-      // const res = await dispatch(verifyRegisterOTP(userData, otp));
-      //  Api call for verify Register OTP
-
       const body = {
         mobile: userData.phoneNo,
         otp: otp,
       };
       const sandOtp = await verifyOtp(body);
       if (sandOtp?.success) {
-        // stopping verifying and registering
         setVerifying(false);
         setRegistering(false);
-        toast.success(sandOtp.message);
-        // close form
+      const registerData = await fetchRegister(registerdata2);
+      if (registerData?.success) {
+        toast.success(registerData.message);
+      } else {
+        toast.error(registerData.message);
+      }
         closeOTPForm();
-
-        // showing a message
-        toast.success(() => (
-          <p>
-            <strong className="capitalize">{userData.fullName}</strong>{" "}
-            Registered Successfully
-          </p>
-        ));
-        // redirecting back to login
         router.push(AuthRoutes.login);
+      } else {
+        toast.success(sandOtp.message);
       }
       setRegistering(false);
     } catch (err) {
@@ -137,25 +131,19 @@ export const RegisterForm: FC = () => {
       mobile: data?.phoneNo,
       password: data?.password,
     };
+    setRegisterdata(resBody);
     setRegistering(true);
     try {
-      const registerData = await fetchRegister(resBody);
-
       const body = {
         email: data?.email,
         mobile: data?.phoneNo,
       };
-
-      const checkReg = CheckCitizenRegExists(body);
-
-      console.log(checkReg);
-
-      if (registerData?.success) {
-        setShowOTPForm(true);
+      const checkReg = await CheckCitizenRegExists(body);
+      if (checkReg?.success == true) {
         const body = { mobile: data?.phoneNo || "" };
         const sandOtp = await sendOtp(body);
         if (sandOtp?.success) {
-          // Starts a OTP resend Timer
+          setShowOTPForm(true);
           interval = setInterval(() => {
             if (resendOTPTime > 0)
               setResendOTPTime((lst) => {
@@ -167,13 +155,13 @@ export const RegisterForm: FC = () => {
               clearInterval(interval);
             }
           }, 1000);
-
-          // Open OTP form after successful data submission
           openOTPForm();
-
           setRegistering(false);
+        } else {
+          toast.error(sandOtp.message);
         }
-        // router.push(ProtectedRoutes.user);
+      } else {
+        toast.error(checkReg.message);
       }
     } catch (error) {
       console.log(error);
@@ -343,7 +331,6 @@ export const RegisterForm: FC = () => {
           />
         )}
       </AnimatePresence>
-      <Toaster position="top-center" />
     </>
   );
 };

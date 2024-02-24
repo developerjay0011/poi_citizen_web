@@ -10,8 +10,6 @@ const LoginPage: FC = () => {
 
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
-
-    console.log(storedUserString);
     if (storedUserString !== null) {
       var storedUser = JSON.parse(storedUserString || "");
       const token = storedUser?.token;

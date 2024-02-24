@@ -13,34 +13,14 @@ interface PostOptionsProps {
   userId: string;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const PostOptions: FC<PostOptionsProps> = ({
   deletePostHandler,
   onClose,
   userId,
 }) => {
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-  // const { userDetails } = cusSelector((st) => st.UI);
+  const { userDetails } = cusSelector((st) => st.auth);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
-
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
 
 
   return (

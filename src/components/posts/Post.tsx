@@ -22,14 +22,11 @@ import {
   LikePost,
   UnlikePostorStory,
 } from "@/redux_store/post/postApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { getImageUrl } from "@/config/get-image-url";
 
 interface PostProps extends PostDetails {}
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const Post: FC<PostProps> = ({
   writtenText,
@@ -51,24 +48,7 @@ export const Post: FC<PostProps> = ({
   const [showComments, setShowComments] = useState(false);
   const [updateComment, setUpdateComment] = useState(false);
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  // get User Details
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const showFullPost = () => setShowPostDetials(true);
   const hideFullPost = () => setShowPostDetials(false);
 
@@ -91,12 +71,8 @@ export const Post: FC<PostProps> = ({
       id: id,
       leaderid: leaderid,
     };
-    const token = userDetails?.token;
-
     try {
-      // const data = await fetchDeletePost(postBody, token);
       const data = await DeletePost(postBody);
-
       if (data?.success) {
         updatePost(data);
         setShowMorePostOptions(false);
@@ -193,11 +169,7 @@ export const Post: FC<PostProps> = ({
         {/* User details and Date */}
         <div className="flex items-center gap-3 py-4 text-sky-950 border-b">
           <Image
-            src={
-              userimages
-                ? `${process.env.NEXT_PUBLIC_BASE_URL}${userimages}`
-                : NoImg
-            }
+            src={getImageUrl(userimages)}
             alt="user pic"
             className="w-12 aspect-square object-cover object-center rounded-full"
             width={100}
@@ -258,7 +230,7 @@ export const Post: FC<PostProps> = ({
                       />
                     ) : (
                       <video
-                        key={el.id}
+                      key={index}
                         src={el.media}
                         className="object-cover object-center w-full h-full"
                         controls
@@ -283,7 +255,7 @@ export const Post: FC<PostProps> = ({
                       />
                     ) : (
                       <video
-                        key={el.id}
+                      key={index}
                         src={el.media}
                         className="object-cover object-center w-full h-full"
                         controls
@@ -307,7 +279,7 @@ export const Post: FC<PostProps> = ({
                       />
                     ) : (
                       <video
-                        key={el.id}
+                      key={index}
                         src={el.media}
                         className="object-cover object-center w-full h-full"
                         controls
@@ -406,10 +378,10 @@ export const Post: FC<PostProps> = ({
             >
               {/* comments box */}
               <ul className="flex flex-col gap-5">
-                {(comments as Comment[]).map((el) => (
+                {(comments as Comment[]).map((el,index) => (
                   <SingleComment
                     {...el}
-                    key={el.id}
+                    key={index}
                     postId={id}
                     likeChangeHandler={postCommentLikeHandler}
                     newNestedCommentHandler={commentReplyHandler}
@@ -426,7 +398,6 @@ export const Post: FC<PostProps> = ({
           )}
         </AnimatePresence>
       </section>
-      <Toaster position="top-center" />
     </>
   );
 };

@@ -20,9 +20,9 @@ import { AnimatePresence } from "framer-motion";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { CheckCitizenExists, fetchLogin } from "@/redux_store/auth/authAPI";
 import { setCookie } from "cookies-next";
-import { TOKEN_KEY } from "@/constants/common";
+import { TOKEN_KEY, USER_INFO } from "@/constants/common";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface LoginFormProps {}
 export const LoginForm: FC<LoginFormProps> = () => {
@@ -62,28 +62,12 @@ export const LoginForm: FC<LoginFormProps> = () => {
     setLoggingIn(true);
     try {
       const loginData = await fetchLogin(resBody);
-      console.log(loginData);
-
-      const storedData = {
-        id: loginData?.data?.id,
-        username: loginData?.data?.username,
-        email: loginData?.data?.email,
-        mobile: loginData?.data?.mobile,
-        token: loginData?.token,
-      };
-
-      const CheckExists = await CheckCitizenExists(data?.userId);
-
-      console.log(CheckExists);
-
-      if (loginData?.success) {
+      if (loginData?.data?.id) {
         router.push(ProtectedRoutes.user);
-        dispatch(authActions.logIn(loginData));
-        sessionStorage.setItem("user", JSON.stringify(storedData));
-
-        const serializedData = JSON.stringify(storedData);
-
-        // Store the serialized data in session storage
+        dispatch(authActions.logIn(loginData?.data));
+        sessionStorage.setItem("user", JSON.stringify(loginData?.data));
+        const serializedData = JSON.stringify(loginData?.data);
+        setCookie(USER_INFO, serializedData);
         setCookie("userData", serializedData);
         setCookie(TOKEN_KEY, loginData?.token);
         toast.success(loginData.message);
@@ -198,7 +182,6 @@ export const LoginForm: FC<LoginFormProps> = () => {
       <AnimatePresence mode="wait">
         {showForgetPassForm && <ForgetPassword onClose={closeModal} />}
       </AnimatePresence>
-      <Toaster position="top-center" />
     </>
   );
 };

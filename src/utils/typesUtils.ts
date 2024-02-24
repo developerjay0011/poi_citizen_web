@@ -14,7 +14,10 @@ export interface RegisterData {
   mobile: string;
 
 }
-
+export interface ForgotPassword {
+  email: string;
+  password: string;
+}
 export interface LoginFormFields {
   userId: string
   password: string

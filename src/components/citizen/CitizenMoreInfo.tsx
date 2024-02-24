@@ -5,7 +5,6 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { FaFacebook, FaInstagram, FaRedhat, FaTwitter } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
-import { fetchGetSingleCitizen } from "../api/profile";
 
 interface CitizenMoreInfoProps {}
 interface UserDetail {
@@ -31,51 +30,8 @@ interface UserDetails {
 }
 
 export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
-  const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
-  const [userData, setUserData] = useState<UserDetail>({
-    token: "",
-    id: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserData(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
-  console.log(userData);
-
-  useEffect(() => {
-    (async () => {
-      if (userData?.id?.length > 0) {
-        const citizenid = userData?.id;
-        const token = userData?.token;
-
-        console.log(citizenid?.length);
-        console.log(token);
-        try {
-          const data = await fetchGetSingleCitizen(citizenid, token);
-
-          console.log(data);
-
-         
-
-          setUserDetails(data);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    })();
-  }, []);
-
-  console.log(userDetails);
-
-  // Conditionally showing icons based on where certain link is present or not.
   const socialNetworks: (JSX.Element | string)[] = [
     userDetails?.socialMedia?.facebook ? (
       <Link

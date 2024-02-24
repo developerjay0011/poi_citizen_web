@@ -7,15 +7,12 @@ import { BLOOD_GROUPS, COUNTRIES } from "@/utils/utility";
 import toast from 'react-hot-toast';
 import Link from "next/link";
 import moment from "moment";
-import {
-  fetchEditCitizenProfile,
-  fetchGetSingleCitizen,
-} from "@/components/api/profile";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { authActions } from "@/redux_store/auth/authSlice"
 
 import { RootState } from "@/redux_store";
 import { ProtectedRoutes } from "@/constants/routes";
+import { EditCitizenProfile, getProfile } from "@/redux_store/auth/authAPI";
 interface EditFormProps {}
 
 const genders = ["male", "female", "others"];
@@ -34,27 +31,11 @@ interface UserDetail {
 }
 
 const EditForm: FC<EditFormProps> = () => {
-  // const [userData, setUserData] = useState<UserDetail>({
-  //   token: "",
-  //   id: "",
-  // });
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
+  const userData: any = cusSelector((state: RootState) => state.auth.userDetails);
+  const { userDetails } = cusSelector((st) => st.auth);
   const [isEditProfile, setIsEditProfile] = useState({});
   const dispatch = cusDispatch();
-  // useEffect(() => {
-  //   var storedUserString = sessionStorage.getItem("user");
-  //   if (storedUserString !== null) {
-  //     var storedUser = JSON.parse(storedUserString);
 
-  //     setUserData(storedUser);
-  //   } else {
-  //     console.log("User data not found in session storage");
-  //   }
-  // }, []);
-
-  console.log(userData);
 
   const {
     register,
@@ -64,7 +45,6 @@ const EditForm: FC<EditFormProps> = () => {
   } = useForm<UserDetails>({ mode: "onTouched" });
 
   const formSubmitHandler = async (data: UserDetails) => {
-    console.log(data);
     var storedUserString = sessionStorage.getItem("user");
     var storedUser = JSON.parse(storedUserString as string);
     const citizenid = storedUser?.id;
@@ -85,21 +65,15 @@ const EditForm: FC<EditFormProps> = () => {
       twitter_link: data?.twitter_link || "",
       about_me: data?.about_me,
     };
-
-    console.log(postBody);
-
-    const token = storedUser?.token;
     try {
-      const editData = await fetchEditCitizenProfile(postBody, token);
-
-     
-
+      const editData = await EditCitizenProfile(postBody)
       if (editData?.success) {
-        const data = await fetchGetSingleCitizen(citizenid, token);
-        console.log("fetchGetSingleCitizen",data);
         toast.success(editData?.message)
+        const data = await getProfile(citizenid);
         dispatch(authActions.logIn(data));
         setIsEditProfile(editData);
+      }else{
+        toast.error(editData?.message)
       }
     } catch (error) {
       console.log(error);
@@ -107,42 +81,19 @@ const EditForm: FC<EditFormProps> = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      // const citizenid = userData?.id;
-      // const token = userData?.token;
-
-      // console.log(citizenid?.length);
-      // console.log(token);
-
-      // if (citizenid?.length > 0) {
-      //   try {
-      var storedUserString = sessionStorage.getItem("user");
-      var storedUser = JSON.parse(storedUserString as string);
-      const citizenid = storedUser?.id;
-      const token = storedUser?.token;
-          const data = await fetchGetSingleCitizen(citizenid, token);
-
-      dispatch(authActions.logIn(data));
-
-      setValue('username', data?.username || '');
-      setValue('email', data?.email || '');
-      setValue('mobile', data?.mobile || '');
-      setValue('gender', data?.gender || '');
-      setValue('dob', moment(data?.dob).format("YYYY-MM-DD")  || '');
-      setValue('blood_group', data?.blood_group || '');
-      setValue('higher_education', data?.higher_education || '');
-      setValue('country', data?.country || '');
-      setValue('fb_link', data?.fb_link || '');
-      setValue('insta_link', data?.insta_link || '');
-      setValue('twitter_link', data?.twitter_link || '');    
-      setValue('about_me', data?.about_me || '');
-
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // }
-    })();
-  }, []);
+      setValue('username', userDetails?.username || '');
+      setValue('email', userDetails?.email || '');
+      setValue('mobile', userDetails?.mobile || '');
+      setValue('gender', userDetails?.gender || '');
+      setValue('dob', moment(userDetails?.dob).format("YYYY-MM-DD")  || '');
+      setValue('blood_group', userDetails?.blood_group || '');
+      setValue('higher_education', userDetails?.higher_education || '');
+      setValue('country', userDetails?.country || '');
+      setValue('fb_link', userDetails?.fb_link || '');
+      setValue('insta_link', userDetails?.insta_link || '');
+      setValue('twitter_link', userDetails?.twitter_link || '');    
+      setValue('about_me', userDetails?.about_me || '');
+  }, [userDetails]);
 
   return (
     <form

@@ -8,11 +8,6 @@ import Link from "next/link";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { BsPlusCircle, BsThreeDots } from "react-icons/bs";
 import Stories from "react-insta-stories";
-import {
-  fetchAddStory,
-  fetchDeleteStory,
-  fetchGetStoriesForCitizen,
-} from "../api/stories";
 import { PostOptions } from "../posts/PostOptions";
 import Modal from "react-modal";
 import { ProtectedRoutes } from "@/constants/routes";
@@ -22,141 +17,103 @@ import {
   DeleteStory,
   GetStoriesForCitizen,
 } from "@/redux_store/story/storyApi";
+import { getImageUrl } from "@/config/get-image-url";
 interface StoriesBoxProps {}
 
-const IMAGES = [
-  "https://images.unsplash.com/photo-1665395806066-d47f41e6aa6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1682686578456-69ae00b0ecbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1696430484960-543301cda6d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1696587522095-1d0b522b3e36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1665395806066-d47f41e6aa6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1682686578456-69ae00b0ecbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1696430484960-543301cda6d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-  "https://images.unsplash.com/photo-1696587522095-1d0b522b3e36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-];
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
+
 
 export const StoriesBox: FC<StoriesBoxProps> = () => {
   const [storyMedia, setStoryMedia] = useState<Media[]>([]);
   const [textPost, setTextPost] = useState("");
   const [getStories, setGetStories] = useState([]);
   const [updateStory, setUpdateStory] = useState({});
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
   const id = GenerateId();
   const userData: any = cusSelector(
     (state: RootState) => state.auth?.userDetails
   );
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
+  // const mediaChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
+  //   setStoryMedia([]);
+  //   const data = e.target.files as FileList;
+  //   if (!data || data.length === 0) return;
+  //   const newMedia: Media[] = [];
 
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  //   for (let i = 0; i < data.length; i++) {
+  //     const uploadData = data[i];
 
-  console.log(userDetails);
+  //     // checking for media type
+  //     const type = uploadData.type.split("/")[0];
 
-  const mediaChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
-    setStoryMedia([]);
-    const data = e.target.files as FileList;
-    if (!data || data.length === 0) return;
-    const newMedia: Media[] = [];
+  //     // converting data into base 64
+  //     const convertedData = await convertFileToBase64(uploadData);
 
-    for (let i = 0; i < data.length; i++) {
-      const uploadData = data[i];
+  //     newMedia.push({
+  //       type: type,
+  //       media: uploadData,
+  //       id: GenerateId(),
+  //     });
+  //   }
 
-      // checking for media type
-      const type = uploadData.type.split("/")[0];
+  //   setStoryMedia((oldMedia) => [...oldMedia, ...newMedia]);
 
-      // converting data into base 64
-      const convertedData = await convertFileToBase64(uploadData);
+  //   const token = userDetails?.token;
 
-      newMedia.push({
-        type: type,
-        media: uploadData,
-        id: GenerateId(),
-      });
-    }
+  //   const formData = new FormData();
 
-    setStoryMedia((oldMedia) => [...oldMedia, ...newMedia]);
+  //   formData.append("leaderid", userDetails?.id || "");
+  //   formData.append("written_text", textPost || "");
+  //   formData.append("access_type", "open");
 
-    const token = userDetails?.token;
-
-    const formData = new FormData();
-
-    formData.append("leaderid", userDetails?.id || "");
-    formData.append("written_text", textPost || "");
-    formData.append("access_type", "open");
-
-    for (let i = 0; i < data.length; i++) {
-      const item: any = data[i];
-
-      formData.append("media", item);
-    }
-
-    console.log(formData);
-    console.log(data);
-
-    try {
-      const data = await fetchAddStory(formData, token);
-      // const data = await AddStory(formData);
-
-      if (data?.success) {
-        setUpdateStory(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   for (let i = 0; i < data.length; i++) {
+  //     const item: any = data[i];
+  //     formData.append("media", item);
+  //   }
+  //   try {
+  //     const data = await fetchAddStory(formData, token);
+  //     if (data?.success) {
+  //       setUpdateStory(data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const citizenid = userDetails?.id;
 
   useEffect(() => {
-    const citizenid = userDetails?.id;
-
-    console.log(citizenid);
-
-    (async () => {
+  (async () => {
       try {
-        // const data = await fetchGetStoriesForCitizen(citizenid, token);
-        const data = await GetStoriesForCitizen(citizenid);
-        console.log(data);
-        if (data?.length > 0) {
-          setGetStories(data);
+        if(citizenid){
+          const data = await GetStoriesForCitizen(citizenid);
+          if (data?.length > 0) {
+            setGetStories(data);
+          }
         }
       } catch (error) {
         console.log(error);
       }
     })();
-  }, [userData, updateStory]);
+  }, [userData, updateStory,citizenid]);
 
-  const handleDelete = async (leaderid: string, id: string) => {
-    const token = userData?.token;
+  // const handleDelete = async (leaderid: string, id: string) => {
+  //   const token = userData?.token;
 
-    const postBody = {
-      id: id,
-      leaderid: leaderid,
-    };
+  //   const postBody = {
+  //     id: id,
+  //     leaderid: leaderid,
+  //   };
 
-    try {
-      // const data = await fetchDeleteStory(postBody, token);
-      const data = await DeleteStory(postBody);
-      if (data) {
-        setUpdateStory(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   try {
+  //     // const data = await fetchDeleteStory(postBody, token);
+  //     const data = await DeleteStory(postBody);
+  //     if (data) {
+  //       setUpdateStory(data);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <>
@@ -174,7 +131,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
       >
         <div className="w-[660px]  ">
           <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
-            <li className=" w-44 h-[300px] aspect-[9/16] rounded-lg relative  ">
+            {/* <li className=" w-44 h-[300px] aspect-[9/16] rounded-lg relative  ">
               <label htmlFor="media">
                 <input
                   type="file"
@@ -197,11 +154,10 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
                     height={1000}
                     className="w-full h-full object-cover object-center"
                   />
-                  {/* Overlay */}
                   <div className="absolute top-0 left-0 w-full bg-black bg-opacity-25 h-full"></div>
                 </figure>
               </label>
-            </li>
+            </li> */}
 
             {getStories.map(
               (
@@ -211,11 +167,11 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
                 return (
                   <Story
                     key={index}
-                    userImage={`${process.env.NEXT_PUBLIC_BASE_URL}${el?.image}`}
-                    img={`${process.env.NEXT_PUBLIC_BASE_URL}${el?.posts[0]?.media[0]?.media}`}
+                    userImage={getImageUrl(el?.image)}
+                    img={getImageUrl(el?.posts[0]?.media[0]?.media)}
                     stories={el?.posts}
                     id={el?.id || ""}
-                    handleDelete={handleDelete}
+                    // handleDelete={handleDelete}
                   />
                 );
               }
@@ -255,28 +211,8 @@ const Story: FC<StoryProps> = ({
 }) => {
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const leaderid = userDetails?.id;
-
   const deletePostHandler = async (leaderid: string, id: string) => {
     handleDelete(leaderid, id);
     setShowMorePostOptions(false);
@@ -347,7 +283,7 @@ const Story: FC<StoryProps> = ({
           <div className="object-center">
             <Stories
               stories={stories?.map((item) => ({
-                url: `${process.env.NEXT_PUBLIC_BASE_URL}${item.media[0].media}`,
+                url:getImageUrl(item.media[0].media),
                 type: item.media[0].type == "video/mp4" ? "video" : "image",
               }))}
               defaultInterval={1500}

@@ -11,34 +11,13 @@ interface PollsPreviewProps {
   onClose: () => void
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const PollsPreview: FC<PollsPreviewProps> = ({
   onClose,
   pollDetails,
 }) => {
-  /* const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []); */
-
-  const userDetails: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
 
   return (
     <>

@@ -86,9 +86,6 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     const token = userData?.token;
 
     const data = await fetchDeactiveAccount(citizenid, token);
-
-    console.log(data);
-
     if (data?.success) {
       setShowConfirmBox(false);
       router.push(AuthRoutes.login);

@@ -5,6 +5,7 @@ import { FC, FormEvent, useEffect, useState } from "react";
 import { BiRightArrow } from "react-icons/bi";
 import { fetchCommentPost } from "../api/posts";
 import { CommentPost } from "@/redux_store/post/postApi";
+import { getImageUrl } from "@/config/get-image-url";
 
 interface NewCommentFormProps {
   CommentHandler: (comment: string) => void;
@@ -12,10 +13,6 @@ interface NewCommentFormProps {
   setUpdateComment: any;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const NewCommentForm: FC<NewCommentFormProps> = ({
   CommentHandler,
@@ -23,71 +20,33 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({
   setUpdateComment,
 }) => {
   const [commentText, setCommentText] = useState("");
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
-  console.log(userDetails);
-  const userData = cusSelector((st) => st.auth.userDetails);
-
-  console.log(userData);
-  console.log(allData);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const addNewCommentHandler = async (e: FormEvent) => {
     e.preventDefault();
-
     const mediaId = allData.posts
       .flatMap((m: any) => m.media.map((id: any) => id?.id))
       .flat();
-
-    console.log(mediaId);
-
     const postid = allData.posts.map((m: any) => m.id).flat();
-
-    console.log(postid);
-
     const commentBody = {
       postid: postid[0],
       post_leaderid: allData?.leaderid,
       userid: userDetails.id,
       mediaid: mediaId[0],
       usertype: "citizen",
-      username: userData?.data?.username,
-      userimg: userData?.data?.image || "",
+      username: userDetails?.username,
+      userimg: userDetails?.image || "",
       comment_text: commentText,
     };
-
-    const token = userDetails?.token;
-
     try {
-      // const data = await fetchCommentPost(commentBody, token);
       const data = await CommentPost(commentBody);
-
-      console.log(data);
-
       if (data?.success) {
         setUpdateComment(data);
       }
     } catch (error) {
       console.log(error);
     }
-
     if (commentText.length === 0) return;
-
     CommentHandler(commentText);
-
     setCommentText("");
   };
 
@@ -99,11 +58,7 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({
       >
         <Image
           alt="user dp"
-          src={
-            userData?.data?.image
-              ? `${process.env.NEXT_PUBLIC_BASE_URL}${userData?.data?.image}`
-              : ""
-          }
+          src={getImageUrl(userDetails?.image)}
           width={1000}
           height={1000}
           className="w-10 aspect-square rounded-full object-center object-cover"

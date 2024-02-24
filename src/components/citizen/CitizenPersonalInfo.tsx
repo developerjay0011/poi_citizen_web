@@ -39,60 +39,9 @@ interface UserDetails {
 }
 
 export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
-  // const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
-  // const [userData, setUserData] = useState<UserDetail>({
-  //   token: "",
-  //   id: "",
-  // });
   const userDetails: any = cusSelector(
     (state: RootState) => state.auth.userDetails
   );
-  // useEffect(() => {
-  //   var storedUserString = sessionStorage.getItem("user");
-  //   if (storedUserString !== null) {
-  //     var storedUser = JSON.parse(storedUserString);
-
-  //     setUserData(storedUser);
-  //   } else {
-  //     console.log("User data not found in session storage");
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (userData?.id.length > 0) {
-  //       const citizenid = userData?.id;
-  //       const token = userData?.token;
-
-  //       if (citizenid?.length > 0) {
-  //         try {
-  //           const data = await fetchGetSingleCitizen(citizenid, token);
-
-  //           const modifyData = {
-  //             firstname: data?.username || "",
-  //             email: data?.email || "",
-  //             phoneNo: data?.mobile || "",
-  //             gender: data?.gender || "",
-  //             dob: data?.dob || "",
-  //             bloodGroup: data?.blood_group || "",
-  //             higherEducation: data?.higher_education || "",
-  //             country: data?.country || "",
-  //             socialMedia: {
-  //               facebook: data?.fb_link || "",
-  //               instagram: data?.insta_link || "",
-  //               twitter: data?.twitter_link || "",
-  //             },
-  //             about: data?.about_me || "",
-  //           };
-
-  //           setUserDetails(modifyData);
-  //         } catch (error) {
-  //           console.log(error);
-  //         }
-  //       }
-  //     }
-  //   })();
-  // }, []);
 
   return (
     <>

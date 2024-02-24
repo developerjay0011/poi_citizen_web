@@ -22,10 +22,6 @@ interface FullPostProps {
   userId: string;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const FullPost: FC<FullPostProps> = ({
   onClose,
@@ -35,25 +31,8 @@ export const FullPost: FC<FullPostProps> = ({
 }) => {
   const [curPostIndex, setCurPostIndex] = useState<number>(0);
   const curPost = posts[curPostIndex];
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-  const dispatch = cusDispatch();
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const likePerPostHandler = () => {};
-
   const increasePostCount = () => {
     setCurPostIndex((lst) => {
       if (lst < posts.length - 1) return lst + 1;
@@ -67,7 +46,6 @@ export const FullPost: FC<FullPostProps> = ({
       else return 0;
     });
   };
-
   const CommentHandler = (comment: string) => {};
 
   const likeChangeHandler = (id: string) => {};
@@ -200,31 +178,13 @@ interface InteractionsPerMediaProps {
   likePerPostHandler: () => void;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   curPost,
   likePerPostHandler,
 }) => {
   const [firstTime, setFirstTime] = useState(true);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  const { userDetails } = cusSelector((st) => st.auth);
 
   const [showLikeAnimation, setShowLikeAnimation] = useState(
     curPost.likes.some((el) => el.userId === userDetails?.id)
@@ -235,9 +195,7 @@ const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   useEffect(() => {
     // Reseting firstTime | likeAnimation | likeCount whenever curpost values changes because this component only un-mounts when parent gets unmounted
     setFirstTime(true);
-    setShowLikeAnimation(
-      curPost.likes.some((el) => el.userId === userDetails?.id)
-    );
+    setShowLikeAnimation(curPost.likes.some((el) => el.userId === userDetails?.id));
     setLikeCount(curPost.likes.length);
   }, [curPost, userDetails]);
 

@@ -14,10 +14,7 @@ const CitizenLayout: FC<{ children: ReactNode }> = ({ children }) => {
         } else {
           toast.error('offline')
         }
-
-        console.log(navigator.onLine)
       }
-
       window.addEventListener('online', handleNetworkChange)
       window.addEventListener('offline', handleNetworkChange)
     })

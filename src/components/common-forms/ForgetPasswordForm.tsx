@@ -14,6 +14,8 @@ interface ForgetPasswordProps {
 
 export const ForgetPassword: FC<ForgetPasswordProps> = ({ onClose }) => {
   const [curFormPos, setCurFormPos] = useState(1)
+  const [userINP, setUserINP] = useState('')
+  const [registering, setRegistering] = useState(false);
 
   return (
     <>
@@ -44,16 +46,19 @@ export const ForgetPassword: FC<ForgetPasswordProps> = ({ onClose }) => {
           <Image src={Logo} alt='poi logo' className='w-auto h-[8rem]' />
           <AnimatePresence mode='wait'>
             {curFormPos === 1 && (
-              <ForgetUserIdField proceedFn={() => setCurFormPos(2)} />
+              <ForgetUserIdField
+               setUserINP={(data)=>{setUserINP(data)}}
+               userINP={userINP}
+               proceedFn={() => setCurFormPos(2)} />
             )}
             {curFormPos === 2 && (
               <ForgetOTPForm
-                proceedFn={() => setCurFormPos(3)}
-                number='9010901090'
+                proceedFn={() => {setCurFormPos(3)}}
+                number={userINP}
               />
             )}
             {curFormPos === 3 && (
-              <CreateNewPasswordForm proceedFn={() => setCurFormPos(4)} />
+              <CreateNewPasswordForm number={userINP} proceedFn={() => {setCurFormPos(4);onClose()}} />
             )}
           </AnimatePresence>
         </m.div>

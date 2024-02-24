@@ -14,19 +14,21 @@ import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
 import { ProtectedRoutes } from "@/constants/routes";
 import NoImg from "@/assets/No_image_available.png";
+import { authActions } from "@/redux_store/auth/authSlice";
+import { getProfile } from "@/redux_store/auth/authAPI";
+import { getImageUrl } from "@/config/get-image-url";
 
 interface TopNavbarProps {}
 
 export const TopNavbar: FC<TopNavbarProps> = () => {
   const router = useRouter();
+  const { userDetails } = cusSelector((st) => st.auth);
   const curRoute = usePathname();
   const dispatch = cusDispatch();
   const [showAdminMenu, setShowAdminMenu] = useState(false);
   const [showBriefNoti, setShowBriefNoti] = useState(false);
-  const { userDetails } = cusSelector((st) => st.auth);
   const [searchUserStr, setSearchUserStr] = useState("");
   const [showMobileNav, setShowMobileNav] = useState(false);
-
   useEffect(() => {
     document.addEventListener("click", (e) => {
       // hiding usernav bar when clicked anywhere except usericon
@@ -38,7 +40,14 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         setShowBriefNoti(false);
     });
   }, [dispatch]);
-
+  useEffect(() => {
+    (async() => {
+      if(userDetails?.id) {
+        const res = await getProfile(userDetails?.id);
+        dispatch(authActions.logIn(res));
+      }
+    })();
+  }, [dispatch, userDetails?.id])
   let heading = curRoute?.split("/").at(-1)?.includes("-")
     ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
     : curRoute?.split("/").at(-1);
@@ -119,11 +128,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
           <p className="capitalize">{userDetails?.username}</p>
           <button onClick={() => setShowAdminMenu((lst) => !lst)}>
             <Image
-              src={
-                userDetails?.image
-                  ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`
-                  : NoImg
-              }
+              src={getImageUrl(userDetails?.image)}
               alt="user pic"
               className="w-14 aspect-square object-cover object-center rounded-full"
               id="userDisplayPic"
@@ -159,11 +164,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
 
           <button>
             <Image
-              src={
-                userDetails?.image
-                  ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`
-                  : ""
-              }
+              src={getImageUrl(userDetails?.image)}
               alt="user pic"
               className="w-14 aspect-square object-cover object-center rounded-full"
               id="userDisplayPic"

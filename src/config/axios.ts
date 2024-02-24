@@ -10,12 +10,12 @@ const Axios = axios.create({
 Axios.interceptors.request.use((config: any) => {
     const token = getCookie(TOKEN_KEY);
     const headers = config.headers;
-
     return {
         ...config,
         headers: {
             'Content-Type': headers['Content-Type'] ?? DEFAULT_CONTENT_TYPE,
-            'Authorization': token && `Bearer ${token}`
+            'Authorization': token && `Bearer ${token}`,
+            ...headers
         },
     };
 

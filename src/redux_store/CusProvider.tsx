@@ -5,6 +5,7 @@ import { store } from '.'
 import { cusDispatch } from './cusHooks'
 import { useRouter } from 'next/navigation'
 import { authActions } from './auth/authSlice'
+import { Toaster } from 'react-hot-toast'
 
 interface CusProviderProps {
   children: ReactNode
@@ -12,6 +13,7 @@ interface CusProviderProps {
 export const CusProvider: FC<CusProviderProps> = ({ children }) => {
   return (
     <Provider store={store}>
+      <Toaster position="top-center" />
       <AuthLayer>{children}</AuthLayer>
     </Provider>
   )
@@ -24,7 +26,6 @@ const AuthLayer: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken') || ''
     const userDetails = (localStorage.getItem('userDetails') as string) || ''
-
     if (authToken && userDetails) {
       dispatch(authActions.logIn(JSON.parse(userDetails)))
     }

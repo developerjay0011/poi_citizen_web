@@ -1,15 +1,17 @@
 import Axios from "@/config/axios";
 import { insertVariables } from "@/config/insert-variables";
 import { tryCatch } from "@/config/try-catch";
+import { TOKEN_KEY } from "@/constants/common";
 import { APIRoutes } from "@/constants/routes";
-import { LoginData, RegisterData } from "@/utils/typesUtils";
+import { ForgotPassword, LoginData, RegisterData } from "@/utils/typesUtils";
+import { setCookie } from "cookies-next";
 
 // user Login Api
 export const fetchLogin = async (resBody: LoginData) => {
   return tryCatch(
     async () => {
       const res = await Axios.post(APIRoutes.login, resBody)
-      return res.data;
+      return res.data
     }
   );
 };
@@ -65,3 +67,53 @@ export const CheckCitizenExists = async (userId: string) => {
     }
   );
 };
+
+
+export const fetchForgotPassword = async (resBody: ForgotPassword) => {
+  return tryCatch(async () => {
+    const res = await Axios.post(APIRoutes.ForgotPassword, resBody)
+    return res.data;
+  });
+};
+
+export const uploadProfileImage = async (formData: any) => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.post(APIRoutes.UploadCitizenProfileImge, formData, {
+        headers: {"Content-Type": "multipart/form-data"}
+      });
+      return res.data;
+    }
+  );
+};
+
+export const fetchTrendingLeaderList = async () => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(APIRoutes.TrendingLeaderList);
+      return res.data;
+    }
+  );
+};
+
+
+
+export const getProfile = async (citizenid: string) => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(insertVariables(APIRoutes.getSingleCitizen, { citizenid }));
+      return res.data;
+    }
+  );
+};
+
+export const EditCitizenProfile = async (formData: any) => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.post(APIRoutes.EditCitizenProfile,formData);
+      return res.data;
+    }
+  );
+};
+
+

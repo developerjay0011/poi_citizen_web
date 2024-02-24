@@ -14,7 +14,7 @@ import { RootState } from "@/redux_store";
 import { PostTypes } from "./PostTypes";
 import NoImg from "@/assets/No_image_available.png";
 import { AddPost } from "@/redux_store/post/postApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface NewPostBoxProps {
   updatePost: any;
@@ -84,7 +84,6 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
     }
 
     try {
-      // const data = await fetchAddPost(formData, token);
       const data = await AddPost(formData);
 
       if (data?.success) {
@@ -291,7 +290,6 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
           </button>
         </form>
       </CommonBox>
-      <Toaster position="top-center" />
     </>
   );
 };

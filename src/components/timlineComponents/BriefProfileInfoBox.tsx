@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { cusSelector } from '@/redux_store/cusHooks'
 import { ProtectedRoutes } from '@/constants/routes'
 import NoImg from '@/assets/No_image_available.png'
+import { getImageUrl } from '@/config/get-image-url'
 
 interface BriefProfileInfoBoxProps {}
 
@@ -24,7 +25,7 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
         {/* Profile info and pic */}
         <section className='flex items-center my-5 gap-3 text-sky-950 max-[1400px]:gap-2'>
           <Image
-            src={userDetails?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`: NoImg}
+            src={getImageUrl(userDetails?.image)}
             alt='profile pic'
             width={100}
             height={100}

@@ -7,6 +7,7 @@ import { cusSelector } from '@/redux_store/cusHooks'
 import { AnimatePresence } from 'framer-motion'
 import { PollOption } from './PollOption'
 import { RootState } from '@/redux_store'
+import { getImageUrl } from '@/config/get-image-url'
 
 interface PollPostProps extends PollDetails {
   username: string
@@ -42,7 +43,7 @@ export const PollPost: FC<PollPostProps> = ({
       <section className='border shadow-sm rounded-md px-5 py-2 bg-white'>
         <div className='flex items-center gap-3 py-4 text-sky-950 border-b'>
           <Image
-            src={userDetails?.image ?`${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}` : ''}
+            src={getImageUrl(userDetails?.image)}
             alt='user pic'
             className='w-12 aspect-square object-cover object-center rounded-full'
             width={100}

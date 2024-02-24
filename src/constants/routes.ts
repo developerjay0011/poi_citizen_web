@@ -38,6 +38,10 @@ export const APIRoutes = {
   // Leader Endpoints
   login: `${API_Prefix}/Citizen/Login`,
   register: `${API_Prefix}/Citizen/Registration`,
+  ForgotPassword: `${API_Prefix}/Citizen/ForgotPassword`,
+  getSingleCitizen: `${API_Prefix}/Citizen/getSingleCitizen/{{citizenid}}`,
+  EditCitizenProfile: `${API_Prefix}/Citizen/EditCitizenProfile`,
+  UploadCitizenProfileImge: `${API_Prefix}/Citizen/UploadCitizenProfileImge`,
   CheckCitizenRegExists: `${API_Prefix}/Citizen/CheckCitizenRegExists`,
   CheckCitizenExists: `${API_Prefix}/Citizen/CheckCitizenExists/{{email}}`,
   AddStory: `${API_Prefix}/Post/AddStory`,
@@ -49,6 +53,12 @@ export const APIRoutes = {
   LikePost: `${API_Prefix}/Post/LikePost`,
   UnlikePostorStory: `${API_Prefix}/Post/UnlikePostorStory`,
   CommentPost: `${API_Prefix}/Post/CommentPost`,
+
+  TrendingLeaderList: `${API_Prefix}/Leader/TrendingLeaderList`,
+  FollowLeader: `${API_Prefix}/Citizen/FollowLeaderByCitizen`,
+  UnFollowLeader: `${API_Prefix}/Citizen/UnFollowLeaderByCitizen`,
+  CitizenFollowingList: `${API_Prefix}/Citizen/CitizenFollowingList/{{citizenid}}`,
+  
   /* upsertLeaders: `${API_Prefix}/Leader/AddEditLeader`,
    getAccessTabs: `${API_Prefix}/Leader/GetAccessTabs/{{userId}}`,
    getProfile: `${API_Prefix}/Leader/GetSingleLeader/{{userId}}`,

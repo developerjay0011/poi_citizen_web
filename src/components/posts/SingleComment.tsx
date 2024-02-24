@@ -13,6 +13,7 @@ import { AnimatePresence } from "framer-motion";
 import { RiReplyFill } from "react-icons/ri";
 import { motion as m } from "framer-motion";
 import { BiPlusCircle } from "react-icons/bi";
+import { getImageUrl } from "@/config/get-image-url";
 
 interface SingleCommentProps extends Comment {
   postId: string;
@@ -24,10 +25,6 @@ interface SingleCommentProps extends Comment {
   userimg? : string | null;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const SingleComment: FC<SingleCommentProps> = ({
   commentText,
@@ -46,7 +43,7 @@ export const SingleComment: FC<SingleCommentProps> = ({
   created_date,
   userimg
 }) => {
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const [firstTime, setFirstTime] = useState(true);
   const [showNestedComments, setShowNestedComments] = useState(false);
   const [showCommentOptions, setShowCommentOptions] = useState(false);
@@ -55,12 +52,7 @@ export const SingleComment: FC<SingleCommentProps> = ({
   // const { userDetails } = cusSelector((st) => st.UI)
   const [showLikeAnimation, setShowLikeAnimation] = useState<any>();
   // (likes as Like[]).some((el) => el.userId === userDetails?.id)
-
   const [commentReply, setCommentReply] = useState("");
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
 
  /*  [
     {
@@ -75,17 +67,6 @@ export const SingleComment: FC<SingleCommentProps> = ({
       likes: []
     }
   ] */
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
 
   const deleteCommentHandler = () => {};
 
@@ -125,7 +106,7 @@ export const SingleComment: FC<SingleCommentProps> = ({
       <li className="flex items-start gap-5 border-b pb-3 max-[400px]:gap-3">
         <Image
           alt="user pic"
-          src={userimg ? `${process.env.NEXT_PUBLIC_BASE_URL}${userimg}` :""}
+          src={getImageUrl('')}
           width={1000}
           height={1000}
           className="w-8 aspect-square rounded-full object-cover object-center"
@@ -275,26 +256,14 @@ const NestedCommentCmp: FC<NestedCommentCmpProps> = ({
   changeNestedCommentLike,
 }) => {
   const [firstTime, setFirstTime] = useState(true);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
   // const { userDetails } = cusSelector((st) => st.UI);
   const [likeCount, setLikeCount] = useState(likes.length);
   const [showLikeAnimation, setShowLikeAnimation] = useState(
     likes.some((el) => el.userId === userDetails?.id)
   );
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
 
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -324,7 +293,7 @@ const NestedCommentCmp: FC<NestedCommentCmpProps> = ({
     >
       <Image
         alt="user pic"
-        src={`${process.env.NEXT_PUBLIC_BASE_URL}${userImg}`}
+        src={getImageUrl(userImg)}
         width={1000}
         height={1000}
         className="w-8 aspect-square rounded-full object-cover object-center"

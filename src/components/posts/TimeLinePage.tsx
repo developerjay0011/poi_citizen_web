@@ -9,39 +9,17 @@ import { PollPost } from "./polls/PollPost";
 import { AgendaPost } from "./AgendaPost";
 import { RootState } from "@/redux_store";
 import { fetchGetPostsForCitizen } from "../api/posts";
-import { fetchGetSingleCitizen } from "../api/profile";
 import { GetPostsForCitizen } from "@/redux_store/post/postApi";
 import { postActions } from "@/redux_store/post/postSlice";
+import { getImageUrl } from "@/config/get-image-url";
 interface TimeLinePageProps {}
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const TimeLinePage: FC<TimeLinePageProps> = () => {
   const [upPost, setUpPost] = useState();
   const dispatch = cusDispatch();
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  // get user details from session
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   // get All post 
-
   const postData: any = cusSelector((state: RootState) => state.post.allPosts);
 
 
@@ -54,7 +32,7 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
       {/* CENTER FEED */}
       <div className="flex-1 flex flex-col gap-5 max-[1200px]:w-full">
         <StoriesBox />
-        <NewPostBox updatePost={updatePost} />
+        {/* <NewPostBox updatePost={updatePost} /> */}
 
         {/* <Post
           createdDatetime="2023-11-05"
@@ -180,20 +158,15 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
             );
         })} */}
 
-        {postData.map((el: any) => {
+        {postData.map((el: any,index) => {
 
           const imageDta = el?.image;
 
           return (
             <Post
               {...el}
-              key={el.id}
-              media={el.posts?.flatMap((file: any) =>
-                file.media?.map(
-                  (item: any) =>
-                    `${process.env.NEXT_PUBLIC_BASE_URL}${item.media}` as string
-                )
-              )}
+              key={index}
+              media={el.posts?.flatMap((file: any) =>file.media?.map((item: any) =>getImageUrl(item.media) as string))}
               likes={el.posts?.flatMap((file: any) => file?.likes) as string}
               createdDatetime={el.createddate as string}
               writtenText={el.written_text as string}

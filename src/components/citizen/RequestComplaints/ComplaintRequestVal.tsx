@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { MdDelete } from 'react-icons/md'
 import { ConfirmDialogBox } from '@/utils/ConfirmDialogBox'
 import { dateConverter } from '@/utils/utility'
+import { getImageUrl } from '@/config/get-image-url'
 
 interface ComplaintRequestValProps {
   subject: string
@@ -91,7 +92,7 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
                   key={i}
                   className={`cursor-pointer toList w-10 aspect-square bg-red-100 object-cover object-center rounded-full border-2 border-gray-50 ${TOClasses[i]}`}>
                   <Image
-                    src={el.leaderProfilePic ? `${process.env.NEXT_PUBLIC_BASE_URL}${el.leaderProfilePic}` : ''}
+                    src={getImageUrl(el.leaderProfilePic)}
                     alt='leader img'
                     width={1000}
                     height={1000}
