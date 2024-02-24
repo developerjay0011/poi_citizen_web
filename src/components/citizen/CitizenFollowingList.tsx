@@ -1,3 +1,4 @@
+import { ProtectedRoutes } from '@/constants/routes'
 import { CommonBox } from '@/utils/CommonBox'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -10,7 +11,7 @@ export const CitizenFollowingList: FC<CitizenFollowingListProps> = () => {
         title={"Following's (0)"}
         cusJSX={[
           <Link
-            href='/admin/profile/followings'
+            href={ProtectedRoutes.followers}
             key={Math.random()}
             className='text-orange-600 text-[14px] hover:underline'>
             See all

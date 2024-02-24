@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { BiRightArrow } from "react-icons/bi";
 import { fetchCommentPost } from "../api/posts";
+import { CommentPost } from "@/redux_store/post/postApi";
 
 interface NewCommentFormProps {
   CommentHandler: (comment: string) => void;
@@ -71,7 +72,8 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({
     const token = userDetails?.token;
 
     try {
-      const data = await fetchCommentPost(commentBody, token);
+      // const data = await fetchCommentPost(commentBody, token);
+      const data = await CommentPost(commentBody);
 
       console.log(data);
 
@@ -97,7 +99,11 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({
       >
         <Image
           alt="user dp"
-          src={userData?.data?.image || ("" as string)}
+          src={
+            userData?.data?.image
+              ? `${process.env.NEXT_PUBLIC_BASE_URL}${userData?.data?.image}`
+              : ""
+          }
           width={1000}
           height={1000}
           className="w-10 aspect-square rounded-full object-center object-cover"

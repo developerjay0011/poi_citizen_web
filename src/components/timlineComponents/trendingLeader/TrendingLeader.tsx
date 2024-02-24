@@ -6,6 +6,7 @@ import { TrendingLeaderBriefDetails } from "@/utils/typesUtils";
 import Image from "next/image";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
+import NoImg from "@/assets/No_image_available.png";
 
 interface TrendingLeaderProps extends TrendingLeaderBriefDetails {}
 
@@ -69,14 +70,14 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
   return (
     <li className="flex gap-3 py-3 px-3 last_noti items-center transition-all hover:bg-slate-50">
       <Image
-        src={image || ""}
+        src={image ? `${process.env.NEXT_PUBLIC_BASE_URL}${image}` : NoImg}
         alt="trending user"
         width={1000}
         height={1000}
         className="rounded-full w-12 aspect-square object-cover object-center"
       />
 
-      <Link href={`/leader/${id}`}>
+      <Link href={`ProtectedRoutes.leader/${id}`}>
         <div className="flex flex-col">
           <h3 className="text-[14px] font-semibold capitalize">{username}</h3>
           <p className="text-[12px] capitalize">{designation}</p>

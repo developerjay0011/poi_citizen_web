@@ -17,9 +17,12 @@ import { LPInputField } from "@/utils/LPInputField";
 import { cusDispatch } from "@/redux_store/cusHooks";
 import { ForgetPassword } from "../common-forms/ForgetPasswordForm";
 import { AnimatePresence } from "framer-motion";
-import { userLogin } from "@/redux_store/auth/authAPI";
-import { fetchLogin } from "../api/Auth";
 import { authActions } from "@/redux_store/auth/authSlice";
+import { CheckCitizenExists, fetchLogin } from "@/redux_store/auth/authAPI";
+import { setCookie } from "cookies-next";
+import { TOKEN_KEY } from "@/constants/common";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
+import toast, { Toaster } from "react-hot-toast";
 
 interface LoginFormProps {}
 export const LoginForm: FC<LoginFormProps> = () => {
@@ -47,44 +50,45 @@ export const LoginForm: FC<LoginFormProps> = () => {
   const formSubmitHandler = async (
     data: LoginFormFields | RegisterFormFields
   ) => {
-    console.log(data);
-
-    /*  try {
-      setLoggingIn(true)
-      setErr({ errTxt: '', isErr: false })
-
-      await dispatch(userLogin(data as LoginFormFields))
-
-      router.push('/user')
-    } catch (error: any) {
-      console.error(error)
-      setErr({ errTxt: error.message, isErr: true })
-    } finally {
-      setLoggingIn(false)
-    } */
-
     const resBody = {
       email: data?.userId,
       password: data?.password,
+      fcm_token: {
+        deviceid: "123",
+        token: "",
+      },
     };
 
     setLoggingIn(true);
     try {
       const loginData = await fetchLogin(resBody);
-
       console.log(loginData);
 
       const storedData = {
         id: loginData?.data?.id,
+        username: loginData?.data?.username,
+        email: loginData?.data?.email,
+        mobile: loginData?.data?.mobile,
         token: loginData?.token,
       };
 
-      console.log(storedData);
+      const CheckExists = await CheckCitizenExists(data?.userId);
+
+      console.log(CheckExists);
 
       if (loginData?.success) {
-        router.push("/user");
+        router.push(ProtectedRoutes.user);
         dispatch(authActions.logIn(loginData));
         sessionStorage.setItem("user", JSON.stringify(storedData));
+
+        const serializedData = JSON.stringify(storedData);
+
+        // Store the serialized data in session storage
+        setCookie("userData", serializedData);
+        setCookie(TOKEN_KEY, loginData?.token);
+        toast.success(loginData.message);
+      } else {
+        setErr({ errTxt: loginData?.message, isErr: true });
       }
       setLoggingIn(false);
     } catch (error) {
@@ -180,8 +184,11 @@ export const LoginForm: FC<LoginFormProps> = () => {
           </button>
 
           <p className="mt-5 max-[500px]:ml-3">
-            Dont have an account?{" "}
-            <Link href="/register" className="underline hover:font-[600]">
+            Dont have an account?
+            <Link
+              href={AuthRoutes.register}
+              className="underline hover:font-[600]"
+            >
               Register with us
             </Link>
           </p>
@@ -191,6 +198,7 @@ export const LoginForm: FC<LoginFormProps> = () => {
       <AnimatePresence mode="wait">
         {showForgetPassForm && <ForgetPassword onClose={closeModal} />}
       </AnimatePresence>
+      <Toaster position="top-center" />
     </>
   );
 };

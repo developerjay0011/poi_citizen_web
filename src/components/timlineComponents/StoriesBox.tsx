@@ -7,13 +7,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { BsPlusCircle, BsThreeDots } from "react-icons/bs";
+import Stories from "react-insta-stories";
 import {
   fetchAddStory,
   fetchDeleteStory,
-  fetchGetLeaderAddedStories,
+  fetchGetStoriesForCitizen,
 } from "../api/stories";
 import { PostOptions } from "../posts/PostOptions";
-
+import Modal from "react-modal";
+import { ProtectedRoutes } from "@/constants/routes";
+import CustomImage from "@/utils/CustomImage";
+import {
+  AddStory,
+  DeleteStory,
+  GetStoriesForCitizen,
+} from "@/redux_store/story/storyApi";
 interface StoriesBoxProps {}
 
 const IMAGES = [
@@ -57,6 +65,8 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
     }
   }, []);
 
+  console.log(userDetails);
+
   const mediaChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     setStoryMedia([]);
     const data = e.target.files as FileList;
@@ -95,8 +105,12 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
       formData.append("media", item);
     }
 
+    console.log(formData);
+    console.log(data);
+
     try {
       const data = await fetchAddStory(formData, token);
+      // const data = await AddStory(formData);
 
       if (data?.success) {
         setUpdateStory(data);
@@ -108,12 +122,14 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
 
   useEffect(() => {
     const citizenid = userDetails?.id;
-    const token = userDetails?.token;
+
+    console.log(citizenid);
 
     (async () => {
       try {
-        const data = await fetchGetLeaderAddedStories(citizenid, token);
-
+        // const data = await fetchGetStoriesForCitizen(citizenid, token);
+        const data = await GetStoriesForCitizen(citizenid);
+        console.log(data);
         if (data?.length > 0) {
           setGetStories(data);
         }
@@ -132,7 +148,8 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
     };
 
     try {
-      const data = await fetchDeleteStory(postBody, token);
+      // const data = await fetchDeleteStory(postBody, token);
+      const data = await DeleteStory(postBody);
       if (data) {
         setUpdateStory(data);
       }
@@ -148,7 +165,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
         cusJSX={[
           <Link
             key={id}
-            href={"/leader"}
+            href={ProtectedRoutes.leader}
             className="text-sm font-normal hover:underline text-orange-500"
           >
             see all
@@ -157,7 +174,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
       >
         <div className="w-[660px]  ">
           <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
-            <li className=" w-44 h-[300px]  aspect-[9/16] rounded-lg relative  ">
+            <li className=" w-44 h-[300px] aspect-[9/16] rounded-lg relative  ">
               <label htmlFor="media">
                 <input
                   type="file"
@@ -169,7 +186,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
                 <BsPlusCircle className="absolute top-3 left-3 z-10 text-white text-[38px] shadow" />
 
                 <figure className="absolute top-0 left-0 w-full h-full object-cover object-center story_img">
-                  <Image
+                  <CustomImage
                     src={
                       storyMedia?.length > 0
                         ? URL.createObjectURL(storyMedia[0]?.media)
@@ -186,23 +203,27 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
               </label>
             </li>
 
-            {getStories.map((el: { media?: any[]; id: string } | undefined) =>
-              el?.media?.map((item: any, index: number) => {
-                const imageUrl = `http://203.92.43.166:4005${item?.media}`;
+            {getStories.map(
+              (
+                el: { posts?: any; id: string; image: string } | undefined,
+                index
+              ) => {
                 return (
                   <Story
                     key={index}
-                    img={imageUrl}
-                    id={el?.id}
+                    userImage={`${process.env.NEXT_PUBLIC_BASE_URL}${el?.image}`}
+                    img={`${process.env.NEXT_PUBLIC_BASE_URL}${el?.posts[0]?.media[0]?.media}`}
+                    stories={el?.posts}
+                    id={el?.id || ""}
                     handleDelete={handleDelete}
                   />
                 );
-              })
+              }
             )}
 
-            {IMAGES.slice(0, 5).map((el, index) => {
+            {/* {IMAGES.slice(0, 5).map((el, index) => {
               return <Story key={index} img={el} id="" handleDelete="" />;
-            })}
+            })} */}
           </ul>
         </div>
       </CommonBox>
@@ -215,6 +236,8 @@ interface StoryProps {
   self?: boolean;
   id: string;
   handleDelete: any;
+  userImage: string;
+  stories: Array<any>;
 }
 
 interface Media {
@@ -223,8 +246,15 @@ interface Media {
   id: string;
 }
 
-const Story: FC<StoryProps> = ({ img, id, handleDelete }) => {
+const Story: FC<StoryProps> = ({
+  img,
+  id,
+  handleDelete,
+  userImage,
+  stories,
+}) => {
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
@@ -254,19 +284,22 @@ const Story: FC<StoryProps> = ({ img, id, handleDelete }) => {
 
   return (
     <>
-      <li className="w-44 h-[300px] aspect-[9/16] rounded-lg relative ">
+      <li
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
         {/* User Img */}
-
         <Image
-          src={img}
+          src={userImage}
           width={1000}
           height={1000}
           alt="user display pic"
-          className="absolute top-3 left-3 border-2 border-white z-20 w-12 aspect-square rounded-full object-cover object-center shadow"
+          className=" top-3 left-3 border-4 border-blue z-20 w-20 aspect-square rounded-full object-cover object-center shadow"
         />
 
         {/* Story Image */}
-        <figure className="absolute top-0 left-0 w-full h-full object-cover object-center story_img">
+        {/* <figure className="absolute top-0 left-0 w-full h-full object-cover object-center story_img">
           <Image
             src={img}
             alt=""
@@ -274,10 +307,10 @@ const Story: FC<StoryProps> = ({ img, id, handleDelete }) => {
             height={1000}
             className="w-full h-full object-cover object-center"
           />
-          {/* Overlay */}
+
           <div className="absolute top-0 left-0 w-full bg-black bg-opacity-25 h-full"></div>
-        </figure>
-        <div className="ml-auto relative" id="moreOptions">
+        </figure> */}
+        {/* <div className="ml-auto relative" id="moreOptions">
           <button
             onClick={() => setShowMorePostOptions((lst) => !lst)}
             className="absolute right-0 rotate-90 top-6"
@@ -292,8 +325,39 @@ const Story: FC<StoryProps> = ({ img, id, handleDelete }) => {
               onClose={() => setShowMorePostOptions(false)}
             />
           )}
-        </div>
+        </div> */}
       </li>
+      {
+        <Modal
+          isOpen={modalIsOpen}
+          // onAfterOpen={afterOpenModal}
+          onRequestClose={() => setIsOpen(false)}
+          style={{
+            content: {
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+            },
+          }}
+          contentLabel="Example Modal"
+        >
+          <div className="object-center">
+            <Stories
+              stories={stories?.map((item) => ({
+                url: `${process.env.NEXT_PUBLIC_BASE_URL}${item.media[0].media}`,
+                type: item.media[0].type == "video/mp4" ? "video" : "image",
+              }))}
+              defaultInterval={1500}
+              width={432}
+              height={768}
+            />
+          </div>
+          <i className="ti-close"></i>
+        </Modal>
+      }
     </>
   );
 };

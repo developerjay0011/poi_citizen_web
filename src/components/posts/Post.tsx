@@ -5,28 +5,24 @@ import { dateConverter } from "@/utils/utility";
 import Image from "next/image";
 import { FC, useEffect, useState } from "react";
 import { BiGlobe, BiShareAlt, BiSolidMessageAltDetail } from "react-icons/bi";
-import { BsFillHeartFill, BsThreeDots } from "react-icons/bs";
+import { BsFillHeartFill, BsThreeDots, BsHeart } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import { motion as m } from "framer-motion";
 import { PostOptions } from "./PostOptions";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-/* import {
-  addNewComment,
-  addNewNestedComment,
-  deletePost,
-  changeNestedLike,
-  updateLike,
-} from "@/redux_store/posts/postAPI"; */
 import { NewCommentForm } from "../common-forms/NewCommentForm";
 import { SingleComment } from "./SingleComment";
 import { MoreThan4ColumnImgLayout } from "./MoreThan4ColumnLayout";
 import { FourColumnImgLayout } from "./FourColumnLayout";
-import {
-  fetchDeletePost,
-  fetchLikePost,
-  fetchUnlikePostorStory,
-} from "../api/posts";
+import NoImg from '@/assets/No_image_available.png'
+
 import { RootState } from "@/redux_store";
+import {
+  DeletePost,
+  LikePost,
+  UnlikePostorStory,
+} from "@/redux_store/post/postApi";
+import toast, { Toaster } from "react-hot-toast";
 
 interface PostProps extends PostDetails {}
 
@@ -48,10 +44,8 @@ export const Post: FC<PostProps> = ({
   name,
   userimages,
   allData,
-  updatePost
+  updatePost,
 }) => {
-  
-
   const [firstTime, setFirstTime] = useState(true);
   const [showPostDetials, setShowPostDetials] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -61,6 +55,8 @@ export const Post: FC<PostProps> = ({
     token: "",
     id: "",
   });
+
+  // get User Details
 
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
@@ -84,7 +80,7 @@ export const Post: FC<PostProps> = ({
     (likes as Like[])?.some((el) => el.userId === userDetails?.id)
   );
 
-  const [likeCount, setLikeCount] = useState(likes?.length); // in order to show updated like count on frontend
+  const [likeCount, setLikeCount] = useState(likes?.length);
 
   const userData: any = cusSelector(
     (state: RootState) => state.auth.userDetails
@@ -98,7 +94,8 @@ export const Post: FC<PostProps> = ({
     const token = userDetails?.token;
 
     try {
-      const data = await fetchDeletePost(postBody, token);
+      // const data = await fetchDeletePost(postBody, token);
+      const data = await DeletePost(postBody);
 
       if (data?.success) {
         updatePost(data);
@@ -120,7 +117,6 @@ export const Post: FC<PostProps> = ({
     setShowComments(false);
   }, [updateComment]);
 
-
   // to show count at frontend and calling api behind
   useEffect(() => {
     if (showLikeAnimation && !firstTime) setLikeCount((lst) => lst + 1);
@@ -134,16 +130,21 @@ export const Post: FC<PostProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showLikeAnimation]);
 
-
+  const islike = (list: any) => {
+    if (Array.isArray(list)) {
+      var listlikes = [...list];
+      listlikes = listlikes?.filter((item) => item?.userid == userDetails?.id);
+      return Array.isArray(listlikes) && listlikes?.length > 0 ? true : false;
+    }
+    return false;
+  };
 
   const handleLike = async (allData: any) => {
-  
     const mediaId = allData.posts
       .map((post: any) => post.media.map((m: any) => m.id))
       .flat();
 
     const postid = allData.posts.map((item: any) => item?.id);
-
 
     const likeBody = {
       postid: postid[0],
@@ -151,6 +152,8 @@ export const Post: FC<PostProps> = ({
       userid: userDetails?.id,
       mediaid: mediaId[0],
       usertype: "citizen",
+      username: allData.name,
+      userimg: allData.image,
     };
 
     const UnlikeBody = {
@@ -159,16 +162,16 @@ export const Post: FC<PostProps> = ({
       userid: userDetails?.id,
     };
 
-    const token = userDetails?.token;
-
     try {
       if (!showLikeAnimation) {
-        const data = await fetchLikePost(likeBody, token);
+        const data = await LikePost(likeBody);
+        toast.success(data.message);
         if (data?.success) {
           console.log(data);
         }
       } else {
-        const data = await fetchUnlikePostorStory(UnlikeBody, token);
+        const data = await UnlikePostorStory(UnlikeBody);
+        toast.success(data.message);
         if (data?.success) {
           console.log(data);
         }
@@ -190,7 +193,11 @@ export const Post: FC<PostProps> = ({
         {/* User details and Date */}
         <div className="flex items-center gap-3 py-4 text-sky-950 border-b">
           <Image
-            src={userimages?.length > 0 ? userimages : ""}
+            src={
+              userimages
+                ? `${process.env.NEXT_PUBLIC_BASE_URL}${userimages}`
+                : NoImg
+            }
             alt="user pic"
             className="w-12 aspect-square object-cover object-center rounded-full"
             width={100}
@@ -206,9 +213,7 @@ export const Post: FC<PostProps> = ({
               <BiGlobe />
               <span>
                 Published on:{" "}
-                {createdDatetime?.length > 0
-                  ? dateConverter(createdDatetime)
-                  : ""}
+                {createdDatetime ? dateConverter(createdDatetime) : ""}
               </span>
             </p>
           </div>
@@ -351,7 +356,11 @@ export const Post: FC<PostProps> = ({
               handleLike(allData);
             }}
           >
-            <BsFillHeartFill className="text-lg" />
+            {islike(likes) ? (
+              <BsFillHeartFill className="text-lg" />
+            ) : (
+              <BsHeart className="text-lg" />
+            )}
 
             {!firstTime && (
               <BsFillHeartFill
@@ -408,12 +417,16 @@ export const Post: FC<PostProps> = ({
                 ))}
               </ul>
 
-              <NewCommentForm CommentHandler={addNewPostComment} allData={allData}
-                setUpdateComment={setUpdateComment} />
+              <NewCommentForm
+                CommentHandler={addNewPostComment}
+                allData={allData}
+                setUpdateComment={setUpdateComment}
+              />
             </m.div>
           )}
         </AnimatePresence>
       </section>
+      <Toaster position="top-center" />
     </>
   );
 };

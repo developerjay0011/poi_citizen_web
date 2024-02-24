@@ -13,6 +13,7 @@ export const fetchGetSingleCitizen = async (citizenid: any, token: any) => {
     );
 
     return response.data;
+    
   } catch (error) {
     console.log(error);
 

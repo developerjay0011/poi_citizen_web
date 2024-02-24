@@ -12,6 +12,9 @@ import { FaCamera } from "react-icons/fa";
 import { fetchAddPost } from "../api/posts";
 import { RootState } from "@/redux_store";
 import { PostTypes } from "./PostTypes";
+import NoImg from "@/assets/No_image_available.png";
+import { AddPost } from "@/redux_store/post/postApi";
+import toast, { Toaster } from "react-hot-toast";
 
 interface NewPostBoxProps {
   updatePost: any;
@@ -30,19 +33,14 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
   const [postErr, setPostErr] = useState<ErrObj>({ errTxt: "", isErr: false });
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
   const [accessType, setAccessType] = useState("");
- 
-  const [creatingPost] = useState(true);
+  const [creatingPost, setCreatingPost] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
-    displayPic: ""
+    displayPic: "",
   });
-  // const { creatingPost } = cusSelector((st) => st.posts);
-  // const { userDetails } = cusSelector((st) => st.UI);
 
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
+  // get user details from session
 
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
@@ -55,10 +53,9 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
     }
   }, []);
 
-
   const formSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
-
+    setCreatingPost(true);
     if (
       textPost.trim().length === 0 &&
       media.length === 0 &&
@@ -66,7 +63,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
     )
       return setPostErr({ errTxt: "post can't be empty", isErr: true });
 
-/*     dispatch(
+    /*     dispatch(
       createNewPost({
         media: media,
         type: "post",
@@ -74,25 +71,25 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
       })
     ); */
 
-    const token = userData?.token;
-
     const formData = new FormData();
 
-    formData.append("leaderid", userData?.data?.leader_detail?.id || "");
+    formData.append("leaderid", userDetails?.id || "");
     formData.append("written_text", textPost || "");
     formData.append("access_type", accessType);
 
-
     for (let i = 0; i < apimedia.length; i++) {
       const item: any = apimedia[i];
-      
-      formData.append("media",  item?.media );
+
+      formData.append("media", item?.media);
     }
 
     try {
-      const data = await fetchAddPost(formData, token);
+      // const data = await fetchAddPost(formData, token);
+      const data = await AddPost(formData);
+
       if (data?.success) {
         updatePost(data);
+        toast.success(data.message);
       }
     } catch (error) {
       console.log(error);
@@ -101,6 +98,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
     setMedia([]);
     setApiMedia([]);
     setTextPost("");
+    setCreatingPost(false);
   };
 
   const accessTypeOptions = (data: any) => {
@@ -189,7 +187,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
         <form className="flex flex-col gap-4 py-4" onSubmit={formSubmitHandler}>
           <div className="flex items-start gap-3">
             <Image
-              src={userDetails?.displayPic as string}
+              src={(userDetails?.displayPic as string) || NoImg}
               alt="user image"
               width={1000}
               height={1000}
@@ -293,6 +291,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
           </button>
         </form>
       </CommonBox>
+      <Toaster position="top-center" />
     </>
   );
 };

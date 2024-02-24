@@ -21,7 +21,7 @@ const RootLayout: FC<{ children: ReactNode }> = ({ children }) => {
       {/* <body className={font.className + ' font-normal '}> */}
       <body >
         <div>
-          <Toaster />
+          {/* <Toaster position="bottom-center" /> */}
         </div>
         <CusProvider>{children}</CusProvider>
       </body>

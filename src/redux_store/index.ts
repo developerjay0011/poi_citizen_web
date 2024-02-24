@@ -3,6 +3,8 @@ import { complaintSlice } from './complaints/complaintSlice'
 import { requestSlice } from './requests/requestSlice'
 import { suggestionSlice } from './suggestions/suggestionSlice'
 import { authSlice } from './auth/authSlice'
+import { postSlice } from './post/postSlice'
+
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,7 @@ export const store = configureStore({
     requests: requestSlice.reducer,
     suggestions: suggestionSlice.reducer,
     auth: authSlice.reducer,
+    post: postSlice.reducer
   },
 })
 

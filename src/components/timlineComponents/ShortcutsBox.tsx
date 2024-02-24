@@ -15,6 +15,7 @@ import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
 import { AnimatePresence } from "framer-motion";
 import { fetchCloseAccount, fetchDeactiveAccount } from "../api/profile";
 import { useRouter } from "next/navigation";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 
 interface ShortcutsBoxProps {}
 
@@ -32,21 +33,21 @@ class Shortcut {
 }
 
 const Shortcuts: Shortcut[] = [
-  new Shortcut(FaClipboard, "feed", "/user"),
-  new Shortcut(FaUser, "my profile", "/user/profile"),
+  new Shortcut(FaClipboard, "feed", ProtectedRoutes.user),
+  new Shortcut(FaUser, "my profile", ProtectedRoutes.userProfile),
   // new Shortcut(FaBell, 'notifications', `/user/profile/notifications`),
   new Shortcut(
     BiSolidMessageSquareError,
     "complaints",
-    "/user/profile/complaints"
+    ProtectedRoutes.complaints
   ),
-  new Shortcut(FiEdit, "requests", "/user/profile/requests"),
+  new Shortcut(FiEdit, "requests", ProtectedRoutes.requests),
   new Shortcut(
     FaHandshakeAngle,
     "contributions",
-    "/user/profile/contributions"
+    ProtectedRoutes.contributions
   ),
-  new Shortcut(HiLightBulb, "suggestions", "/user/profile/suggestions"),
+  new Shortcut(HiLightBulb, "suggestions", ProtectedRoutes.suggestions),
 ];
 
 interface UserDetail {
@@ -90,7 +91,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
 
     if (data?.success) {
       setShowConfirmBox(false);
-      router.push("/");
+      router.push(AuthRoutes.login);
     }
   };
   const CloseAccountHandler = async () => {
@@ -102,7 +103,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     console.log(data);
     if (data?.success) {
       setShowCloseConfirmBox(false);
-      router.push("/");
+      router.push(AuthRoutes.login);
     }
   };
 
@@ -113,7 +114,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
           <ShortcutBtn {...el} key={el.id} />
         ))}
         <button onClick={() => dispatch(authActions.logOut())}>
-          <ShortcutBtn Icon={FaPowerOff} title="logout" route="/login" />
+          <ShortcutBtn Icon={FaPowerOff} title="logout" route="/" />
         </button>
         <button
           type="button"

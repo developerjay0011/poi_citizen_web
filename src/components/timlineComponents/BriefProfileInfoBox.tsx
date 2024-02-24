@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { FaMessage, FaBell, FaHeart, FaEye } from 'react-icons/fa6'
 import Link from 'next/link'
 import { cusSelector } from '@/redux_store/cusHooks'
+import { ProtectedRoutes } from '@/constants/routes'
+import NoImg from '@/assets/No_image_available.png'
 
 interface BriefProfileInfoBoxProps {}
 
@@ -22,7 +24,7 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
         {/* Profile info and pic */}
         <section className='flex items-center my-5 gap-3 text-sky-950 max-[1400px]:gap-2'>
           <Image
-            src={userDetails?.displayPic as string}
+            src={userDetails?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`: NoImg}
             alt='profile pic'
             width={100}
             height={100}
@@ -31,9 +33,9 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
 
           <div className='flex flex-col gap-1'>
             <Link
-              href={`/user/profile`}
+              href={ProtectedRoutes.userProfile}
               className='text-lg font-[600] max-[1300px]:text-[1.05rem] hover:text-orange-500 transition-all capitalize'>
-              {userDetails?.firstname}
+              {userDetails?.username}
             </Link>
 
             {/* Messages */}

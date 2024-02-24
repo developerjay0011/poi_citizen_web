@@ -91,7 +91,7 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
                   key={i}
                   className={`cursor-pointer toList w-10 aspect-square bg-red-100 object-cover object-center rounded-full border-2 border-gray-50 ${TOClasses[i]}`}>
                   <Image
-                    src={el.leaderProfilePic}
+                    src={el.leaderProfilePic ? `${process.env.NEXT_PUBLIC_BASE_URL}${el.leaderProfilePic}` : ''}
                     alt='leader img'
                     width={1000}
                     height={1000}

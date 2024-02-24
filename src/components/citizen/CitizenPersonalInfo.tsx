@@ -1,7 +1,7 @@
 "use client";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { CommonBox } from "@/utils/CommonBox";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { BiLogoGmail } from "react-icons/bi";
 import { FaTransgenderAlt } from "react-icons/fa";
 import {
@@ -12,8 +12,8 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { MdBloodtype } from "react-icons/md";
-import { fetchGetSingleCitizen } from "../api/profile";
-
+import { RootState } from "@/redux_store";
+import moment from "moment";
 interface CitizenPersonalInfoProps {}
 
 interface UserDetail {
@@ -39,61 +39,60 @@ interface UserDetails {
 }
 
 export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
-  const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
-  const [userData, setUserData] = useState<UserDetail>({
-    token: "",
-    id: "",
-  });
+  // const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
+  // const [userData, setUserData] = useState<UserDetail>({
+  //   token: "",
+  //   id: "",
+  // });
+  const userDetails: any = cusSelector(
+    (state: RootState) => state.auth.userDetails
+  );
+  // useEffect(() => {
+  //   var storedUserString = sessionStorage.getItem("user");
+  //   if (storedUserString !== null) {
+  //     var storedUser = JSON.parse(storedUserString);
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
+  //     setUserData(storedUser);
+  //   } else {
+  //     console.log("User data not found in session storage");
+  //   }
+  // }, []);
 
-      setUserData(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (userData?.id.length > 0) {
+  //       const citizenid = userData?.id;
+  //       const token = userData?.token;
 
+  //       if (citizenid?.length > 0) {
+  //         try {
+  //           const data = await fetchGetSingleCitizen(citizenid, token);
 
-  useEffect(() => {
-    (async () => {
-      if (userData?.id.length > 0) {
-        const citizenid = userData?.id;
-        const token = userData?.token;
+  //           const modifyData = {
+  //             firstname: data?.username || "",
+  //             email: data?.email || "",
+  //             phoneNo: data?.mobile || "",
+  //             gender: data?.gender || "",
+  //             dob: data?.dob || "",
+  //             bloodGroup: data?.blood_group || "",
+  //             higherEducation: data?.higher_education || "",
+  //             country: data?.country || "",
+  //             socialMedia: {
+  //               facebook: data?.fb_link || "",
+  //               instagram: data?.insta_link || "",
+  //               twitter: data?.twitter_link || "",
+  //             },
+  //             about: data?.about_me || "",
+  //           };
 
-        if (citizenid?.length > 0) {
-          try {
-            const data = await fetchGetSingleCitizen(citizenid, token);
-
-
-            const modifyData = {
-              firstname: data?.username || "",
-              email: data?.email || "",
-              phoneNo: data?.mobile || "",
-              gender: data?.gender || "",
-              dob: data?.dob || "",
-              bloodGroup: data?.blood_group || "",
-              higherEducation: data?.higher_education || "",
-              country: data?.country || "",
-              socialMedia: {
-                facebook: data?.fb_link || "",
-                instagram: data?.insta_link || "",
-                twitter: data?.twitter_link || "",
-              },
-              about: data?.about_me || "",
-            };
-
-            setUserDetails(modifyData);
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-    })();
-  }, []);
-
+  //           setUserDetails(modifyData);
+  //         } catch (error) {
+  //           console.log(error);
+  //         }
+  //       }
+  //     }
+  //   })();
+  // }, []);
 
   return (
     <>
@@ -102,7 +101,7 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
           {/* ABOUT */}
           <PersonalBriefInfo
             Icon={FaUser}
-            data={userDetails?.about as string}
+            data={userDetails?.about_me as string}
             heading="About me:"
           />
 
@@ -110,13 +109,13 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
           <div className="grid grid-cols-2 mt-8 gap-y-8 max-[400px]:grid-cols-1">
             <PersonalBriefInfo
               Icon={FaCakeCandles}
-              data={userDetails?.dob as string}
+              data={moment(userDetails?.dob).format("YYYY-MM-DD") as string}
               heading="Date of Birth:"
             />
 
             <PersonalBriefInfo
               Icon={FaPhone}
-              data={`+91 ${userDetails?.phoneNo}`}
+              data={`+91 ${userDetails?.mobile}`}
               heading="(IN) Phone no:"
             />
 
@@ -128,13 +127,15 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
 
             <PersonalBriefInfo
               Icon={MdBloodtype}
-              data={userDetails?.bloodGroup as string}
+              data={userDetails?.blood_group as string}
               heading="Blood Group: "
             />
 
             <PersonalBriefInfo
               Icon={FaHandshake}
-              data="18-feb-2023"
+              data={
+                moment(userDetails?.created_date).format("YYYY-MM-DD") as string
+              }
               heading="Joined: "
             />
 

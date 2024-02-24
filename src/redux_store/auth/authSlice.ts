@@ -20,7 +20,7 @@ export const authSlice = createSlice({
     },
     logOut(state) {
       state.userDetails = null
-      localStorage.clear()
+      sessionStorage.clear()
     },
   },
 })

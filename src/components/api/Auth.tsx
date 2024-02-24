@@ -1,4 +1,4 @@
-import { LoginData, RegisterData } from "@/utils/typesUtils";
+/* import { LoginData, RegisterData } from "@/utils/typesUtils";
 
 
 export const fetchLogin = async (resBody: LoginData) => {
@@ -37,3 +37,4 @@ export const fetchRegister = async (resBody: RegisterData) => {
       return error;
     }
   };
+ */

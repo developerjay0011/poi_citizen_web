@@ -63,24 +63,9 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
 
           console.log(data);
 
-          const modifyData = {
-            firstname: data?.username || "",
-            email: data?.email || "",
-            phoneNo: data?.mobile || "",
-            gender: data?.gender || "",
-            dob: data?.dob || "",
-            bloodGroup: data?.blood_group || "",
-            higherEducation: data?.higher_education || "",
-            country: data?.country || "",
-            socialMedia: {
-              facebook: data?.fb_link || "",
-              instagram: data?.insta_link || "",
-              twitter: data?.twitter_link || "",
-            },
-            about: data?.about_me || "",
-          };
+         
 
-          setUserDetails(modifyData);
+          setUserDetails(data);
         } catch (error) {
           console.log(error);
         }

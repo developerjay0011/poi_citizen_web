@@ -45,23 +45,21 @@ export interface ErrObj {
 
 export interface UserDetails {
   id: string
-  displayPic: string | FileList
+  image: string | FileList
   backgroundPic: string | FileList
-  firstname: string
-  lastname: string
+  username: string
   dob: string
-  bloodGroup: string
+  blood_group: string
   gender: string
   email: string
-  phoneNo: string
-  socialMedia: {
-    facebook: string
-    instagram: string
-    twitter: string
-  }
-  higherEducation: string
-  about: string
+  mobile: string
+  fb_link: string
+  insta_link: string
+  twitter_link: string
+  higher_education: string
+  about_me: string
   country: string
+  created_date: string
 }
 
 export type UserType = 'leader' | 'citizen' | 'emerging-leader' | ''

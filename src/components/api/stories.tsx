@@ -15,11 +15,11 @@ export const fetchAddStory = async (formData: any, token: any) => {
 
     return response.data;
   } catch (error) {
-    throw error; // You can throw or handle the error as per your requirement
+    throw error; 
   }
 };
 
-export const fetchGetLeaderAddedStories = async (
+export const fetchGetStoriesForCitizen = async (
   citizenid: string,
   token: string
 ) => {
@@ -35,7 +35,7 @@ export const fetchGetLeaderAddedStories = async (
     );
     return respomse.data;
   } catch (error) {
-    throw error; // You can throw or handle the error as
+    throw error; 
   }
 };
 

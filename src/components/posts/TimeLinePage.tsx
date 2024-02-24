@@ -3,13 +3,15 @@ import { FC, useEffect, useState } from "react";
 import { NewPostBox } from "./NewPostBox";
 import { Post } from "./Post";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-
+import { authActions } from "@/redux_store/auth/authSlice";
 import { StoriesBox } from "../timlineComponents/StoriesBox";
 import { PollPost } from "./polls/PollPost";
 import { AgendaPost } from "./AgendaPost";
 import { RootState } from "@/redux_store";
 import { fetchGetPostsForCitizen } from "../api/posts";
-
+import { fetchGetSingleCitizen } from "../api/profile";
+import { GetPostsForCitizen } from "@/redux_store/post/postApi";
+import { postActions } from "@/redux_store/post/postSlice";
 interface TimeLinePageProps {}
 
 interface UserDetails {
@@ -18,16 +20,14 @@ interface UserDetails {
 }
 
 export const TimeLinePage: FC<TimeLinePageProps> = () => {
-  const [postData, setPostData] = useState([]);
   const [upPost, setUpPost] = useState();
+  const dispatch = cusDispatch();
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
   });
 
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
+  // get user details from session
 
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
@@ -40,24 +40,10 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const citizenid = userDetails?.id;
-    const token = userDetails?.token;
+  // get All post 
 
-    (async () => {
-      try {
-        if (citizenid?.length > 0) {
-          const data = await fetchGetPostsForCitizen(citizenid, token);
+  const postData: any = cusSelector((state: RootState) => state.post.allPosts);
 
-          if (data?.length > 0) {
-            setPostData(data);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [upPost, userData, userDetails]);
 
   const updatePost = (data: any) => {
     setUpPost(data);
@@ -195,7 +181,6 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
         })} */}
 
         {postData.map((el: any) => {
-          console.log(el);
 
           const imageDta = el?.image;
 
@@ -206,7 +191,7 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
               media={el.posts?.flatMap((file: any) =>
                 file.media?.map(
                   (item: any) =>
-                    `http://203.92.43.166:4005${item.media}` as string
+                    `${process.env.NEXT_PUBLIC_BASE_URL}${item.media}` as string
                 )
               )}
               likes={el.posts?.flatMap((file: any) => file?.likes) as string}
