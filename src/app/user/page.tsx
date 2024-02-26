@@ -7,7 +7,10 @@ import { TrendingLeaders } from "@/components/timlineComponents/trendingLeader/T
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { GetPostsForCitizen } from "@/redux_store/post/postApi";
 import { postActions } from "@/redux_store/post/postSlice";
+import { GetRaisedComplaints} from "@/redux_store/complaints/complaintsApi";
 import { useEffect, useState } from "react";
+import { complaintActions } from "@/redux_store/complaints/complaintSlice";
+import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
 
 
 const CitizenHomePage = () => {
@@ -21,6 +24,40 @@ const CitizenHomePage = () => {
     const data = await GetPostsForCitizen(userDetails?.id);
           if (data?.length > 0) {
             dispatch(postActions.setPost(data));
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [userDetails]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (userDetails?.id) {
+          const data = await GetRaisedComplaints(userDetails?.id);
+
+          if (data.length > 0) {
+            dispatch(complaintActions.storeComplaints(data))
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [userDetails]);
+
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (userDetails?.id) {
+          const data = await GetRaisedRequests(userDetails?.id);
+          console.log(data, "dataGetRaisedRequestsdataGetRaisedRequestsdataGetRaisedRequests");
+
+          if (data.length > 0) {
+            dispatch(complaintActions.storeComplaints(data))
           }
         }
       } catch (error) {

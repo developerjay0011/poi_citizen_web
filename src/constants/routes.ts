@@ -58,7 +58,21 @@ export const APIRoutes = {
   FollowLeader: `${API_Prefix}/Citizen/FollowLeaderByCitizen`,
   UnFollowLeader: `${API_Prefix}/Citizen/UnFollowLeaderByCitizen`,
   CitizenFollowingList: `${API_Prefix}/Citizen/CitizenFollowingList/{{citizenid}}`,
-  
+
+  DeactiveAccount: `${API_Prefix}/Citizen/DeactiveAccount/{{citizenid}}`,
+  CloseAccount: `${API_Prefix}/Citizen/CloseAccount/{{citizenid}}`,
+
+
+  GetRaisedComplaints: `${API_Prefix}/Citizen/GetRaisedComplaints/{{citizenid}}`,
+  RaiseComplaint: `${API_Prefix}/Citizen/RaiseComplaint`,
+  DeleteComplaint: `${API_Prefix}/Citizen/DeleteComplaint/{{complaintid}}`,
+
+  GetRaisedRequests: `${API_Prefix}/Citizen/GetRaisedRequests/{{citizenid}}`,
+  RaiseRequest: `${API_Prefix}/Citizen/RaiseRequest`,
+  DeleteRequest: `${API_Prefix}/Citizen/DeleteRequest/{{requestid}}`,
+
+
+
   /* upsertLeaders: `${API_Prefix}/Leader/AddEditLeader`,
    getAccessTabs: `${API_Prefix}/Leader/GetAccessTabs/{{userId}}`,
    getProfile: `${API_Prefix}/Leader/GetSingleLeader/{{userId}}`,

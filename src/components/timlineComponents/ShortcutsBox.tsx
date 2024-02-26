@@ -16,6 +16,7 @@ import { AnimatePresence } from "framer-motion";
 import { fetchCloseAccount, fetchDeactiveAccount } from "../api/profile";
 import { useRouter } from "next/navigation";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
+import { CloseAccount, DeactiveAccount } from "@/redux_store/citizen/citizenApi";
 
 interface ShortcutsBoxProps {}
 
@@ -83,9 +84,9 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
   };
   const deactiveAccountHandler = async () => {
     const citizenid = userData?.id;
-    const token = userData?.token;
 
-    const data = await fetchDeactiveAccount(citizenid, token);
+    // const data = await fetchDeactiveAccount(citizenid, token);
+    const data = await DeactiveAccount(citizenid);
     if (data?.success) {
       setShowConfirmBox(false);
       router.push(AuthRoutes.login);
@@ -93,9 +94,10 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
   };
   const CloseAccountHandler = async () => {
     const citizenid = userData?.id;
-    const token = userData?.token;
+    // const token = userData?.token;
 
-    const data = await fetchCloseAccount(citizenid, token);
+    // const data = await fetchCloseAccount(citizenid, token);
+    const data = await CloseAccount(citizenid);
 
     console.log(data);
     if (data?.success) {

@@ -4,11 +4,11 @@ import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "./EditInput";
 import { BLOOD_GROUPS, COUNTRIES } from "@/utils/utility";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import Link from "next/link";
 import moment from "moment";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import { authActions } from "@/redux_store/auth/authSlice"
+import { authActions } from "@/redux_store/auth/authSlice";
 
 import { RootState } from "@/redux_store";
 import { ProtectedRoutes } from "@/constants/routes";
@@ -31,24 +31,25 @@ interface UserDetail {
 }
 
 const EditForm: FC<EditFormProps> = () => {
-  const userData: any = cusSelector((state: RootState) => state.auth.userDetails);
+  const userData: any = cusSelector(
+    (state: RootState) => state.auth.userDetails
+  );
   const { userDetails } = cusSelector((st) => st.auth);
   const [isEditProfile, setIsEditProfile] = useState({});
   const dispatch = cusDispatch();
-
 
   const {
     register,
     formState: { errors },
     handleSubmit,
-    setValue 
+    setValue,
   } = useForm<UserDetails>({ mode: "onTouched" });
 
   const formSubmitHandler = async (data: UserDetails) => {
     var storedUserString = sessionStorage.getItem("user");
     var storedUser = JSON.parse(storedUserString as string);
     const citizenid = storedUser?.id;
-   
+
     const postBody = {
       citizenid: citizenid,
       name: data?.username,
@@ -66,14 +67,18 @@ const EditForm: FC<EditFormProps> = () => {
       about_me: data?.about_me,
     };
     try {
-      const editData = await EditCitizenProfile(postBody)
+      const editData = await EditCitizenProfile(postBody);
+      console.log(editData);
+
       if (editData?.success) {
-        toast.success(editData?.message)
+        toast.success(editData?.message);
         const data = await getProfile(citizenid);
+        console.log(data);
+
         dispatch(authActions.logIn(data));
         setIsEditProfile(editData);
-      }else{
-        toast.error(editData?.message)
+      } else {
+        toast.error(editData?.message);
       }
     } catch (error) {
       console.log(error);
@@ -81,18 +86,18 @@ const EditForm: FC<EditFormProps> = () => {
   };
 
   useEffect(() => {
-      setValue('username', userDetails?.username || '');
-      setValue('email', userDetails?.email || '');
-      setValue('mobile', userDetails?.mobile || '');
-      setValue('gender', userDetails?.gender || '');
-      setValue('dob', moment(userDetails?.dob).format("YYYY-MM-DD")  || '');
-      setValue('blood_group', userDetails?.blood_group || '');
-      setValue('higher_education', userDetails?.higher_education || '');
-      setValue('country', userDetails?.country || '');
-      setValue('fb_link', userDetails?.fb_link || '');
-      setValue('insta_link', userDetails?.insta_link || '');
-      setValue('twitter_link', userDetails?.twitter_link || '');    
-      setValue('about_me', userDetails?.about_me || '');
+    setValue("username", userDetails?.username || "");
+    setValue("email", userDetails?.email || "");
+    setValue("mobile", userDetails?.mobile || "");
+    setValue("gender", userDetails?.gender || "");
+    setValue("dob", moment(userDetails?.dob).format("YYYY-MM-DD") || "");
+    setValue("blood_group", userDetails?.blood_group || "");
+    setValue("higher_education", userDetails?.higher_education || "");
+    setValue("country", userDetails?.country || "");
+    setValue("fb_link", userDetails?.fb_link || "");
+    setValue("insta_link", userDetails?.insta_link || "");
+    setValue("twitter_link", userDetails?.twitter_link || "");
+    setValue("about_me", userDetails?.about_me || "");
   }, [userDetails]);
 
   return (

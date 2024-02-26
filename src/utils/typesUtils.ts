@@ -177,7 +177,7 @@ export interface Attachments {
 }
 
 export interface RequestComplaintData extends RequestComplaintFormFields {
-  attachments: Attachments[]
+  attachments: Attachments[];
 }
 
 export interface RequestComplaintDetails {

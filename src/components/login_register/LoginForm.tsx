@@ -62,7 +62,9 @@ export const LoginForm: FC<LoginFormProps> = () => {
     setLoggingIn(true);
     try {
       const loginData = await fetchLogin(resBody);
-      if (loginData?.data?.id) {
+      // console.log(loginData?.data?.id, "loginData?.data?.id");
+
+      if (loginData?.data) {
         router.push(ProtectedRoutes.user);
         dispatch(authActions.logIn(loginData?.data));
         sessionStorage.setItem("user", JSON.stringify(loginData?.data));

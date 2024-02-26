@@ -1,10 +1,8 @@
 import Axios from "@/config/axios";
 import { insertVariables } from "@/config/insert-variables";
 import { tryCatch } from "@/config/try-catch";
-import { TOKEN_KEY } from "@/constants/common";
 import { APIRoutes } from "@/constants/routes";
 import { ForgotPassword, LoginData, RegisterData } from "@/utils/typesUtils";
-import { setCookie } from "cookies-next";
 
 // user Login Api
 export const fetchLogin = async (resBody: LoginData) => {
