@@ -24,6 +24,9 @@ import { TOKEN_KEY, USER_INFO } from "@/constants/common";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import toast from "react-hot-toast";
 
+interface ForgetPassword {
+  onClose: () => void;
+}
 interface LoginFormProps {}
 export const LoginForm: FC<LoginFormProps> = () => {
   const router = useRouter();

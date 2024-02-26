@@ -4,38 +4,22 @@ import { fetchTrendingLeaderList } from "@/redux_store/auth/authAPI";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { fetchCitizenFollowingList } from "@/redux_store/follow/followAPI";
 import { followActions } from "@/redux_store/follow/followSlice";
+import { authActions } from "@/redux_store/auth/authSlice";
 export const TrendingLeaders: FC = () => {
-  const [trendingLeaders, setTrendingLeaders] = useState([]);
-  const [handleFollowers, setHandleFollowers] = useState({});
-  const { userDetails } = cusSelector((st) => st.auth);
+  const { userDetails, trendingleader } = cusSelector((st) => st.auth);
   const { following } = cusSelector((st) => st.follow);
   const dispatch = cusDispatch();
   const Gelfollowinglist = async () => {
     if (userDetails?.id) {
       const data = await fetchCitizenFollowingList(userDetails?.id);
-      if (data?.length > 0) {
-        dispatch(followActions.Following(data));
-      }
+      const trending = await fetchTrendingLeaderList();
+      dispatch(followActions.Following(data));
+      dispatch(authActions.Settrendingleader(trending));
     }
   };
   useEffect(() => {
     Gelfollowinglist();
-  }, [userDetails, handleFollowers]);
-
-  useEffect(() => {
-    if (userDetails) {
-      (async () => {
-        const data = await fetchTrendingLeaderList();
-        if (data.length > 0) {
-          setTrendingLeaders(data);
-        }
-      })();
-    }
   }, [userDetails]);
-
-  const Onfollowing = (data: any) => {
-    Gelfollowinglist();
-  };
 
   const isFollow = (id: string) => {
     if (Array.isArray(following)) {
@@ -53,13 +37,13 @@ export const TrendingLeaders: FC = () => {
         </h2>
         <div className="overflow-y-scroll flex-1 main_scrollbar">
           <ul className="flex flex-col">
-            {trendingLeaders?.length > 0 &&
-              trendingLeaders.map((el: any, index) => {
+            {trendingleader?.length > 0 &&
+              trendingleader.map((el: any, index) => {
                 return (
                   <TrendingLeader
                     key={index}
                     {...el}
-                    following={Onfollowing}
+                    following={async () => await Gelfollowinglist()}
                     isfollowing={isFollow(el?.id)}
                   />
                 );

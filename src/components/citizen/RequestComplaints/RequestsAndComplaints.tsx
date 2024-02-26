@@ -20,7 +20,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
       requestOrComplaints.map((el) => (
         <ComplaintRequestVal
           subject={el.subject}
-          to={JSON?.parse(el.to) as ToDetails[]}
+          to={JSON.parse(el.to) as ToDetails[]}
           key={el.id}
           description={el.description}
           requestComplaintNo={
