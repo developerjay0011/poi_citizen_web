@@ -12,21 +12,76 @@ import { fetchGetPostsForCitizen } from "../api/posts";
 import { GetPostsForCitizen } from "@/redux_store/post/postApi";
 import { postActions } from "@/redux_store/post/postSlice";
 import { getImageUrl } from "@/config/get-image-url";
-interface TimeLinePageProps {}
-
+interface TimeLinePageProps { }
 
 export const TimeLinePage: FC<TimeLinePageProps> = () => {
   const [upPost, setUpPost] = useState();
+  const postData: any = cusSelector((state: RootState) => state.post.allPosts);
   const dispatch = cusDispatch();
   const { userDetails } = cusSelector((st) => st.auth);
-  // get All post 
-  const postData: any = cusSelector((state: RootState) => state.post.allPosts);
+  const Getpost = async () => {
+    if (userDetails?.id) {
+      const data = await GetPostsForCitizen(userDetails?.id);
+      if (data?.length > 0) {
+        dispatch(postActions.setPost(data));
+      }
+    }
+  };
 
-
+  useEffect(() => {
+    (async () => {
+      try {
+        Getpost();
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [userDetails]);
   const updatePost = (data: any) => {
     setUpPost(data);
   };
-
+  const ConvertCommonpost = (list = []): any => {
+    var combinedData = [] as any;
+    list?.forEach((userData: any) => {
+      userData.posts.forEach((post: any) => {
+        combinedData.push({
+          post,
+          type: "post",
+          userdetails: { post: [], ...userData },
+        });
+      });
+      userData.agendas.forEach((post: any) => {
+        combinedData.push({
+          post,
+          type: "agendas",
+          createddate: post?.created_date,
+          userdetails: { post: [], ...userData },
+        });
+      });
+      userData.polls.forEach((post: any) => {
+        combinedData.push({
+          post,
+          type: "polls",
+          createddate: post?.publish_date,
+          userdetails: { post: [], ...userData },
+        });
+      });
+      userData.developments.forEach((post: any) => {
+        combinedData.push({
+          post,
+          type: "developments",
+          createddate: post?.created_date,
+          userdetails: { post: [], ...userData },
+        });
+      });
+    });
+    combinedData.sort((a: any, b: any) => {
+      const dateA = new Date(a.post.createddate);
+      const dateB = new Date(b.post.createddate);
+      return dateB.getTime() - dateA.getTime();
+    });
+    return Array.isArray(combinedData) && combinedData;
+  };
   return (
     <>
       {/* CENTER FEED */}
@@ -158,15 +213,21 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
             );
         })} */}
 
-        {postData.map((el: any,index) => {
-
+        {ConvertCommonpost(postData).map((el: any, index: string) => {
           const imageDta = el?.image;
-
           return (
             <Post
               {...el}
               key={index}
-              media={el.posts?.flatMap((file: any) =>file.media?.map((item: any) =>getImageUrl(item.media) as string))}
+              Getpost={Getpost}
+              userdetails={el.userdetails as any}
+              post={el.post as any}
+              type={el.type as any}
+              media={el.posts?.flatMap((file: any) =>
+                file.media?.map(
+                  (item: any) => getImageUrl(item.media) as string
+                )
+              )}
               likes={el.posts?.flatMap((file: any) => file?.likes) as string}
               createdDatetime={el.createddate as string}
               writtenText={el.written_text as string}

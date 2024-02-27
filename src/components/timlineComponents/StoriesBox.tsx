@@ -20,9 +20,6 @@ import {
 import { getImageUrl } from "@/config/get-image-url";
 interface StoriesBoxProps {}
 
-
-
-
 export const StoriesBox: FC<StoriesBoxProps> = () => {
   const [storyMedia, setStoryMedia] = useState<Media[]>([]);
   const [textPost, setTextPost] = useState("");
@@ -82,9 +79,9 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
   const citizenid = userDetails?.id;
 
   useEffect(() => {
-  (async () => {
+    (async () => {
       try {
-        if(citizenid){
+        if (citizenid) {
           const data = await GetStoriesForCitizen(citizenid);
           if (data?.length > 0) {
             setGetStories(data);
@@ -94,7 +91,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
         console.log(error);
       }
     })();
-  }, [userData, updateStory,citizenid]);
+  }, [userData, updateStory, citizenid]);
 
   // const handleDelete = async (leaderid: string, id: string) => {
   //   const token = userData?.token;
@@ -171,7 +168,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
                     img={getImageUrl(el?.posts[0]?.media[0]?.media)}
                     stories={el?.posts}
                     id={el?.id || ""}
-                    // handleDelete={handleDelete}
+                    handleDelete={() => {}}
                   />
                 );
               }
@@ -203,9 +200,9 @@ interface Media {
 }
 
 const Story: FC<StoryProps> = ({
-  img,
-  id,
-  handleDelete,
+  // img,
+  // id,
+  // handleDelete,
   userImage,
   stories,
 }) => {
@@ -213,10 +210,10 @@ const Story: FC<StoryProps> = ({
   const [modalIsOpen, setIsOpen] = useState(false);
   const { userDetails } = cusSelector((st) => st.auth);
   const leaderid = userDetails?.id;
-  const deletePostHandler = async (leaderid: string, id: string) => {
-    handleDelete(leaderid, id);
-    setShowMorePostOptions(false);
-  };
+  // const deletePostHandler = async (leaderid: string, id: string) => {
+  //   handleDelete(leaderid, id);
+  //   setShowMorePostOptions(false);
+  // };
 
   return (
     <>
@@ -283,7 +280,7 @@ const Story: FC<StoryProps> = ({
           <div className="object-center">
             <Stories
               stories={stories?.map((item) => ({
-                url:getImageUrl(item.media[0].media),
+                url: getImageUrl(item.media[0].media),
                 type: item.media[0].type == "video/mp4" ? "video" : "image",
               }))}
               defaultInterval={1500}

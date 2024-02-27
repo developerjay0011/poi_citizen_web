@@ -14,98 +14,32 @@ import { NewCommentForm } from "../common-forms/NewCommentForm";
 import { SingleComment } from "./SingleComment";
 import { MoreThan4ColumnImgLayout } from "./MoreThan4ColumnLayout";
 import { FourColumnImgLayout } from "./FourColumnLayout";
-import NoImg from '@/assets/No_image_available.png'
-
+import NoImg from "@/assets/No_image_available.png";
 import { RootState } from "@/redux_store";
-import {
-  DeletePost,
-  LikePost,
-  UnlikePostorStory,
-} from "@/redux_store/post/postApi";
+import { LikePost, UnlikePostorStory, } from "@/redux_store/post/postApi";
 import toast from "react-hot-toast";
 import { getImageUrl } from "@/config/get-image-url";
+import CustomImage from "@/utils/CustomImage";
+import { BiX } from "react-icons/bi";
+import { userImg } from "@/utils/utility";
+import { IoIosArrowForward } from "react-icons/io";
+interface PostProps extends PostDetails {
+  props: any;
+  userdetails: any;
+  post: any;
+  type: any;
+  Getpost: () => void;
+}
 
-interface PostProps extends PostDetails {}
-
-
-export const Post: FC<PostProps> = ({
-  writtenText,
-  media,
-  id,
-  comments,
-  likes,
-  userId,
-  createdDatetime,
-  leaderid,
-  types,
-  name,
-  userimages,
-  allData,
-  updatePost,
-}) => {
+export const Post: FC<PostProps> = ({ writtenText, media, id, comments, likes, userId, createdDatetime, leaderid, types, name, userimages, allData, updatePost, userdetails, post, type, Getpost, ...props }) => {
   const [firstTime, setFirstTime] = useState(true);
   const [showPostDetials, setShowPostDetials] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [updateComment, setUpdateComment] = useState(false);
-  const [showMorePostOptions, setShowMorePostOptions] = useState(false);
   const { userDetails } = cusSelector((st) => st.auth);
   const showFullPost = () => setShowPostDetials(true);
   const hideFullPost = () => setShowPostDetials(false);
-
-  // const deletePostHandler = () => dispatch(deletePost(id))
-
-  const likeChangeHandler = () => {};
-
-  const [showLikeAnimation, setShowLikeAnimation] = useState(
-    (likes as Like[])?.some((el) => el.userId === userDetails?.id)
-  );
-
-  const [likeCount, setLikeCount] = useState(likes?.length);
-
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
-
-  const deletePostHandler = async (leaderid: string, id: string) => {
-    const postBody = {
-      id: id,
-      leaderid: leaderid,
-    };
-    try {
-      const data = await DeletePost(postBody);
-      if (data?.success) {
-        updatePost(data);
-        setShowMorePostOptions(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      setFirstTime(true);
-    };
-  }, []);
-
-  useEffect(() => {
-    updatePost(updateComment);
-    setShowComments(false);
-  }, [updateComment]);
-
-  // to show count at frontend and calling api behind
-  useEffect(() => {
-    if (showLikeAnimation && !firstTime) setLikeCount((lst) => lst + 1);
-
-    if (!showLikeAnimation && !firstTime)
-      setLikeCount((lst) => {
-        if (lst === 0) return 0;
-
-        return lst - 1;
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showLikeAnimation]);
-
+  const likeChangeHandler = () => { };
   const islike = (list: any) => {
     if (Array.isArray(list)) {
       var listlikes = [...list];
@@ -114,62 +48,79 @@ export const Post: FC<PostProps> = ({
     }
     return false;
   };
+  const [showLikeAnimation, setShowLikeAnimation] = useState(
+    (likes as Like[])?.some((el) => el.userId === userDetails?.id)
+  );
+  const [curPostIndex, setCurPostIndex] = useState(0);
+  const curPost = post?.media?.[curPostIndex]
 
-  const handleLike = async (allData: any) => {
-    const mediaId = allData.posts
-      .map((post: any) => post.media.map((m: any) => m.id))
-      .flat();
 
-    const postid = allData.posts.map((item: any) => item?.id);
+  useEffect(() => {
+    updatePost(updateComment);
+    setShowComments(false);
+  }, [updateComment]);
 
+  const handleLike = async () => {
     const likeBody = {
-      postid: postid[0],
-      post_leaderid: allData?.leaderid,
+      postid: post?.id,
+      post_leaderid: post?.leaderid,
       userid: userDetails?.id,
-      mediaid: mediaId[0],
       usertype: "citizen",
-      username: allData.name,
-      userimg: allData.image,
+      username: userDetails.username,
+      userimg: userDetails.image,
     };
-
     const UnlikeBody = {
-      postid: postid[0],
-      post_leaderid: allData?.leaderid,
+      postid: post?.id,
+      post_leaderid: post?.leaderid,
       userid: userDetails?.id,
     };
-
     try {
-      if (!showLikeAnimation) {
+      if (!islike(post?.likes)) {
         const data = await LikePost(likeBody);
         toast.success(data.message);
-        if (data?.success) {
-          console.log(data);
-        }
+        Getpost();
       } else {
         const data = await UnlikePostorStory(UnlikeBody);
         toast.success(data.message);
-        if (data?.success) {
-          console.log(data);
-        }
+        Getpost();
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const postCommentLikeHandler = (commentId: string) => {};
+  const postCommentLikeHandler = (commentId: string) => { };
 
-  const commentReplyHandler = (commentId: string, commentReply: string) => {};
+  const commentReplyHandler = (commentId: string, commentReply: string) => { };
 
-  const addNewPostComment = (comment: string) => {};
+  const addNewPostComment = (comment: string) => { };
+
+
+
+
+  const increasePostCount = () => {
+    setCurPostIndex((lst) => {
+      if (lst < post?.media.length - 1) return lst + 1;
+      else return post?.media.length - 1;
+    });
+  };
+  const decreasePostCount = () => {
+    setCurPostIndex((lst) => {
+      if (lst > 0) return lst - 1;
+      else return 0;
+    });
+  };
+
+
+
 
   return (
     <>
       <section className="border rounded-md bg-white px-5">
         {/* User details and Date */}
         <div className="flex items-center gap-3 py-4 text-sky-950 border-b">
-          <Image
-            src={getImageUrl(userimages)}
+          <CustomImage
+            src={getImageUrl(userdetails?.image)}
             alt="user pic"
             className="w-12 aspect-square object-cover object-center rounded-full"
             width={100}
@@ -179,19 +130,19 @@ export const Post: FC<PostProps> = ({
           {/* Info and date of publish */}
           <div>
             <h4 className="font-[600] text-lg text-orange-500">
-              {name?.length > 0 ? name : "R.K Singh"}
+              {userdetails?.name}
             </h4>
             <p className="flex items-center capitalize gap-2 text-sm font-[500]">
               <BiGlobe />
               <span>
                 Published on:{" "}
-                {createdDatetime ? dateConverter(createdDatetime) : ""}
+                {post?.createddate ? dateConverter(post?.createddate) : ""}
               </span>
             </p>
           </div>
 
           {/* Actions */}
-          <div className="ml-auto relative" id="moreOptions">
+          {/* <div className="ml-auto relative" id="moreOptions">
             <button onClick={() => setShowMorePostOptions((lst) => !lst)}>
               <BsThreeDots className="text-2xl" />
             </button>
@@ -203,7 +154,7 @@ export const Post: FC<PostProps> = ({
                 onClose={() => setShowMorePostOptions(false)}
               />
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* USER POST */}
@@ -212,103 +163,101 @@ export const Post: FC<PostProps> = ({
           <p className="text-[16px]">{writtenText}</p>
 
           {/* MEDIA */}
-          {media?.length > 0 && (
+          {post?.media?.length > 0 && (
             <section className="w-full">
-              {media.length === 1 && (
-                <figure className="w-full relative" onClick={showFullPost}>
-                  {(media as MediaPost[]).map((el: any, index) => {
-                    const mediaType = types[index];
+              <figure className="w-full relative" onClick={showFullPost}>
+                {/* {(post?.media as MediaPost[]).map((el: any, index) => {
+                  return index < 2 && (el?.type === "image/jpeg" ? (
+                    <Image
+                      key={index}
+                      src={getImageUrl(el?.media)}
+                      width={1000}
+                      height={1000}
+                      style={{ objectFit: "contain" }}
+                      alt="user post"
+                      className="object-cover object-center w-full h-[500px]"
+                    />
+                  ) : (
+                    <video
+                      key={index}
+                      src={getImageUrl(el?.media)}
+                      className="object-cover object-center w-full h-full"
+                      controls
+                    />
+                  )
+                  )
+                })} */}
 
-                    return mediaType === "image/jpeg" ? (
+
+
+
+                {/* <m.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <m.section
+                    initial={{ y: -100 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: -100 }}
+                    className="bg-gray-600 bg-opacity-90 w-[1150px] m-auto flex z-[60] relative shadow-md mt-10 rounded-md overflow-hidden h-[601px] max-[1150px]:flex-col max-[1150px]:w-full max-[1150px]:mt-0 max-[1150px]:h-full"
+                  > */}
+
+                <div >
+                  {curPostIndex !== 0 && (
+                    <button
+                      type="button"
+                      onClick={decreasePostCount}
+                      className="absolute top-1/2 translate-y-[-50%] left-3 rounded-full bg-orange-400 text-black aspect-square flex items-center justify-center p-1"
+                    >
+                      <IoIosArrowForward className="text-4xl rotate-180" />
+                    </button>
+                  )}
+
+                  <div className="w-full h-full p-10 overflow-hidden">
+                    {curPost.type?.startsWith("image") && (
                       <Image
-                        key={index}
-                        src={el}
+                        src={getImageUrl(curPost.media)}
+                        alt={`post ${curPostIndex}`}
                         width={1000}
                         height={1000}
-                        alt="user post"
-                        className="object-cover object-center w-full h-[500px]"
+                        className="w-full h-auto object-cover object-center"
                       />
-                    ) : (
+                    )}
+                    {curPost.type.startsWith("video") && (
                       <video
-                      key={index}
-                        src={el.media}
-                        className="object-cover object-center w-full h-full"
-                        controls
-                      />
-                    );
-                  })}
-                </figure>
-              )}
-              {media.length === 2 && (
-                <figure className="w-full relative" onClick={showFullPost}>
-                  {(media as MediaPost[]).map((el: any, index) => {
-                    const mediaType = types[index];
-
-                    return mediaType === "image/jpeg" ? (
-                      <Image
-                        key={index}
-                        src={el}
+                        src={getImageUrl(curPost.media)}
                         width={1000}
                         height={1000}
-                        alt="user post"
-                        className="object-cover object-center w-full h-[500px]"
-                      />
-                    ) : (
-                      <video
-                      key={index}
-                        src={el.media}
-                        className="object-cover object-center w-full h-full"
+                        className="w-full h-auto max-[1150px]:w-full max-[1150px]:h-full max-[1150px]:object-cover max-[1150px]:object-center"
                         controls
                       />
-                    );
-                  })}
-                </figure>
-              )}
-              {media.length === 3 && (
-                <figure className="w-full relative" onClick={showFullPost}>
-                  {(media as MediaPost[]).map((el: any, index) => {
-                    const mediaType = types[index]; // Assuming types correspond to each media item
-                    return mediaType === "image/jpeg" ? (
-                      <Image
-                        key={index}
-                        src={el}
-                        width={1000}
-                        height={1000}
-                        alt="user post"
-                        className="object-cover object-center w-full h-[500px]"
-                      />
-                    ) : (
-                      <video
-                      key={index}
-                        src={el.media}
-                        className="object-cover object-center w-full h-full"
-                        controls
-                      />
-                    );
-                  })}
-                </figure>
-              )}
+                    )}
+                  </div>
 
-              {media.length === 4 && (
-                <FourColumnImgLayout
-                  hidePost={hideFullPost}
-                  showFullPost={showPostDetials}
-                  media={media as MediaPost[]}
-                  onClick={showFullPost}
-                  postId={id}
-                  userId={userId}
-                />
-              )}
-              {media.length > 4 && (
+                  {curPostIndex !== post?.media.length - 1 && (
+                    <button
+                      type="button"
+                      onClick={increasePostCount}
+                      className="absolute top-1/2 translate-y-[-50%] right-3 rounded-full bg-orange-400 text-black aspect-square flex items-center justify-center p-1"
+                    >
+                      <IoIosArrowForward className="text-4xl" />
+                    </button>
+                  )}
+                </div>
+                {/* </m.section>
+                </m.div> */}
+              </figure>
+              {/* {post?.media?.length > 2 && (
                 <MoreThan4ColumnImgLayout
                   hidePost={hideFullPost}
                   showFullPost={showPostDetials}
-                  media={media as MediaPost[]}
+                  media={post?.media as MediaPost[]}
                   onClick={showFullPost}
-                  postId={id}
-                  userId={userId}
+                  postId={post?.id}
+                  userId={post?.leaderid}
                 />
-              )}
+              )} */}
             </section>
           )}
         </div>
@@ -318,47 +267,32 @@ export const Post: FC<PostProps> = ({
         {/* POST Interactions */}
         <div className="mb-5 flex items-center gap-6">
           <button
-            className={`flex flex-col gap-3 relative transition-all ${
-              likeCount ? "text-rose-500" : "text-black"
-            }`}
+            className={`flex flex-col gap-3 relative transition-all ${post?.likes?.length ? "text-rose-500" : "text-black"}`}
             onClick={() => {
-              likeChangeHandler();
               setFirstTime(false);
-              setShowLikeAnimation((lst: any) => !lst);
-              handleLike(allData);
+              likeChangeHandler();
+              setShowLikeAnimation(!islike(post?.likes));
+              handleLike();
             }}
           >
-            {islike(likes) ? (
-              <BsFillHeartFill className="text-lg" />
-            ) : (
-              <BsHeart className="text-lg" />
-            )}
-
+            {islike(post?.likes) ? (<BsFillHeartFill className="text-lg" />) : (<BsHeart className="text-lg" />)}
             {!firstTime && (
-              <BsFillHeartFill
-                className={`text-lg overlay ${
-                  showLikeAnimation ? "fadeOut" : "fadeIn"
-                }`}
-              />
+              <BsFillHeartFill className={`text-lg overlay ${showLikeAnimation ? "fadeOut" : "fadeIn"}`} />
             )}
 
             <span className="text-[14px] absolute -top-4 left-4 font-[500]">
-              {likeCount}
+              {post?.likes?.length}
             </span>
           </button>
-
           <button
-            className={`flex flex-col gap-3 relative transition-all hover:text-rose-500 ${
-              showComments ? "text-rose-500" : "text-black"
-            }`}
+            className={`flex flex-col gap-3 relative transition-all hover:text-rose-500 ${showComments ? "text-rose-500" : "text-black"}`}
             onClick={() => setShowComments((lst) => !lst)}
           >
             <BiSolidMessageAltDetail className="text-[1.4rem]" />
             <span className="text-[14px] absolute -top-4 left-5 font-[500]">
-              {comments?.length}
+              {post?.comments?.length}
             </span>
           </button>
-
           <button className="flex flex-col gap-3 relative transition-all hover:text-rose-500">
             <BiShareAlt className="text-[1.4rem]" />
             <span className="text-[14px] absolute -top-4 left-5 font-[500]">
@@ -366,9 +300,6 @@ export const Post: FC<PostProps> = ({
             </span>
           </button>
         </div>
-
-        {/* <div className='w-full h-[2px] bg-zinc-100 my-5' /> */}
-
         <AnimatePresence mode="wait">
           {showComments && (
             <m.div
@@ -376,9 +307,8 @@ export const Post: FC<PostProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {/* comments box */}
               <ul className="flex flex-col gap-5">
-                {(comments as Comment[]).map((el,index) => (
+                {(post?.comments as Comment[]).map((el, index) => (
                   <SingleComment
                     {...el}
                     key={index}
@@ -388,7 +318,6 @@ export const Post: FC<PostProps> = ({
                   />
                 ))}
               </ul>
-
               <NewCommentForm
                 CommentHandler={addNewPostComment}
                 allData={allData}

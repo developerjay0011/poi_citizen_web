@@ -14,17 +14,17 @@ import { RiReplyFill } from "react-icons/ri";
 import { motion as m } from "framer-motion";
 import { BiPlusCircle } from "react-icons/bi";
 import { getImageUrl } from "@/config/get-image-url";
+import CustomImage from "@/utils/CustomImage";
 
 interface SingleCommentProps extends Comment {
   postId: string;
   likeChangeHandler: (id: string) => void;
   newNestedCommentHandler?: (commentId: string, commentReply: string) => void;
   postPerMedia?: boolean;
-  comment_text : string;
-  created_date : string;
-  userimg? : string | null;
+  comment_text: string;
+  created_date: string;
+  userimg?: string | null;
 }
-
 
 export const SingleComment: FC<SingleCommentProps> = ({
   commentText,
@@ -41,7 +41,7 @@ export const SingleComment: FC<SingleCommentProps> = ({
   newNestedCommentHandler,
   comment_text,
   created_date,
-  userimg
+  userimg,
 }) => {
   const { userDetails } = cusSelector((st) => st.auth);
   const [firstTime, setFirstTime] = useState(true);
@@ -54,7 +54,7 @@ export const SingleComment: FC<SingleCommentProps> = ({
   // (likes as Like[]).some((el) => el.userId === userDetails?.id)
   const [commentReply, setCommentReply] = useState("");
 
- /*  [
+  /*  [
     {
       id: '65c5a39fcc06712fd655dea5',
       userid: '65c308981e527b3313372bf1',
@@ -104,9 +104,9 @@ export const SingleComment: FC<SingleCommentProps> = ({
   return (
     <>
       <li className="flex items-start gap-5 border-b pb-3 max-[400px]:gap-3">
-        <Image
+        <CustomImage
           alt="user pic"
-          src={getImageUrl('')}
+          src={getImageUrl("")}
           width={1000}
           height={1000}
           className="w-8 aspect-square rounded-full object-cover object-center"
@@ -263,8 +263,6 @@ const NestedCommentCmp: FC<NestedCommentCmpProps> = ({
     likes.some((el) => el.userId === userDetails?.id)
   );
 
-
-
   useEffect(() => {
     return () => {
       setFirstTime(true);
@@ -291,7 +289,7 @@ const NestedCommentCmp: FC<NestedCommentCmpProps> = ({
       exit={{ opacity: 0 }}
       className="flex items-start gap-5 last_noti p-2"
     >
-      <Image
+      <CustomImage
         alt="user pic"
         src={getImageUrl(userImg)}
         width={1000}

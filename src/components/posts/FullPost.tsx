@@ -31,7 +31,7 @@ export const FullPost: FC<FullPostProps> = ({
   const [curPostIndex, setCurPostIndex] = useState<number>(0);
   const curPost = posts[curPostIndex];
   const { userDetails } = cusSelector((st) => st.auth);
-  const likePerPostHandler = () => {};
+  const likePerPostHandler = () => { };
   const increasePostCount = () => {
     setCurPostIndex((lst) => {
       if (lst < posts.length - 1) return lst + 1;
@@ -45,9 +45,9 @@ export const FullPost: FC<FullPostProps> = ({
       else return 0;
     });
   };
-  const CommentHandler = (comment: string) => {};
+  const CommentHandler = (comment: string) => { };
 
-  const likeChangeHandler = (id: string) => {};
+  const likeChangeHandler = (id: string) => { };
 
   return (
     <>
@@ -55,7 +55,7 @@ export const FullPost: FC<FullPostProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="h-[100dvh] w-full fixed top-0 left-0 z-[50] max-[1150px]:overflow-y-scroll"
+      // className="h-[100dvh] w-full fixed top-0 left-0 z-[50] max-[1150px]:overflow-y-scroll"
       >
         <div
           className="absolute top-0 left-0 bg-black bg-opacity-40 backdrop-blur-[2px] w-full h-full z-[55]"
@@ -139,15 +139,12 @@ export const FullPost: FC<FullPostProps> = ({
                 </button>
               )}
             </div>
-
-            {/* Interactions per media */}
             <InteractionsPerMedia
               curPost={curPost}
               likePerPostHandler={likePerPostHandler}
             />
 
             <div className="flex flex-col overflow-y-scroll main_scrollbar">
-              {/* comments box */}
               <ul className="flex flex-col gap-5 bg-white mt-4">
                 {curPost?.comments?.map((el) => (
                   <SingleComment
@@ -215,9 +212,8 @@ const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   return (
     <div className="mt-6 pb-3 flex items-center gap-6 border-b">
       <button
-        className={`flex flex-col gap-3 relative transition-all ${
-          showLikeAnimation ? "text-rose-500" : "text-black"
-        }`}
+        className={`flex flex-col gap-3 relative transition-all ${showLikeAnimation ? "text-rose-500" : "text-black"
+          }`}
         onClick={() => {
           setFirstTime(false);
           likePerPostHandler();
@@ -228,9 +224,8 @@ const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
 
         {!firstTime && (
           <BsFillHeartFill
-            className={`text-lg overlay ${
-              showLikeAnimation ? "fadeOut" : "fadeIn"
-            }`}
+            className={`text-lg overlay ${showLikeAnimation ? "fadeOut" : "fadeIn"
+              }`}
           />
         )}
 

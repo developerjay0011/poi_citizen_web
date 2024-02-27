@@ -31,11 +31,12 @@ export const RegisterForm: FC = () => {
   const [resendOTPTime, setResendOTPTime] = useState(OTP_TIME);
   const [registering, setRegistering] = useState(false);
   const [verifying, setVerifying] = useState(false);
-  const [registerdata2, setRegisterdata] = useState({});
-
-  // const { registering, verifyingOTP } = cusSelector((st) => st.auth)
-  const dispatch = cusDispatch();
-
+  const [registerdata2, setRegisterdata] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+  });
   const openOTPForm = () => setShowOTPForm(true);
   const closeOTPForm = () => {
     clearInterval(interval); // clearing Interval
@@ -62,8 +63,6 @@ export const RegisterForm: FC = () => {
       setRegistering(true);
 
       const body = { mobile: userData.phoneNo || "" };
-
-      // call resend OTP Api
 
       const sandOtp = await sendOtp(body);
       if (sandOtp?.success) {
@@ -100,16 +99,22 @@ export const RegisterForm: FC = () => {
         mobile: userData.phoneNo,
         otp: otp,
       };
+      const resBody = {
+        name: registerdata2?.name,
+        email: registerdata2?.email,
+        mobile: registerdata2?.mobile,
+        password: registerdata2?.password,
+      };
       const sandOtp = await verifyOtp(body);
       if (sandOtp?.success) {
         setVerifying(false);
         setRegistering(false);
-      const registerData = await fetchRegister(registerdata2);
-      if (registerData?.success) {
-        toast.success(registerData.message);
-      } else {
-        toast.error(registerData.message);
-      }
+        const registerData = await fetchRegister(resBody);
+        if (registerData?.success) {
+          toast.success(registerData.message);
+        } else {
+          toast.error(registerData.message);
+        }
         closeOTPForm();
         router.push(AuthRoutes.login);
       } else {

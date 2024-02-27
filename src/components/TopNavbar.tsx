@@ -17,6 +17,7 @@ import NoImg from "@/assets/No_image_available.png";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
+import CustomImage from "@/utils/CustomImage";
 
 interface TopNavbarProps {}
 
@@ -41,13 +42,13 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     });
   }, [dispatch]);
   useEffect(() => {
-    (async() => {
-      if(userDetails?.id) {
+    (async () => {
+      if (userDetails?.id) {
         const res = await getProfile(userDetails?.id);
         dispatch(authActions.logIn(res));
       }
     })();
-  }, [dispatch, userDetails?.id])
+  }, [dispatch, userDetails?.id]);
   let heading = curRoute?.split("/").at(-1)?.includes("-")
     ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
     : curRoute?.split("/").at(-1);
@@ -127,7 +128,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         <section className="flex items-center gap-4 ml-auto relative">
           <p className="capitalize">{userDetails?.username}</p>
           <button onClick={() => setShowAdminMenu((lst) => !lst)}>
-            <Image
+            <CustomImage
               src={getImageUrl(userDetails?.image)}
               alt="user pic"
               className="w-14 aspect-square object-cover object-center rounded-full"
@@ -163,7 +164,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
           />
 
           <button>
-            <Image
+            <CustomImage
               src={getImageUrl(userDetails?.image)}
               alt="user pic"
               className="w-14 aspect-square object-cover object-center rounded-full"

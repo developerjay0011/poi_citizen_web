@@ -12,40 +12,19 @@ import {
   RaiseComplaint,
 } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
-
-interface UserDetails {
-  token: string;
-  id: string;
-  displayPic: string;
-}
-
 export const ComplaintPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
+
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
+  const { userDetails } = cusSelector((st) => st.auth);
 
   console.log(complaints, "complaints");
   
 
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
 
   const addNewComplaintHandler = async (complaint: RequestComplaintData) => {
     console.log(complaint, "complaint");
@@ -80,11 +59,7 @@ export const ComplaintPage: FC = () => {
 
     try {
       const data = await RaiseComplaint(formData);
-      console.log(data);
-
       if (data?.success) {
-        console.log(data);
-
         toast.success(data.message);
       }
     } catch (error) {
@@ -93,10 +68,6 @@ export const ComplaintPage: FC = () => {
     closeForm();
     dispatch(addNewComplaint(complaint));
   };
-
-  /*  useEffect(() => {
-    dispatch(fetchAllComplaints());
-  }, [dispatch]); */
 
   const searchFilteredComplaints = complaints.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el

@@ -1,4 +1,3 @@
-
 import { TrendingLeaderBriefDetails } from "@/utils/typesUtils";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,11 +5,16 @@ import { FC, useEffect, useState } from "react";
 import NoImg from "@/assets/No_image_available.png";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { getImageUrl } from "@/config/get-image-url";
-import { fetchFollowLeader, fetchUnFollowLeader } from "@/redux_store/follow/followAPI";
+import {
+  fetchFollowLeader,
+  fetchUnFollowLeader,
+} from "@/redux_store/follow/followAPI";
 import toast from "react-hot-toast";
+import CustomImage from "@/utils/CustomImage";
 
-interface TrendingLeaderProps extends TrendingLeaderBriefDetails {}
-
+interface TrendingLeaderProps extends TrendingLeaderBriefDetails {
+  isfollowing: boolean;
+}
 
 export const TrendingLeader: FC<TrendingLeaderProps> = ({
   image,
@@ -18,7 +22,8 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
   username,
   id,
   following,
-  unfollow,isfollowing
+  unfollow,
+  isfollowing,
 }) => {
   const { userDetails } = cusSelector((st) => st.auth);
   const handleFollower = async (id: string) => {
@@ -26,10 +31,9 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
       senderid: userDetails?.id,
       receiverid: id,
     };
-  const followedLeader = await fetchFollowLeader(postBody);
+    const followedLeader = await fetchFollowLeader(postBody);
     if (followedLeader?.success) {
-      toast.success(followedLeader?.message)
-      following()
+      following();
     }
   };
 
@@ -40,16 +44,14 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
     };
     const followedLeader = await fetchUnFollowLeader(postBody);
     if (followedLeader?.success) {
-      toast.success(followedLeader?.message)
-      following(followedLeader);
-      following()
+      following();
     }
   };
 
   return (
     <li className="flex gap-3 py-3 px-3 last_noti items-center transition-all hover:bg-slate-50">
-      <Image
-        src={getImageUrl(image)}
+      <CustomImage
+        src={getImageUrl(image as string)}
         alt="trending user"
         width={1000}
         height={1000}

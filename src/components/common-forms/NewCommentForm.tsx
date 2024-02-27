@@ -6,13 +6,13 @@ import { BiRightArrow } from "react-icons/bi";
 import { fetchCommentPost } from "../api/posts";
 import { CommentPost } from "@/redux_store/post/postApi";
 import { getImageUrl } from "@/config/get-image-url";
+import CustomImage from "@/utils/CustomImage";
 
 interface NewCommentFormProps {
   CommentHandler: (comment: string) => void;
   allData: any;
   setUpdateComment: any;
 }
-
 
 export const NewCommentForm: FC<NewCommentFormProps> = ({
   CommentHandler,
@@ -56,7 +56,7 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({
         className="flex items-start py-4 gap-5 mt-2 mb-1 relative max-[400px]:gap-3"
         onSubmit={addNewCommentHandler}
       >
-        <Image
+        <CustomImage
           alt="user dp"
           src={getImageUrl(userDetails?.image)}
           width={1000}
