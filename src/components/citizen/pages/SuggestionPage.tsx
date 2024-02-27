@@ -25,41 +25,20 @@ interface UserDetails {
 export const SuggestionPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
 
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
   const addNewSuggestionHandler = async (suggestion: RequestComplaintData) => {
-
-    console.log(suggestion, "complaint");
-
     const formData = new FormData();
-
     formData.append("id", "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", suggestion.subject || "");
     formData.append("description", suggestion?.description || "");
     formData.append("deletedDocs", "");
-
-    // Check if signatureDoc is a string or a FileList
     if (typeof suggestion.signatureDoc === "string") {
       formData.append("signature", suggestion.signatureDoc);
     } else if (suggestion.signatureDoc instanceof FileList) {
@@ -81,11 +60,7 @@ export const SuggestionPage: FC = () => {
 
     try {
       const data = await SaveSuggestion(formData);
-      console.log(data);
-
       if (data?.success) {
-        console.log(data);
-
         toast.success(data.message);
       }
     } catch (error) {

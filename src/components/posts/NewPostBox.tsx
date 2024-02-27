@@ -15,6 +15,7 @@ import { PostTypes } from "./PostTypes";
 import NoImg from "@/assets/No_image_available.png";
 import { AddPost } from "@/redux_store/post/postApi";
 import toast from "react-hot-toast";
+import CustomImage from "@/utils/CustomImage";
 
 interface NewPostBoxProps {
   updatePost: any;
@@ -34,43 +35,13 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
   const [accessType, setAccessType] = useState("");
   const [creatingPost, setCreatingPost] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
-
-  // get user details from session
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  const { userDetails } = cusSelector((st) => st.auth);
 
   const formSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
     setCreatingPost(true);
-    if (
-      textPost.trim().length === 0 &&
-      media.length === 0 &&
-      accessType?.length === 0
-    )
+    if (textPost.trim().length === 0 && media.length === 0 && accessType?.length === 0)
       return setPostErr({ errTxt: "post can't be empty", isErr: true });
-
-    /*     dispatch(
-      createNewPost({
-        media: media,
-        type: "post",
-        writtenText: textPost,
-      })
-    ); */
-
     const formData = new FormData();
 
     formData.append("leaderid", userDetails?.id || "");
@@ -185,9 +156,10 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
       <CommonBox title="create post">
         <form className="flex flex-col gap-4 py-4" onSubmit={formSubmitHandler}>
           <div className="flex items-start gap-3">
-            <Image
-              src={(userDetails?.displayPic as string) || NoImg}
+            <CustomImage
+              src={(userDetails?.useimage as string) || NoImg}
               alt="user image"
+              priority={true}
               width={1000}
               height={1000}
               className="rounded-full w-14 overflow-hidden bg-red-500 aspect-square object-center object-cover self-start"
@@ -256,6 +228,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
                     {el.type === "image" && (
                       <Image
                         src={el.media}
+                        priority={true}
                         width={1000}
                         height={1000}
                         alt="media post"

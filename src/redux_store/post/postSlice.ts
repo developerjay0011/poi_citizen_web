@@ -1,24 +1,22 @@
-import { UserDetails } from '@/utils/typesUtils'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { UserDetails } from "@/utils/typesUtils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface PostState {
-    allPosts: any
-
+  allPosts: any;
 }
 
 const init: PostState = {
-
-    allPosts: [],
-}
+  allPosts: [],
+};
 
 export const postSlice = createSlice({
-    name: 'post',
-    initialState: init,
-    reducers: {
-        setPost(state, action: PayloadAction<UserDetails>) {
-            state.allPosts = action.payload
-        },
+  name: "post",
+  initialState: init,
+  reducers: {
+    setPost(state, action: PayloadAction<UserDetails>) {
+      state.allPosts = action.payload;
     },
-})
+  },
+});
 
-export const postActions = postSlice.actions
+export const postActions = postSlice.actions;

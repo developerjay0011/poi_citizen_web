@@ -19,16 +19,10 @@ export const ComplaintPage: FC = () => {
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
   const { userDetails } = cusSelector((st) => st.auth);
-
-  console.log(complaints, "complaints");
-  
-
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
 
   const addNewComplaintHandler = async (complaint: RequestComplaintData) => {
-    console.log(complaint, "complaint");
-
     const formData = new FormData();
 
     formData.append("id", "");

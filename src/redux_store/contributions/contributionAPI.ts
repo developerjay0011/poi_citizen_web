@@ -49,10 +49,7 @@ export const addNewContribution =
           userId: 'be2763ebd37d3de2332e32e24ce2qe321',
         },
       })
-
       const res = await ConnectToAPI('contributions', body)
-
-      console.log(res)
     } catch (err) {
       console.error(err)
     }

@@ -5,59 +5,23 @@ import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import {
-  DeleteRequest,
-  RaiseRequest,
-  addNewRequest,
-  deleteRequest,
-  fetchAllRequests,
-} from "@/redux_store/requests/requestAPI";
+import { DeleteRequest, RaiseRequest, } from "@/redux_store/requests/requestAPI";
 import { RequestComplaintData } from "@/utils/typesUtils";
 import toast from "react-hot-toast";
-
-interface UserDetails {
-  token: string;
-  id: string;
-  displayPic: string;
-}
-
 export const RequestPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showRequestForm, setShowRequestForm] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
-  const dispatch = cusDispatch();
+  const { userDetails } = cusSelector((st) => st.auth);
   const { requests, submitting, err } = cusSelector((st) => st.requests);
-
   const showForm = () => setShowRequestForm(true);
   const closeForm = () => setShowRequestForm(false);
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
   const addNewRequestHandler = async (request: RequestComplaintData) => {
-    console.log(request, "complaint");
-
     const formData = new FormData();
-
     formData.append("id", "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", request.subject || "");
     formData.append("description", request?.description || "");
     formData.append("deletedDocs", "");
-
-    // Check if signatureDoc is a string or a FileList
     if (typeof request.signatureDoc === "string") {
       formData.append("signature", request.signatureDoc);
     } else if (request.signatureDoc instanceof FileList) {
@@ -65,25 +29,18 @@ export const RequestPage: FC = () => {
         formData.append("signature", file);
       }
     }
-
     for (let i = 0; i < request.attachmentsDoc.length; i++) {
       const item: any = request.attachmentsDoc[i];
-
       formData.append("attachments", item?.file);
     }
     for (let i = 0; i < request.to.length; i++) {
       const item: any = request.to[i];
-
       formData.append("to", item.name);
     }
 
     try {
       const data = await RaiseRequest(formData);
-      console.log(data);
-
       if (data?.success) {
-        console.log(data);
-
         toast.success(data.message);
       }
     } catch (error) {
@@ -92,11 +49,7 @@ export const RequestPage: FC = () => {
     closeForm();
 
     // dispatch(addNewRequest(request));
-  };
-
-  /*  useEffect(() => {
-    dispatch(fetchAllRequests())
-  }, [dispatch]) */
+  }
 
   const searchFilteredRequests = requests.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el

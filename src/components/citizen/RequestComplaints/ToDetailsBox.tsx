@@ -57,6 +57,7 @@ const ToListRow: FC<ToDetails> = ({
     <>
       <li className='flex gap-4 items-center p-5 last_noti'>
         <Image
+          priority={true}
           src={leaderProfilePic}
           alt='leader img'
           width={1000}
@@ -71,9 +72,8 @@ const ToListRow: FC<ToDetails> = ({
 
         <button
           type='button'
-          className={`px-2 rounded border capitalize text-sm ml-auto font-medium ${
-            REQUEST_STATUS[requestComplaintStatus as RQ_VAL].classes
-          }`}>
+          className={`px-2 rounded border capitalize text-sm ml-auto font-medium ${REQUEST_STATUS[requestComplaintStatus as RQ_VAL].classes
+            }`}>
           {REQUEST_STATUS[requestComplaintStatus as RQ_VAL].name}
         </button>
 

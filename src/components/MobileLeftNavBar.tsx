@@ -2,7 +2,6 @@ import { CusLink } from "@/utils/CusLink";
 import { motion as m } from "framer-motion";
 import Image from "next/image";
 import { FC } from "react";
-import { BsActivity, BsHouseFill } from "react-icons/bs";
 import POILogo from "@/assets/poi_logo_1.png";
 import Link from "next/link";
 import { FaBell, FaClipboard, FaUser } from "react-icons/fa";
@@ -47,7 +46,9 @@ export const MobileLeftNavbar: FC<MobileLeftNavbarProps> = ({ onClose }) => {
             href={ProtectedRoutes.admin}
             className="w-full text-center bg-sky-950 flex justify-center py-2"
           >
-            <Image src={POILogo} alt="poi logo" className="h-12 w-auto" />
+            <Image src={POILogo}
+              priority={true}
+              alt="poi logo" className="h-12 w-auto" />
           </Link>
           <li>
             <CusLink

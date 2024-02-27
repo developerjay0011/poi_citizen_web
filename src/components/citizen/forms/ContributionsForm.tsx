@@ -74,23 +74,16 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
   } = useForm<ContributionFormFields>();
 
   const dispatch = cusDispatch();
-
-  console.log(userDetails, "userDetailsuserDetailsuserDetails");
-
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {
       var storedUser = JSON.parse(storedUserString);
-
       setUserDetails(storedUser);
     } else {
-      console.log("User data not found in session storage");
     }
   }, []);
 
   const formSubmitHandler = async (data: ContributionFormFields) => {
-    console.log(data);
-
     /*     {
       "contributionType": "money",
       "leaderId": "narender-modi",
@@ -110,7 +103,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
 
     const body = {
       id: "",
-      citizenid: userDetails.id,
+      citizenid: userDetails?.id,
       leaderid: data.leaderId,
       contributor: data.leaderId,
       contribution_type: data.contributionType,
@@ -124,18 +117,13 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
 
     try {
       const data = await SaveContribution(body);
-      console.log(data);
-
       if (data?.success) {
-        console.log(data, "SaveContributionSaveContributionSaveContributionSaveContribution");
-
         toast.success(data.message);
       }
     } catch (error) {
       console.log(error);
     }
     onClose();
-
     dispatch(addNewContribution({ ...data }));
   };
 
@@ -436,40 +424,38 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
 
                 {(watch("contributionType") === "ration" ||
                   watch("contributionType") === "clothes") && (
-                  <label htmlFor="clothesQty" className={`flex flex-col gap-2`}>
-                    <span className="font-[500]">
-                      Enter Quantity
-                      <strong className="text-rose-500">*</strong>
-                    </span>
-                    <input
-                      type="number"
-                      id="clothesQty"
-                      placeholder=""
-                      {...register(
-                        `${
-                          watch("contributionType") === "food/ration"
+                    <label htmlFor="clothesQty" className={`flex flex-col gap-2`}>
+                      <span className="font-[500]">
+                        Enter Quantity
+                        <strong className="text-rose-500">*</strong>
+                      </span>
+                      <input
+                        type="number"
+                        id="clothesQty"
+                        placeholder=""
+                        {...register(
+                          `${watch("contributionType") === "food/ration"
                             ? "ration.quantity"
                             : "clothes.quantity"
-                        }`,
-                        {
-                          required: "quantity is required",
-                          valueAsNumber: true,
-                        }
-                      )}
-                      className="border num_inp border-slate-300 bg-slate-100 py-[.7rem] px-4 outline-none rounded-md text-base transition-all capitalize focus:bg-slate-200 focus:border-slate-400"
-                    />
-                    <ErrorMessage
-                      name={`${
-                        watch("contributionType") === "food/ration"
+                          }`,
+                          {
+                            required: "quantity is required",
+                            valueAsNumber: true,
+                          }
+                        )}
+                        className="border num_inp border-slate-300 bg-slate-100 py-[.7rem] px-4 outline-none rounded-md text-base transition-all capitalize focus:bg-slate-200 focus:border-slate-400"
+                      />
+                      <ErrorMessage
+                        name={`${watch("contributionType") === "food/ration"
                           ? "ration.quantity"
                           : "clothes.quantity"
-                      }`}
-                      errors={errors}
-                      as={"span"}
-                      className="text-red-500 text-sm first-letter:capitalize lowercase"
-                    />
-                  </label>
-                )}
+                          }`}
+                        errors={errors}
+                        as={"span"}
+                        className="text-red-500 text-sm first-letter:capitalize lowercase"
+                      />
+                    </label>
+                  )}
 
                 {watch("contributionType") &&
                   watch("contributionType") !== "money" && (
@@ -487,8 +473,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
                         rows={5}
                         // conditionally assigning register function value
                         {...register(
-                          `${
-                            watch("contributionType") as DESC_VALS
+                          `${watch("contributionType") as DESC_VALS
                           }.description`
                         )}
                         className="border num_inp border-slate-300 bg-slate-100 py-[.9rem] px-4 outline-none rounded-md text-base transition-all capitalize focus:bg-slate-200 focus:border-slate-400 resize-none"

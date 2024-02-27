@@ -13,7 +13,7 @@ import { authActions } from "@/redux_store/auth/authSlice";
 import { RootState } from "@/redux_store";
 import { ProtectedRoutes } from "@/constants/routes";
 import { EditCitizenProfile, getProfile } from "@/redux_store/auth/authAPI";
-interface EditFormProps {}
+interface EditFormProps { }
 
 const genders = ["male", "female", "others"];
 
@@ -68,13 +68,9 @@ const EditForm: FC<EditFormProps> = () => {
     };
     try {
       const editData = await EditCitizenProfile(postBody);
-      console.log(editData);
-
       if (editData?.success) {
         toast.success(editData?.message);
         const data = await getProfile(citizenid);
-        console.log(data);
-
         dispatch(authActions.logIn(data));
         setIsEditProfile(editData);
       } else {

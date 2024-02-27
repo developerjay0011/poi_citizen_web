@@ -21,6 +21,7 @@ export const FourColumnImgLayout: FC<{
           if (el.type === 'image')
             return (
               <Image
+                priority={true}
                 key={el.id}
                 src={el.media}
                 width={1000}

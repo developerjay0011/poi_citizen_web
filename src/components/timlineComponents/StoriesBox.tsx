@@ -18,7 +18,7 @@ import {
   GetStoriesForCitizen,
 } from "@/redux_store/story/storyApi";
 import { getImageUrl } from "@/config/get-image-url";
-interface StoriesBoxProps {}
+interface StoriesBoxProps { }
 
 export const StoriesBox: FC<StoriesBoxProps> = () => {
   const [storyMedia, setStoryMedia] = useState<Media[]>([]);
@@ -168,7 +168,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
                     img={getImageUrl(el?.posts[0]?.media[0]?.media)}
                     stories={el?.posts}
                     id={el?.id || ""}
-                    handleDelete={() => {}}
+                    handleDelete={() => { }}
                   />
                 );
               }
@@ -224,6 +224,7 @@ const Story: FC<StoryProps> = ({
       >
         {/* User Img */}
         <Image
+          priority={true}
           src={userImage}
           width={1000}
           height={1000}

@@ -2,16 +2,18 @@ import { FC } from 'react'
 import { BiX } from 'react-icons/bi'
 import { motion as m } from 'framer-motion'
 import Image from 'next/image'
+import { FaFileAlt } from 'react-icons/fa'
+import { getImageUrl } from '@/config/get-image-url'
 
+export type PRIORITY = 0 | 1 | 2
 interface AgendaTimelineProps {
   onClose: () => void
   title: string
+  timeline: any,
+  status: string
 }
 
-export const DevelopmentAgendaTimeLine: FC<AgendaTimelineProps> = ({
-  onClose,
-  title,
-}) => {
+export const DevelopmentAgendaTimeLine: FC<AgendaTimelineProps> = ({ onClose, title, timeline, status }) => {
   return (
     <>
       <m.div
@@ -36,31 +38,15 @@ export const DevelopmentAgendaTimeLine: FC<AgendaTimelineProps> = ({
             </h3>
 
             <ul className='py-8 px-10'>
-              <TimeLineData
-                status={0}
-                details='lorem bnkjvnfdjkv kjmkjdnf kjngdlkfsjgf kngkvbnd snjkgvfdskjgvjs gk9jvdfkbgvsn'
-                title='acquired raw material'
-              />
-              <TimeLineData
-                status={1}
-                details='lorem bnkjvnfdjkv kjmkjdnf kjngdlkfsjgf kngkvbnd snjkgvfdskjgvjs gk9jvdfkbgvsn'
-                title='acquired raw material'
-              />
-              <TimeLineData
-                status={1}
-                details='lorem bnkjvnfdjkv kjmkjdnf kjngdlkfsjgf kngkvbnd snjkgvfdskjgvjs gk9jvdfkbgvsn'
-                title='acquired raw material'
-              />
-              <TimeLineData
-                status={1}
-                details='lorem bnkjvnfdjkv kjmkjdnf kjngdlkfsjgf kngkvbnd snjkgvfdskjgvjs gk9jvdfkbgvsn'
-                title='acquired raw material'
-              />
-              <TimeLineData
-                status={2}
-                details='lorem bnkjvnfdjkv kjmkjdnf kjngdlkfsjgf kngkvbnd snjkgvfdskjgvjs gk9jvdfkbgvsn'
-                title='acquired raw material'
-              />
+              {timeline?.map((item: any, index: any) =>
+                <TimeLineData
+                  key={index}
+                  status={Number(status) as PRIORITY}
+                  details={item?.description}
+                  title={item?.milestone}
+                  attachments={item?.attachments}
+                />
+              )}
             </ul>
           </m.div>
         </div>
@@ -72,7 +58,9 @@ export const DevelopmentAgendaTimeLine: FC<AgendaTimelineProps> = ({
 interface TimeLineDataProps {
   details: string
   title: string
-  status: 0 | 1 | 2
+  status: 0 | 1 | 2,
+  attachments: any
+  key: string
 }
 
 const colors = {
@@ -90,22 +78,18 @@ const colors = {
   },
 }
 
-const TimeLineData: FC<TimeLineDataProps> = ({ details, title, status }) => {
+const TimeLineData: FC<TimeLineDataProps> = ({ details, title, status, attachments, key }) => {
   return (
     <>
-      <li className={`last_timeline ${colors[status].line}`}>
+      <li key={key} className={`last_timeline ${colors[status].line}`}>
         <div
           id='dot'
           className={`w-4 aspect-square rounded-full ${colors[status].dot} absolute top-0 left-0 translate-x-[-62%]`}
         />
 
         <div className='flex items-start gap-3 ml-5 flex-row-reverse'>
-          <Image
-            src=''
-            alt=''
-            className='w-14 aspect-square rounded-full bg-rose-200'
-          />
-
+          {attachments?.map((el: any, inedx: any) => (
+            <a key={inedx} href={getImageUrl(el)} target="_blank" rel="noopener noreferrer" download><FaFileAlt /></a>))}
           <div className='flex flex-col w-full'>
             <h4 className='font-medium capitalize'>{title}</h4>
             <p className='text-[15px] text-gray-600'>{details}</p>

@@ -22,12 +22,7 @@ interface FullPostProps {
   userId: string;
 }
 
-export const FullPost: FC<FullPostProps> = ({
-  onClose,
-  posts,
-  postId,
-  userId,
-}) => {
+export const FullPost: FC<FullPostProps> = ({ onClose, posts, postId, userId, }) => {
   const [curPostIndex, setCurPostIndex] = useState<number>(0);
   const curPost = posts[curPostIndex];
   const { userDetails } = cusSelector((st) => st.auth);
@@ -38,7 +33,6 @@ export const FullPost: FC<FullPostProps> = ({
       else return posts.length - 1;
     });
   };
-
   const decreasePostCount = () => {
     setCurPostIndex((lst) => {
       if (lst > 0) return lst - 1;
@@ -49,13 +43,15 @@ export const FullPost: FC<FullPostProps> = ({
 
   const likeChangeHandler = (id: string) => { };
 
+
+
   return (
     <>
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-      // className="h-[100dvh] w-full fixed top-0 left-0 z-[50] max-[1150px]:overflow-y-scroll"
+        className="h-[100dvh] w-full fixed top-0 left-0 z-[50] max-[1150px]:overflow-y-scroll"
       >
         <div
           className="absolute top-0 left-0 bg-black bg-opacity-40 backdrop-blur-[2px] w-full h-full z-[55]"
@@ -89,6 +85,7 @@ export const FullPost: FC<FullPostProps> = ({
             <div className="w-full h-full p-10 overflow-hidden">
               {curPost.type === "image" && (
                 <Image
+                  priority={true}
                   src={curPost.media}
                   alt={`post ${curPostIndex}`}
                   width={1000}
@@ -124,6 +121,7 @@ export const FullPost: FC<FullPostProps> = ({
                 src={userImg}
                 alt="post user dp"
                 width={1000}
+                priority={true}
                 height={1000}
                 className="w-14 aspect-square rounded-full object-cover object-center"
               />
@@ -150,8 +148,8 @@ export const FullPost: FC<FullPostProps> = ({
                   <SingleComment
                     {...el}
                     key={el.id}
-                    postId={postId}
-                    likeChangeHandler={likeChangeHandler}
+                    postId={''}
+                    likeChangeHandler={() => { }}
                     postPerMedia
                   />
                 ))}
