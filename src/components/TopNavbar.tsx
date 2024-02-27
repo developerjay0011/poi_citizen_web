@@ -37,16 +37,21 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     });
   }, [dispatch]);
   useEffect(() => {
-    (async () => {
-      if (userDetails?.id) {
-        const res = await getProfile(userDetails?.id);
-        dispatch(authActions.logIn(res));
-      }
-    })();
-  }, [dispatch, userDetails?.id]);
-  let heading = curRoute?.split("/").at(-1)?.includes("-")
-    ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
-    : curRoute?.split("/").at(-1);
+    document.addEventListener('click', (e) => {
+
+      // hiding usernav bar when clicked anywhere except usericon
+      if (!(e.target as HTMLElement).closest('#userDisplayPic'))
+        setShowAdminMenu(false)
+
+      // hiding notification box when clicked anywhere except usericon
+      if (!(e.target as HTMLElement).closest('#briefNotiBox'))
+        setShowBriefNoti(false)
+    })
+  }, [dispatch])
+
+  let heading = curRoute?.split('/').at(-1)?.includes('-')
+    ? curRoute?.split('/').at(-1)?.replaceAll('-', ' ')
+    : curRoute?.split('/').at(-1)
 
   heading = heading === "user" ? "home" : heading;
 
@@ -121,14 +126,14 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         </section>
 
         {/* USER Profile */}
-        <section className="flex items-center gap-4 ml-auto relative">
-          <p className="capitalize">{userDetails?.username}</p>
+        <section className='flex items-center gap-4 ml-auto relative'>
+          <p className='capitalize'>{userDetails?.firstname}</p>
           <button onClick={() => setShowAdminMenu((lst) => !lst)}>
-            <CustomImage
-              src={getImageUrl(userDetails?.image)}
-              alt="user pic"
-              className="w-14 aspect-square object-cover object-center rounded-full"
-              id="userDisplayPic"
+            <Image
+              src={userDetails?.displayPic as string}
+              alt='user pic'
+              className='w-14 aspect-square object-cover object-center rounded-full'
+              id='userDisplayPic'
               width={100}
               height={100}
             />
@@ -161,11 +166,11 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
           />
 
           <button>
-            <CustomImage
-              src={getImageUrl(userDetails?.image)}
-              alt="user pic"
-              className="w-14 aspect-square object-cover object-center rounded-full"
-              id="userDisplayPic"
+            <Image
+              src={userDetails?.displayPic as string}
+              alt='user pic'
+              className='w-14 aspect-square object-cover object-center rounded-full'
+              id='userDisplayPic'
               width={100}
               height={100}
             />

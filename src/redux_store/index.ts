@@ -4,7 +4,6 @@ import { requestSlice } from './requests/requestSlice'
 import { suggestionSlice } from './suggestions/suggestionSlice'
 import { authSlice } from './auth/authSlice'
 import { postSlice } from './post/postSlice'
-import { followSlice } from './follow/followSlice'
 
 
 export const store = configureStore({
@@ -13,8 +12,6 @@ export const store = configureStore({
     requests: requestSlice.reducer,
     suggestions: suggestionSlice.reducer,
     auth: authSlice.reducer,
-    post: postSlice.reducer,
-    follow: followSlice.reducer,
   },
 })
 

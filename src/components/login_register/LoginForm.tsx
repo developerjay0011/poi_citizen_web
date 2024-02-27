@@ -58,27 +58,31 @@ export const LoginForm: FC<LoginFormProps> = () => {
       password: data?.password,
       fcm_token: {
         deviceid: "123",
-        token: "",
-      },
+      token: ""
+      }
     };
 
     setLoggingIn(true);
     try {
       const loginData = await fetchLogin(resBody);
-      if (loginData?.data) {
-        router.push(ProtectedRoutes.user);
-        dispatch(authActions.logIn(loginData?.data));
-        sessionStorage.setItem("user", JSON.stringify(loginData?.data));
-        const serializedData = JSON.stringify(loginData?.data);
-        setCookie(USER_INFO, serializedData);
-        setCookie("userData", serializedData);
-        setCookie(TOKEN_KEY, loginData?.token);
-        toast.success(loginData.message);
-      } else {
-        setErr({ errTxt: loginData?.message, isErr: true });
+
+      console.log(loginData);
+
+      const storedData = {
+        id: loginData?.data?.id,
+        token: loginData?.token,
+      };
+
+      console.log(storedData);
+
+      if (loginData?.success) {
+        router.push("/user");
+        dispatch(authActions.logIn(loginData));
+        sessionStorage.setItem("user", JSON.stringify(storedData));
       }
       setLoggingIn(false);
     } catch (error) {
+    
       console.log(error);
       setLoggingIn(false);
     }

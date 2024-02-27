@@ -8,7 +8,6 @@ import { MdDynamicFeed } from "react-icons/md";
 import { BsAndroid2, BsApple } from "react-icons/bs";
 import QRCode from "react-qr-code";
 import Link from "next/link";
-import { AuthRoutes } from "@/constants/routes";
 
 interface LoginPageProps {
   children: ReactNode;
@@ -29,7 +28,7 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
           {/* Written Data */}
           <div className="w-[65%] flex flex-col gap-3 max-lg:hidden">
             {/* POI LOGO */}
-            <Link href={AuthRoutes.login} className="self-start">
+            <Link href={'/'} className='self-start'>
               <Image
                 priority={true}
                 src={Logo}

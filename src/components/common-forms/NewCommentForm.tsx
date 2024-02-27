@@ -38,24 +38,30 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({ CommentHandler, allDat
   };
 
   return (
-    <form className="flex items-start py-4 gap-5 mt-2 mb-1 relative max-[400px]:gap-3" onSubmit={addNewCommentHandler}>
-      <CustomImage
-        alt="user dp"
-        src={getImageUrl(userDetails?.image)}
-        width={1000}
-        height={1000}
-        className="w-10 aspect-square rounded-full object-center object-cover"
-      />
-      <textarea
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        rows={5}
-        placeholder="share your thoughts"
-        className="bg-zinc-100 p-3 outline-none flex-1 resize-none rounded-md placeholder:capitalize"
-      />
-      <button type="submit" className="absolute top-10 right-2">
-        <BiRightArrow />
-      </button>
-    </form>
+    <>
+      <form
+        className="flex items-start py-4 gap-5 mt-2 mb-1 relative max-[400px]:gap-3"
+        onSubmit={addNewCommentHandler}
+      >
+        <Image
+          alt="user dp"
+          src={userData?.data?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userData?.data?.image}` : ''}
+          width={1000}
+          height={1000}
+          className="w-10 aspect-square rounded-full object-center object-cover"
+        />
+        <textarea
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          rows={5}
+          placeholder="share your thoughts"
+          className="bg-zinc-100 p-3 outline-none flex-1 resize-none rounded-md placeholder:capitalize"
+        ></textarea>
+
+        <button type="submit" className="absolute top-10 right-2">
+          <BiRightArrow />
+        </button>
+      </form>
+    </>
   );
 };

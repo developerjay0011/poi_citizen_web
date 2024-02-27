@@ -1,5 +1,4 @@
 "use client";
-import { ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { cusDispatch } from "@/redux_store/cusHooks";
 import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
@@ -21,14 +20,14 @@ export const AdminControls: FC<AdminControlsProps> = () => {
       <aside className="flex flex-col py-5 px-4 w-full bg-white rounded shadow-lg gap-4 border">
         <ShortcutBtn
           Icon={FaUser}
-          title="view profile"
-          route={ProtectedRoutes.userProfile}
+          title='view profile'
+          route={`/user/profile`}
         />
 
         <ShortcutBtn
           Icon={FaEdit}
-          title="Edit Profile"
-          route={ProtectedRoutes.edit_profile}
+          title='Edit Profile'
+          route={`/user/profile/settings/edit-profile`}
         />
 
         <button onClick={() => dispatch(authActions.logOut())}>

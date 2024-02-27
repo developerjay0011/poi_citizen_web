@@ -1,24 +1,18 @@
-"use client";
-import { CommonBox } from "@/utils/CommonBox";
-import { FC, useEffect, useState } from "react";
-import { FaBell, FaClipboard, FaPowerOff, FaUser } from "react-icons/fa";
-import { ShortcutBtn } from "@/utils/ShortcutBtn";
-import { cusDispatch } from "@/redux_store/cusHooks";
-import { HiLightBulb } from "react-icons/hi";
-import { FaHandshakeAngle } from "react-icons/fa6";
-import { BiSolidMessageSquareError } from "react-icons/bi";
-import { FiEdit } from "react-icons/fi";
-import { IconType } from "react-icons/lib";
-import { GenerateId } from "@/utils/utility";
-import { authActions } from "@/redux_store/auth/authSlice";
-import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
-import { AnimatePresence } from "framer-motion";
-import { fetchCloseAccount, fetchDeactiveAccount } from "../api/profile";
-import { useRouter } from "next/navigation";
-import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
-import { CloseAccount, DeactiveAccount } from "@/redux_store/citizen/citizenApi";
+'use client'
+import { CommonBox } from '@/utils/CommonBox'
+import { FC } from 'react'
+import { FaBell, FaClipboard, FaPowerOff, FaUser } from 'react-icons/fa'
+import { ShortcutBtn } from '@/utils/ShortcutBtn'
+import { cusDispatch } from '@/redux_store/cusHooks'
+import { HiLightBulb } from 'react-icons/hi'
+import { FaHandshakeAngle } from 'react-icons/fa6'
+import { BiSolidMessageSquareError } from 'react-icons/bi'
+import { FiEdit } from 'react-icons/fi'
+import { IconType } from 'react-icons/lib'
+import { GenerateId } from '@/utils/utility'
+import { authActions } from '@/redux_store/auth/authSlice'
 
-interface ShortcutsBoxProps { }
+interface ShortcutsBoxProps {}
 
 class Shortcut {
   id = GenerateId();
@@ -34,70 +28,25 @@ class Shortcut {
 }
 
 const Shortcuts: Shortcut[] = [
-  new Shortcut(FaClipboard, "feed", ProtectedRoutes.user),
-  new Shortcut(FaUser, "my profile", ProtectedRoutes.userProfile),
+  new Shortcut(FaClipboard, 'feed', '/user'),
+  new Shortcut(FaUser, 'my profile', '/user/profile'),
   // new Shortcut(FaBell, 'notifications', `/user/profile/notifications`),
   new Shortcut(
     BiSolidMessageSquareError,
-    "complaints",
-    ProtectedRoutes.complaints
+    'complaints',
+    '/user/profile/complaints'
   ),
-  new Shortcut(FiEdit, "requests", ProtectedRoutes.requests),
+  new Shortcut(FiEdit, 'requests', '/user/profile/requests'),
   new Shortcut(
     FaHandshakeAngle,
-    "contributions",
-    ProtectedRoutes.contributions
+    'contributions',
+    '/user/profile/contributions'
   ),
-  new Shortcut(HiLightBulb, "suggestions", ProtectedRoutes.suggestions),
-];
-
-interface UserDetail {
-  token: string;
-  id: string;
-}
+  new Shortcut(HiLightBulb, 'suggestions', '/user/profile/suggestions'),
+]
 
 export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
-  const dispatch = cusDispatch();
-  const router = useRouter();
-  const [showConfirmBox, setShowConfirmBox] = useState(false);
-  const [showCloseConfirmBox, setShowCloseConfirmBox] = useState(false);
-
-  const [userData, setUserData] = useState<UserDetail>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-      setUserData(storedUser);
-    } else {
-    }
-  }, []);
-
-  const onClose = () => {
-    setShowConfirmBox(false);
-    setShowCloseConfirmBox(false);
-  };
-  const deactiveAccountHandler = async () => {
-    const citizenid = userData?.id;
-
-    // const data = await fetchDeactiveAccount(citizenid, token);
-    const data = await DeactiveAccount(citizenid);
-    if (data?.success) {
-      setShowConfirmBox(false);
-      router.push(AuthRoutes.login);
-    }
-  };
-  const CloseAccountHandler = async () => {
-    const citizenid = userData?.id;
-    const data = await CloseAccount(citizenid);
-    if (data?.success) {
-      setShowCloseConfirmBox(false);
-      router.push(AuthRoutes.login);
-    }
-  };
+  const dispatch = cusDispatch()
 
   return (
     <CommonBox title="shortcuts">

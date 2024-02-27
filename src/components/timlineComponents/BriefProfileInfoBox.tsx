@@ -24,10 +24,10 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
     <>
       <CommonBox title="profile" width="sticky top-0 right-0">
         {/* Profile info and pic */}
-        <section className="flex items-center my-5 gap-3 text-sky-950 max-[1400px]:gap-2">
-          <CustomImage
-            src={getImageUrl(userDetails?.image)}
-            alt="profile pic"
+        <section className='flex items-center my-5 gap-3 text-sky-950 max-[1400px]:gap-2'>
+          <Image
+            src={userDetails?.image ? `${process.env.NEXT_PUBLIC_BASE_URL}${userDetails?.image}`: ""}
+            alt='profile pic'
             width={100}
             height={100}
             className="w-[4.75rem] rounded-full aspect-square object-cover object-center max-[1400px]:w-[4.5rem] max-[1300px]:w-[4rem]"
@@ -35,10 +35,9 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
 
           <div className="flex flex-col gap-1">
             <Link
-              href={ProtectedRoutes.userProfile}
-              className="text-lg font-[600] max-[1300px]:text-[1.05rem] hover:text-orange-500 transition-all capitalize"
-            >
-              {userDetails?.username}
+              href={`/user/profile`}
+              className='text-lg font-[600] max-[1300px]:text-[1.05rem] hover:text-orange-500 transition-all capitalize'>
+              {userDetails?.firstname}
             </Link>
 
             {/* Messages */}

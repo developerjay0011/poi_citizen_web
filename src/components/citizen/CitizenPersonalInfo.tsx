@@ -1,7 +1,7 @@
 "use client";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { CommonBox } from "@/utils/CommonBox";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { BiLogoGmail } from "react-icons/bi";
 import { FaTransgenderAlt } from "react-icons/fa";
 import {
@@ -10,10 +10,9 @@ import {
   FaHandshake,
   FaPhone,
   FaUser,
-} from "react-icons/fa6";
-import { MdBloodtype } from "react-icons/md";
-import { RootState } from "@/redux_store";
-import moment from "moment";
+} from 'react-icons/fa6'
+import { MdBloodtype } from 'react-icons/md'
+
 interface CitizenPersonalInfoProps {}
 
 interface UserDetail {
@@ -39,9 +38,7 @@ interface UserDetails {
 }
 
 export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
-  const userDetails: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
+  const { userDetails } = cusSelector((st) => st.auth)
 
   return (
     <>
@@ -58,8 +55,8 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
           <div className="grid grid-cols-2 mt-8 gap-y-8 max-[400px]:grid-cols-1">
             <PersonalBriefInfo
               Icon={FaCakeCandles}
-              data={moment(userDetails?.dob).format("YYYY-MM-DD") as string}
-              heading="Date of Birth:"
+              data={userDetails?.dob as string}
+              heading='Date of Birth:'
             />
 
             <PersonalBriefInfo
@@ -82,10 +79,8 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
 
             <PersonalBriefInfo
               Icon={FaHandshake}
-              data={
-                moment(userDetails?.created_date).format("YYYY-MM-DD") as string
-              }
-              heading="Joined: "
+              data='18-feb-2023'
+              heading='Joined: '
             />
 
             <PersonalBriefInfo Icon={FaGlobe} data="India" heading="Country" />

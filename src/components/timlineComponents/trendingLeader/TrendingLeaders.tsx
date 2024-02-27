@@ -18,7 +18,35 @@ export const TrendingLeaders: FC = () => {
     }
   };
   useEffect(() => {
-    Gelfollowinglist();
+    (async () => {
+      const token = userDetails?.token;
+      const citizenid = userDetails?.id;
+
+      if (citizenid?.length > 0) {
+        const data = await fetchCitizenFollowingList(citizenid, token);
+        console.log(data);
+
+        if (data.length > 0) {
+          setFollowers(data);
+        }
+      }
+    })();
+  }, [userDetails, handleFollowers]);
+
+  useEffect(() => {
+    if (userDetails) {
+      (async () => {
+        const token = userDetails?.token;
+        const data = await fetchTrendingLeaderList(token);
+
+        console.log(data);
+
+        if (data.length > 0) {
+          setTrendingLeaders(data);
+          setHandleFollowers(data);
+        }
+      })();
+    }
   }, [userDetails]);
 
   const isFollow = (id: string) => {
@@ -37,8 +65,9 @@ export const TrendingLeaders: FC = () => {
         </h2>
         <div className="overflow-y-scroll flex-1 main_scrollbar">
           <ul className="flex flex-col">
-            {trendingleader?.length > 0 &&
-              trendingleader.map((el: any, index) => {
+            {trendingLeaders?.length > 0 &&
+              trendingLeaders.map((el: any, index) => {
+
                 return (
                   <TrendingLeader
                     key={index}

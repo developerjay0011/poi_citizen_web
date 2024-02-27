@@ -29,9 +29,8 @@ export const authSlice = createSlice({
       state.trendingleader = action.payload;
     },
     logOut(state) {
-      state.userDetails = null;
-      deleteCookie(TOKEN_KEY);
-      deleteCookie(USER_INFO);
+      state.userDetails = null
+      sessionStorage.clear()
     },
   },
 });

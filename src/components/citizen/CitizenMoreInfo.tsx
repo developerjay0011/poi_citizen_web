@@ -5,41 +5,20 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { FaFacebook, FaInstagram, FaRedhat, FaTwitter } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
+import { fetchGetSingleCitizen } from "../api/profile";
 
-interface CitizenMoreInfoProps { }
-interface UserDetail {
-  token: string;
-  id: string;
-}
-
-interface UserDetails {
-  firstname: string;
-  email: string;
-  phoneNo: string;
-  gender: string;
-  dob: string;
-  bloodGroup: string;
-  higherEducation: string;
-  country: string;
-  socialMedia: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-  };
-  about: string;
-}
+interface CitizenMoreInfoProps {}
 
 export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
-  const { userDetails } = cusSelector((st) => st.auth);
+  const { userDetails } = cusSelector((st) => st.auth)
 
   const socialNetworks: (JSX.Element | string)[] = [
     userDetails?.socialMedia?.facebook ? (
       <Link
-        target="_blank"
-        href={userDetails?.socialMedia.facebook}
-        className=" text-sky-950 text-[1.6rem]"
-        key={Math.random()}
-      >
+        target='_blank'
+        href={userDetails.socialMedia.facebook}
+        className=' text-sky-950 text-[1.6rem]'
+        key={Math.random()}>
         <FaFacebook />
       </Link>
     ) : (
@@ -47,11 +26,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     ),
     userDetails?.socialMedia?.instagram ? (
       <Link
-        target="_blank"
-        href={userDetails?.socialMedia.instagram}
-        className=" text-sky-950 text-[1.6rem]"
-        key={Math.random()}
-      >
+        target='_blank'
+        href={userDetails.socialMedia.instagram}
+        className=' text-sky-950 text-[1.6rem]'
+        key={Math.random()}>
         <FaInstagram />
       </Link>
     ) : (
@@ -59,11 +37,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     ),
     userDetails?.socialMedia?.twitter ? (
       <Link
-        target="_blank"
-        href={userDetails?.socialMedia.twitter}
-        className=" text-sky-950 text-[1.6rem]"
-        key={Math.random()}
-      >
+        target='_blank'
+        href={userDetails.socialMedia.twitter}
+        className=' text-sky-950 text-[1.6rem]'
+        key={Math.random()}>
         <FaTwitter />
       </Link>
     ) : (

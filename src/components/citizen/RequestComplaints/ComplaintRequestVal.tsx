@@ -92,11 +92,10 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
               {to.slice(0, 5).map((el, i) => (
                 <div
                   key={i}
-                  className={`cursor-pointer toList w-10 aspect-square bg-red-100 object-cover object-center rounded-full border-2 border-gray-50 ${TOClasses[i]}`}
-                >
-                  <CustomImage
-                    src={getImageUrl(el.leaderProfilePic as string)}
-                    alt="leader img"
+                  className={`cursor-pointer toList w-10 aspect-square bg-red-100 object-cover object-center rounded-full border-2 border-gray-50 ${TOClasses[i]}`}>
+                  <Image
+                    src={el.leaderProfilePic ? `${process.env.NEXT_PUBLIC_BASE_URL}${el.leaderProfilePic}` : ''}
+                    alt='leader img'
                     width={1000}
                     height={1000}
                     className={`object-cover object-center w-full h-full rounded-full`}
