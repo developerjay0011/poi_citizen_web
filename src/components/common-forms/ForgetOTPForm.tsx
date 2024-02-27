@@ -1,6 +1,8 @@
 'use client'
 import { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from 'react'
 import { motion as m } from 'framer-motion'
+import { verifyOtp } from '@/redux_store/auth/authAPI'
+import toast from 'react-hot-toast'
 
 interface ForgetOTPFormProps {
   proceedFn: () => void
@@ -15,6 +17,26 @@ export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
 }) => {
   const [OTP, setOTP] = useState(['', '', '', '', '', ''])
   const [activeOtpIndex, setActiveOtpIndex] = useState(0)
+  const [registering, setRegistering] = useState(false);
+  const verifyOTP = async (otp: string) => {
+    try {
+        setRegistering(true);
+        const body = {
+          mobile: number,
+          otp: otp,
+        };
+        const sandOtp = await verifyOtp(body);
+      setRegistering(false);
+      if (sandOtp?.success) {
+    proceedFn()
+  } else {
+        toast.error(sandOtp.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setRegistering(false);
+    }
+  };
   const otpInpRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     otpInpRef.current?.focus()
@@ -22,27 +44,20 @@ export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
 
   const otpChangeHandleHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const userEnteredOtp = [...OTP]
-
     userEnteredOtp[curOtpIndex] = e.target.value.substring(
       e.target.value.length - 1
     )
-
     if (!e.target.value) setActiveOtpIndex(curOtpIndex - 1)
     else setActiveOtpIndex(curOtpIndex + 1)
-
     setOTP(userEnteredOtp)
   }
 
   const otpSubmitHandler = (e: FormEvent) => {
     e.preventDefault()
-
     const otp = OTP.join('')
-
-    console.log(otp.length)
-
     if (otp.length !== 6) return
+    verifyOTP(otp)
 
-    proceedFn()
   }
 
   return (
@@ -88,8 +103,9 @@ export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
       <div className='flex items-center self-center gap-2 mt-6'>
         <button
           type='submit'
+          disabled={registering}
           className='bg-sky-800 text-sky-50 py-2 px-5 rounded-full'>
-          Verify
+          {registering?'Verify....':"Verify"}
         </button>
       </div>
     </m.form>

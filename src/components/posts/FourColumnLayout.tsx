@@ -9,9 +9,8 @@ export const FourColumnImgLayout: FC<{
   media: MediaPost[]
   showFullPost: boolean
   hidePost: () => void
-  postId: string
   userId: string
-}> = ({ onClick, media, hidePost, showFullPost, postId, userId }) => {
+}> = ({ onClick, media, hidePost, showFullPost, userId }) => {
   return (
     <>
       <figure
@@ -21,6 +20,7 @@ export const FourColumnImgLayout: FC<{
           if (el.type === 'image')
             return (
               <Image
+                priority={true}
                 key={el.id}
                 src={el.media}
                 width={1000}
@@ -47,7 +47,6 @@ export const FourColumnImgLayout: FC<{
           <FullPost
             onClose={hidePost}
             posts={media}
-            postId={postId}
             userId={userId}
           />
         )}

@@ -15,29 +15,29 @@ export const fetchAddStory = async (formData: any, token: any) => {
 
     return response.data;
   } catch (error) {
-    throw error; // You can throw or handle the error as per your requirement
+    throw error; 
   }
 };
 
-export const fetchGetStoriesForCitizen = async (
-  citizenid: string,
-  token: string
-) => {
-  try {
-    const respomse = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/Post/GetStoriesForCitizen/${citizenid}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      }
-    );
-    return respomse.data;
-  } catch (error) {
-    throw error; // You can throw or handle the error as
-  }
-};
+// export const fetchGetStoriesForCitizen = async (
+//   citizenid: string,
+//   token: string
+// ) => {
+//   try {
+//     const respomse = await axios.get(
+//       `${process.env.NEXT_PUBLIC_BASE_URL}/api/Post/GetStoriesForCitizen/${citizenid}`,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: "Bearer " + token,
+//         },
+//       }
+//     );
+//     return respomse.data;
+//   } catch (error) {
+//     throw error; 
+//   }
+// };
 
 export const fetchDeleteStory = async (postBody: any, token: any) => {
     try {

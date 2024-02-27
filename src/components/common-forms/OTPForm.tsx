@@ -83,7 +83,9 @@ export const OTPForm: FC<OTPFormProps> = ({
           exit={{ rotateX: -80 }}
           transition={{ ease: 'easeOut' }}
           className='bg-sky-50 origin-top rounded-md shadow-md z-30 w-max relative m-auto px-10 py-8 flex flex-col items-center gap-10 mt-10'>
-          <Image src={Logo} alt='poi logo' className='w-auto h-[8rem]' />
+          <Image
+            priority={true}
+            src={Logo} alt='poi logo' className='w-auto h-[8rem]' />
 
           <form
             className='text-sky-950 flex flex-col gap-3'

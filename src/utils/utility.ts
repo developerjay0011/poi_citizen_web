@@ -26,8 +26,6 @@ export const ConnectToAPI = async (
   //   : API_URL + '/' + enpointORurl
 
   // FOR DEV
-  // console.log('URL: ', url)
-  console.log('PAYLOAD: ', body)
 
   let response
 
@@ -69,12 +67,9 @@ export const ConnectToAPI = async (
   const data = await response.json()
 
   // FOR DEV
-  console.log('RESPONSE: ', data)
 
   // Handling Error
   if (data.rStatus !== 0) throw new Error(data.rData.rMessage)
-
-  console.log('EVENT_ID: ' + data.eventID)
 
   // returning data if no error occured
   return data.rData

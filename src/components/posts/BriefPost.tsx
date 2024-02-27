@@ -4,7 +4,7 @@ import { FC } from 'react'
 import { BiComment, BiLike, BiShare } from 'react-icons/bi'
 import { RiCheckboxMultipleBlankFill } from 'react-icons/ri'
 
-interface BriefPostProps {}
+interface BriefPostProps { }
 export const BriefPost: FC<BriefPostProps> = () => {
   return (
     <>
@@ -30,6 +30,7 @@ export const BriefPost: FC<BriefPostProps> = () => {
         </div>
         <Image
           width={1000}
+          priority={true}
           height={1000}
           className='w-full h-full object-cover object-center'
           src={userImg}

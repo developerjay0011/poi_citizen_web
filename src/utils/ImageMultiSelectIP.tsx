@@ -50,9 +50,8 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
         </span>
         <section
           id='multiSelectImgField'
-          className={`flex items-center border border-slate-300 bg-slate-100 py-[.5rem] pr-[.4rem] rounded-md gap-2 cursor-pointer relative ${
-            selectedLeaders.length > 0 ? 'pl-3' : 'pl-4'
-          }`}>
+          className={`flex items-center border border-slate-300 bg-slate-100 py-[.5rem] pr-[.4rem] rounded-md gap-2 cursor-pointer relative ${selectedLeaders.length > 0 ? 'pl-3' : 'pl-4'
+            }`}>
           <div className='flex flex-wrap items-center gap-1 flex-1'>
             {selectedLeaders.map((el) => (
               <span
@@ -124,6 +123,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                       className='flex items-center hover:bg-slate-100 p-3 gap-3 last_noti border-slate-200'>
                       <Image
                         src={el.leaderProfilePic}
+                        priority={true}
                         alt='Display pic'
                         className='w-10 aspect-square rounded-full object-cover object-center'
                       />

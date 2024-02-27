@@ -1,17 +1,19 @@
-import {
-  fetchFollowLeader,
-  fetchUnFollowLeader,
-} from "@/components/api/followCitixen";
 import { TrendingLeaderBriefDetails } from "@/utils/typesUtils";
 import Image from "next/image";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
+import NoImg from "@/assets/No_image_available.png";
+import { cusSelector } from "@/redux_store/cusHooks";
+import { getImageUrl } from "@/config/get-image-url";
+import {
+  fetchFollowLeader,
+  fetchUnFollowLeader,
+} from "@/redux_store/follow/followAPI";
+import toast from "react-hot-toast";
+import CustomImage from "@/utils/CustomImage";
 
-interface TrendingLeaderProps extends TrendingLeaderBriefDetails {}
-
-interface UserDetails {
-  token: string;
-  id: string;
+interface TrendingLeaderProps extends TrendingLeaderBriefDetails {
+  isfollowing: boolean;
 }
 
 export const TrendingLeader: FC<TrendingLeaderProps> = ({
@@ -21,69 +23,49 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
   id,
   following,
   unfollow,
+  isfollowing,
 }) => {
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const handleFollower = async (id: string) => {
-    const token = userDetails?.token;
     const postBody = {
       senderid: userDetails?.id,
       receiverid: id,
     };
-
-    const followedLeader = await fetchFollowLeader(postBody, token);
-
+    const followedLeader = await fetchFollowLeader(postBody);
     if (followedLeader?.success) {
-      following(followedLeader);
+      following();
     }
   };
 
   const handleUnFollower = async (id: string) => {
-    const token = userDetails?.token;
     const postBody = {
       senderid: userDetails?.id,
       receiverid: id,
     };
-
-    const followedLeader = await fetchUnFollowLeader(postBody, token);
-
+    const followedLeader = await fetchUnFollowLeader(postBody);
     if (followedLeader?.success) {
-      following(followedLeader);
+      following();
     }
   };
 
   return (
     <li className="flex gap-3 py-3 px-3 last_noti items-center transition-all hover:bg-slate-50">
-      <Image
-        src={image ? `${process.env.NEXT_PUBLIC_BASE_URL}${image}` : ''}
+      <CustomImage
+        src={getImageUrl(image as string)}
         alt="trending user"
         width={1000}
         height={1000}
         className="rounded-full w-12 aspect-square object-cover object-center"
       />
 
-      <Link href={`/leader/${id}`}>
+      <Link href={`ProtectedRoutes.leader/${id}`}>
         <div className="flex flex-col">
           <h3 className="text-[14px] font-semibold capitalize">{username}</h3>
           <p className="text-[12px] capitalize">{designation}</p>
         </div>
       </Link>
 
-      {unfollow ? (
+      {isfollowing ? (
         <button
           type="button"
           className="text-orange-500 hover:underline ml-auto text-[15px]"

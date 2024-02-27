@@ -15,8 +15,10 @@ import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
 import { AnimatePresence } from "framer-motion";
 import { fetchCloseAccount, fetchDeactiveAccount } from "../api/profile";
 import { useRouter } from "next/navigation";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
+import { CloseAccount, DeactiveAccount } from "@/redux_store/citizen/citizenApi";
 
-interface ShortcutsBoxProps {}
+interface ShortcutsBoxProps { }
 
 class Shortcut {
   id = GenerateId();
@@ -32,21 +34,21 @@ class Shortcut {
 }
 
 const Shortcuts: Shortcut[] = [
-  new Shortcut(FaClipboard, "feed", "/user"),
-  new Shortcut(FaUser, "my profile", "/user/profile"),
+  new Shortcut(FaClipboard, "feed", ProtectedRoutes.user),
+  new Shortcut(FaUser, "my profile", ProtectedRoutes.userProfile),
   // new Shortcut(FaBell, 'notifications', `/user/profile/notifications`),
   new Shortcut(
     BiSolidMessageSquareError,
     "complaints",
-    "/user/profile/complaints"
+    ProtectedRoutes.complaints
   ),
-  new Shortcut(FiEdit, "requests", "/user/profile/requests"),
+  new Shortcut(FiEdit, "requests", ProtectedRoutes.requests),
   new Shortcut(
     FaHandshakeAngle,
     "contributions",
-    "/user/profile/contributions"
+    ProtectedRoutes.contributions
   ),
-  new Shortcut(HiLightBulb, "suggestions", "/user/profile/suggestions"),
+  new Shortcut(HiLightBulb, "suggestions", ProtectedRoutes.suggestions),
 ];
 
 interface UserDetail {
@@ -69,10 +71,8 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {
       var storedUser = JSON.parse(storedUserString);
-
       setUserData(storedUser);
     } else {
-      console.log("User data not found in session storage");
     }
   }, []);
 
@@ -82,27 +82,20 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
   };
   const deactiveAccountHandler = async () => {
     const citizenid = userData?.id;
-    const token = userData?.token;
 
-    const data = await fetchDeactiveAccount(citizenid, token);
-
-    console.log(data);
-
+    // const data = await fetchDeactiveAccount(citizenid, token);
+    const data = await DeactiveAccount(citizenid);
     if (data?.success) {
       setShowConfirmBox(false);
-      router.push("/");
+      router.push(AuthRoutes.login);
     }
   };
   const CloseAccountHandler = async () => {
     const citizenid = userData?.id;
-    const token = userData?.token;
-
-    const data = await fetchCloseAccount(citizenid, token);
-
-    console.log(data);
+    const data = await CloseAccount(citizenid);
     if (data?.success) {
       setShowCloseConfirmBox(false);
-      router.push("/");
+      router.push(AuthRoutes.login);
     }
   };
 

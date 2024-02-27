@@ -1,4 +1,5 @@
 'use client'
+import { ProtectedRoutes } from '@/constants/routes'
 import { GenerateId } from '@/utils/utility'
 import Link from 'next/link'
 import { FC, useState, useId } from 'react'
@@ -34,7 +35,7 @@ const AdminGeneralSettingPage: FC = () => {
 
         <div className='flex justify-end gap-3'>
           <Link
-            href={'/leader/profile'}
+            href={ProtectedRoutes.leaderProfile}
             className='rounded-full px-8 py-3 text-[14px] bg-gray-400 text-gray-50 transition-all capitalize hover:bg-orange-500 hover:text-orange-50'>
             cancel
           </Link>

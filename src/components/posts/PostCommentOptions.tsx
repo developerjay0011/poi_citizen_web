@@ -12,31 +12,13 @@ interface PostCommentOptionsProps {
   userId: string
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const PostCommentOptions: FC<PostCommentOptionsProps> = ({
   deleteCommentHandler,
   onClose,
   userId,
 }) => {
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  const { userDetails } = cusSelector((st) => st.auth);
   const [showConfirmBox, setShowConfirmBox] = useState(false)
 
   return (
