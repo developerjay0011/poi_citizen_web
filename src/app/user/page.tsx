@@ -31,7 +31,6 @@ const CitizenHomePage = () => {
     })();
   }, [userDetails]);
 
-
   useEffect(() => {
     (async () => {
       try {

@@ -184,6 +184,7 @@ export const RegisterForm: FC = () => {
         {/* For Screens less than 1090px */}
 
         <Image
+          priority={true}
           src={Logo}
           alt="poi logo"
           className="hidden w-auto self-start m-auto max-lg:block h-[10rem]"
