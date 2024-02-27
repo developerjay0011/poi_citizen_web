@@ -11,6 +11,9 @@ import { GetRaisedComplaints} from "@/redux_store/complaints/complaintsApi";
 import { useEffect, useState } from "react";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
+import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";
+import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
+import { requestActions } from "@/redux_store/requests/requestSlice";
 
 
 const CitizenHomePage = () => {
@@ -54,10 +57,25 @@ const CitizenHomePage = () => {
       try {
         if (userDetails?.id) {
           const data = await GetRaisedRequests(userDetails?.id);
-          console.log(data, "dataGetRaisedRequestsdataGetRaisedRequestsdataGetRaisedRequests");
 
           if (data.length > 0) {
-            dispatch(complaintActions.storeComplaints(data))
+            dispatch(requestActions.storeComplaints(data))
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [userDetails]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (userDetails?.id) {
+          const data = await GetSuggestions(userDetails?.id);
+
+          if (data.length > 0) {
+            dispatch(suggestionActions.storeComplaints(data))
           }
         }
       } catch (error) {

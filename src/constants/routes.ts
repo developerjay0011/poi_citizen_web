@@ -71,10 +71,12 @@ export const APIRoutes = {
   RaiseRequest: `${API_Prefix}/Citizen/RaiseRequest`,
   DeleteRequest: `${API_Prefix}/Citizen/DeleteRequest/{{requestid}}`,
 
+  GetSuggestions: `${API_Prefix}/Citizen/GetSuggestions/{{citizenid}}`,
+  SaveSuggestion: `${API_Prefix}/Citizen/SaveSuggestion`,
+  DeleteSuggestion: `${API_Prefix}/Citizen/DeleteSuggestion/{{suggestionid}}`,
 
+  GetContributions: `${API_Prefix}/api/Citizen/GetContributions/{{citizenid}}`,
+  SaveContribution: `${API_Prefix}/api/Citizen/SaveContribution`,
+  DeleteContribution: `${API_Prefix}/api/Citizen/DeleteContribution/{{contributionid}}`,
 
-  /* upsertLeaders: `${API_Prefix}/Leader/AddEditLeader`,
-   getAccessTabs: `${API_Prefix}/Leader/GetAccessTabs/{{userId}}`,
-   getProfile: `${API_Prefix}/Leader/GetSingleLeader/{{userId}}`,
-   getFollowers: `${API_Prefix}/Leader/FollowerList/{{userId}}`, */
 }       

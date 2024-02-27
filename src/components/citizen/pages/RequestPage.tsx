@@ -91,7 +91,7 @@ export const RequestPage: FC = () => {
     }
     closeForm();
 
-    dispatch(addNewRequest(request));
+    // dispatch(addNewRequest(request));
   };
 
   /*  useEffect(() => {

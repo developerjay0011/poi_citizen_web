@@ -9,9 +9,6 @@ import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import {
   addNewComplaint,
   DeleteComplaint,
-  deleteComplaint,
-  fetchAllComplaints,
-  GetRaisedComplaints,
   RaiseComplaint,
 } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
@@ -32,6 +29,9 @@ export const ComplaintPage: FC = () => {
   });
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
+
+  console.log(complaints, "complaints");
+  
 
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);

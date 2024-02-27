@@ -22,7 +22,6 @@ interface FullPostProps {
   userId: string;
 }
 
-
 export const FullPost: FC<FullPostProps> = ({
   onClose,
   posts,
@@ -150,7 +149,7 @@ export const FullPost: FC<FullPostProps> = ({
             <div className="flex flex-col overflow-y-scroll main_scrollbar">
               {/* comments box */}
               <ul className="flex flex-col gap-5 bg-white mt-4">
-                {curPost.comments.map((el) => (
+                {curPost?.comments?.map((el) => (
                   <SingleComment
                     {...el}
                     key={el.id}
@@ -178,7 +177,6 @@ interface InteractionsPerMediaProps {
   likePerPostHandler: () => void;
 }
 
-
 const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   curPost,
   likePerPostHandler,
@@ -195,7 +193,9 @@ const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   useEffect(() => {
     // Reseting firstTime | likeAnimation | likeCount whenever curpost values changes because this component only un-mounts when parent gets unmounted
     setFirstTime(true);
-    setShowLikeAnimation(curPost.likes.some((el) => el.userId === userDetails?.id));
+    setShowLikeAnimation(
+      curPost.likes.some((el) => el.userId === userDetails?.id)
+    );
     setLikeCount(curPost.likes.length);
   }, [curPost, userDetails]);
 
