@@ -20,13 +20,13 @@ export const AdminControls: FC<AdminControlsProps> = () => {
       <aside className="flex flex-col py-5 px-4 w-full bg-white rounded shadow-lg gap-4 border">
         <ShortcutBtn
           Icon={FaUser}
-          title="view profile"
+          title='view profile'
           route={`/user/profile`}
         />
 
         <ShortcutBtn
           Icon={FaEdit}
-          title="Edit Profile"
+          title='Edit Profile'
           route={`/user/profile/settings/edit-profile`}
         />
 

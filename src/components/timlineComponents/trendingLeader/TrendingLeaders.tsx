@@ -1,37 +1,22 @@
 import { FC, useEffect, useState } from "react";
 import { TrendingLeader } from "./TrendingLeader";
-
-import {
-  fetchCitizenFollowingList,
-  fetchTrendingLeaderList,
-} from "@/components/api/followCitixen";
-
-interface UserDetails {
-  token: string;
-  id: string;
-  // Add any other properties you expect in UserDetails
-}
-
+import { fetchTrendingLeaderList } from "@/redux_store/auth/authAPI";
+import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
+import { fetchCitizenFollowingList } from "@/redux_store/follow/followAPI";
+import { followActions } from "@/redux_store/follow/followSlice";
+import { authActions } from "@/redux_store/auth/authSlice";
 export const TrendingLeaders: FC = () => {
-  const [followers, setFollowers] = useState([]);
-  const [trendingLeaders, setTrendingLeaders] = useState([]);
-  const [handleFollowers, setHandleFollowers] = useState({});
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
+  const { userDetails, trendingleader } = cusSelector((st) => st.auth);
+  const { following } = cusSelector((st) => st.follow);
+  const dispatch = cusDispatch();
+  const Gelfollowinglist = async () => {
+    if (userDetails?.id) {
+      const data = await fetchCitizenFollowingList(userDetails?.id);
+      const trending = await fetchTrendingLeaderList();
+      dispatch(followActions.Following(data));
+      dispatch(authActions.Settrendingleader(trending));
     }
-  }, []);
-
+  };
   useEffect(() => {
     (async () => {
       const token = userDetails?.token;
@@ -64,10 +49,12 @@ export const TrendingLeaders: FC = () => {
     }
   }, [userDetails]);
 
-  const following = (data: any) => {
-    setHandleFollowers(data);
+  const isFollow = (id: string) => {
+    if (Array.isArray(following)) {
+      var follows = following?.find((item) => item?.leaderid == id);
+      return follows?.leaderid ? true : false;
+    } else false;
   };
-
   return (
     <>
       <section
@@ -76,20 +63,18 @@ export const TrendingLeaders: FC = () => {
         <h2 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:rounded-full after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-6 py-3 border-b font-[500] text-[16px] capitalize">
           Trending Citizen
         </h2>
-
-        {/* <div className="overflow-y-scroll flex-1 main_scrollbar">
-          <ul className="flex flex-col">
-            {LEADERS.map((el) => (
-              <TrendingLeader key={el.id} {...el} />
-            ))}
-          </ul>
-        </div> */}
         <div className="overflow-y-scroll flex-1 main_scrollbar">
           <ul className="flex flex-col">
             {trendingLeaders?.length > 0 &&
               trendingLeaders.map((el: any, index) => {
+
                 return (
-                  <TrendingLeader key={index} {...el} following={following} />
+                  <TrendingLeader
+                    key={index}
+                    {...el}
+                    following={async () => await Gelfollowinglist()}
+                    isfollowing={isFollow(el?.id)}
+                  />
                 );
               })}
           </ul>

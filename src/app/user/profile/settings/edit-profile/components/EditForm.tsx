@@ -33,115 +33,15 @@ interface UserDetail {
 }
 
 const EditForm: FC<EditFormProps> = () => {
-  // const [userData, setUserData] = useState<UserDetail>({
-  //   token: "",
-  //   id: "",
-  // });
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
-  const [isEditProfile, setIsEditProfile] = useState({});
-  const dispatch = cusDispatch();
-  // useEffect(() => {
-  //   var storedUserString = sessionStorage.getItem("user");
-  //   if (storedUserString !== null) {
-  //     var storedUser = JSON.parse(storedUserString);
-
-  //     setUserData(storedUser);
-  //   } else {
-  //     console.log("User data not found in session storage");
-  //   }
-  // }, []);
-
-  console.log(userData);
-
   const {
     register,
     formState: { errors },
     handleSubmit,
-    setValue 
-  } = useForm<UserDetails>({ mode: "onTouched" });
+  } = useForm<UserDetails>({ mode: 'onTouched' })
 
-  const formSubmitHandler = async (data: UserDetails) => {
-    console.log(data);
-    var storedUserString = sessionStorage.getItem("user");
-    var storedUser = JSON.parse(storedUserString as string);
-    const citizenid = storedUser?.id;
-   
-    const postBody = {
-      citizenid: citizenid,
-      name: data?.username,
-      email: data?.email,
-      mobile: data?.mobile,
-      image: userData?.image,
-      gender: data?.gender,
-      dob: data?.dob,
-      blood_group: data?.blood_group,
-      higher_education: data?.higher_education,
-      country: data?.country,
-      fb_link: data?.fb_link || "",
-      insta_link: data?.insta_link || "",
-      twitter_link: data?.twitter_link || "",
-      about_me: data?.about_me,
-    };
-
-    console.log(postBody);
-
-    const token = storedUser?.token;
-    try {
-      const editData = await fetchEditCitizenProfile(postBody, token);
-
-     
-
-      if (editData?.success) {
-        const data = await fetchGetSingleCitizen(citizenid, token);
-        console.log("fetchGetSingleCitizen",data);
-        toast.success(editData?.message)
-        dispatch(authActions.logIn(data));
-        setIsEditProfile(editData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      // const citizenid = userData?.id;
-      // const token = userData?.token;
-
-      // console.log(citizenid?.length);
-      // console.log(token);
-
-      // if (citizenid?.length > 0) {
-      //   try {
-      var storedUserString = sessionStorage.getItem("user");
-      var storedUser = JSON.parse(storedUserString as string);
-      const citizenid = storedUser?.id;
-      const token = storedUser?.token;
-          const data = await fetchGetSingleCitizen(citizenid, token);
-
-      dispatch(authActions.logIn(data));
-
-      setValue('username', data?.username || '');
-      setValue('email', data?.email || '');
-      setValue('mobile', data?.mobile || '');
-      setValue('gender', data?.gender || '');
-      setValue('dob', moment(data?.dob).format("YYYY-MM-DD")  || '');
-      setValue('blood_group', data?.blood_group || '');
-      setValue('higher_education', data?.higher_education || '');
-      setValue('country', data?.country || '');
-      setValue('fb_link', data?.fb_link || '');
-      setValue('insta_link', data?.insta_link || '');
-      setValue('twitter_link', data?.twitter_link || '');    
-      setValue('about_me', data?.about_me || '');
-
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // }
-    })();
-  }, []);
+  const formSubmitHandler = (data: UserDetails) => {
+    console.log(data)
+  }
 
   return (
     <form
@@ -290,9 +190,8 @@ const EditForm: FC<EditFormProps> = () => {
 
       <div className="flex justify-end gap-2 mt-5">
         <Link
-          href={"/user/profile"}
-          className="rounded px-6 py-2 bg-orange-200 text-orange-500 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] capitalize hover:bg-orange-500 hover:text-orange-50"
-        >
+          href={'/user/profile'}
+          className='rounded px-6 py-2 bg-orange-200 text-orange-500 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] capitalize hover:bg-orange-500 hover:text-orange-50'>
           close
         </Link>
         <button

@@ -5,16 +5,17 @@ import { BiSolidMessageSquareError } from 'react-icons/bi'
 import { FaHandshakeAngle } from 'react-icons/fa6'
 import { HiLightBulb } from 'react-icons/hi'
 import { FiEdit } from 'react-icons/fi'
+import { ProtectedRoutes } from '@/constants/routes'
 
 export const LeftNavbar: FC = () => {
   return (
     <>
       <section className='py-8 px-3 bg-white flex flex-col shadow_left gap-5 h-full max-[1000px]:hidden'>
-        <LeftNavLink link={`/user`} info='feed'>
+        <LeftNavLink link={ProtectedRoutes.user} info='feed'>
           <FaClipboard />
         </LeftNavLink>
 
-        <LeftNavLink link={`/user/profile`} info='my profile'>
+        <LeftNavLink link={ProtectedRoutes.userProfile} info='my profile'>
           <FaUser />
         </LeftNavLink>
 
@@ -22,19 +23,19 @@ export const LeftNavbar: FC = () => {
           <FaBell />
         </LeftNavLink> */}
 
-        <LeftNavLink link={`/user/profile/complaints`} info='complaints'>
+        <LeftNavLink link={ProtectedRoutes.complaints} info='complaints'>
           <BiSolidMessageSquareError />
         </LeftNavLink>
 
-        <LeftNavLink link={`/user/profile/requests`} info='requests'>
+        <LeftNavLink link={ProtectedRoutes.requests} info='requests'>
           <FiEdit />
         </LeftNavLink>
 
-        <LeftNavLink link={`/user/profile/contributions`} info='contributions'>
+        <LeftNavLink link={ProtectedRoutes.contributions} info='contributions'>
           <FaHandshakeAngle />
         </LeftNavLink>
 
-        <LeftNavLink link={`/user/profile/suggestions`} info='suggestions'>
+        <LeftNavLink link={ProtectedRoutes.suggestions} info='suggestions'>
           <HiLightBulb />
         </LeftNavLink>
       </section>

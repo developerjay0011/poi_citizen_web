@@ -1,4 +1,5 @@
 'use client'
+import { ProtectedRoutes } from '@/constants/routes'
 import { CusLink } from '@/utils/CusLink'
 import { FC, ReactNode } from 'react'
 import { FaEdit } from 'react-icons/fa'
@@ -11,7 +12,7 @@ const CitzenSettingsLayout: FC<{ children: ReactNode }> = ({ children }) => {
         <nav className='flex flex-col gap-5 max-[920px]:flex-row'>
           <CusLink
             normalClasses='text-sky-950'
-            href={`/user/profile/settings/edit-profile`}
+            href={ProtectedRoutes.edit_profile}
             className='flex items-center gap-2 transition-all hover:text-orange-600'
             activeLinkClasses='text-orange-600'>
             <FaEdit /> <span className='capitalize'>edit profile</span>

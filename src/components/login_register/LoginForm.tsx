@@ -17,11 +17,17 @@ import { LPInputField } from "@/utils/LPInputField";
 import { cusDispatch } from "@/redux_store/cusHooks";
 import { ForgetPassword } from "../common-forms/ForgetPasswordForm";
 import { AnimatePresence } from "framer-motion";
-import { userLogin } from "@/redux_store/auth/authAPI";
-import { fetchLogin } from "../api/Auth";
 import { authActions } from "@/redux_store/auth/authSlice";
+import { CheckCitizenExists, fetchLogin } from "@/redux_store/auth/authAPI";
+import { setCookie } from "cookies-next";
+import { TOKEN_KEY, USER_INFO } from "@/constants/common";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
+import toast from "react-hot-toast";
 
-interface LoginFormProps {}
+interface ForgetPassword {
+  onClose: () => void;
+}
+interface LoginFormProps { }
 export const LoginForm: FC<LoginFormProps> = () => {
   const router = useRouter();
   const [loggingIn, setLoggingIn] = useState(false);
@@ -47,22 +53,6 @@ export const LoginForm: FC<LoginFormProps> = () => {
   const formSubmitHandler = async (
     data: LoginFormFields | RegisterFormFields
   ) => {
-    console.log(data);
-
-    /*  try {
-      setLoggingIn(true)
-      setErr({ errTxt: '', isErr: false })
-
-      await dispatch(userLogin(data as LoginFormFields))
-
-      router.push('/user')
-    } catch (error: any) {
-      console.error(error)
-      setErr({ errTxt: error.message, isErr: true })
-    } finally {
-      setLoggingIn(false)
-    } */
-
     const resBody = {
       email: data?.userId,
       password: data?.password,
@@ -89,8 +79,6 @@ export const LoginForm: FC<LoginFormProps> = () => {
         router.push("/user");
         dispatch(authActions.logIn(loginData));
         sessionStorage.setItem("user", JSON.stringify(storedData));
-      } else {
-        setErr({ errTxt: loginData?.message, isErr: true })
       }
       setLoggingIn(false);
     } catch (error) {
@@ -109,6 +97,7 @@ export const LoginForm: FC<LoginFormProps> = () => {
       >
         {/* For Screens less than 1090px */}
         <Image
+          priority={true}
           src={Logo}
           alt="poi logo"
           className="hidden w-auto self-start m-auto max-lg:block h-[10rem]"
@@ -187,8 +176,11 @@ export const LoginForm: FC<LoginFormProps> = () => {
           </button>
 
           <p className="mt-5 max-[500px]:ml-3">
-            Dont have an account?{" "}
-            <Link href="/register" className="underline hover:font-[600]">
+            Dont have an account?
+            <Link
+              href={AuthRoutes.register}
+              className="underline hover:font-[600]"
+            >
               Register with us
             </Link>
           </p>

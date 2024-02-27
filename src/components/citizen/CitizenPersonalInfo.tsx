@@ -10,11 +10,9 @@ import {
   FaHandshake,
   FaPhone,
   FaUser,
-} from "react-icons/fa6";
-import { MdBloodtype } from "react-icons/md";
-import { fetchGetSingleCitizen } from "../api/profile";
-import { RootState } from "@/redux_store";
-import moment from "moment";
+} from 'react-icons/fa6'
+import { MdBloodtype } from 'react-icons/md'
+
 interface CitizenPersonalInfoProps {}
 
 interface UserDetail {
@@ -40,63 +38,7 @@ interface UserDetails {
 }
 
 export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
-  // const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
-  // const [userData, setUserData] = useState<UserDetail>({
-  //   token: "",
-  //   id: "",
-  // });
-  const userDetails: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
-  // useEffect(() => {
-  //   var storedUserString = sessionStorage.getItem("user");
-  //   if (storedUserString !== null) {
-  //     var storedUser = JSON.parse(storedUserString);
-
-  //     setUserData(storedUser);
-  //   } else {
-  //     console.log("User data not found in session storage");
-  //   }
-  // }, []);
-
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (userData?.id.length > 0) {
-  //       const citizenid = userData?.id;
-  //       const token = userData?.token;
-
-  //       if (citizenid?.length > 0) {
-  //         try {
-  //           const data = await fetchGetSingleCitizen(citizenid, token);
-
-
-  //           const modifyData = {
-  //             firstname: data?.username || "",
-  //             email: data?.email || "",
-  //             phoneNo: data?.mobile || "",
-  //             gender: data?.gender || "",
-  //             dob: data?.dob || "",
-  //             bloodGroup: data?.blood_group || "",
-  //             higherEducation: data?.higher_education || "",
-  //             country: data?.country || "",
-  //             socialMedia: {
-  //               facebook: data?.fb_link || "",
-  //               instagram: data?.insta_link || "",
-  //               twitter: data?.twitter_link || "",
-  //             },
-  //             about: data?.about_me || "",
-  //           };
-
-  //           setUserDetails(modifyData);
-  //         } catch (error) {
-  //           console.log(error);
-  //         }
-  //       }
-  //     }
-  //   })();
-  // }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth)
 
   return (
     <>
@@ -113,8 +55,8 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
           <div className="grid grid-cols-2 mt-8 gap-y-8 max-[400px]:grid-cols-1">
             <PersonalBriefInfo
               Icon={FaCakeCandles}
-              data={moment(userDetails?.dob).format("YYYY-MM-DD")  as string}
-              heading="Date of Birth:"
+              data={userDetails?.dob as string}
+              heading='Date of Birth:'
             />
 
             <PersonalBriefInfo
@@ -137,8 +79,8 @@ export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
 
             <PersonalBriefInfo
               Icon={FaHandshake}
-              data={moment(userDetails?.created_date).format("YYYY-MM-DD") as string}
-              heading="Joined: "
+              data='18-feb-2023'
+              heading='Joined: '
             />
 
             <PersonalBriefInfo Icon={FaGlobe} data="India" heading="Country" />

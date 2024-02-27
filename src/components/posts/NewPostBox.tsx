@@ -12,6 +12,10 @@ import { FaCamera } from "react-icons/fa";
 import { fetchAddPost } from "../api/posts";
 import { RootState } from "@/redux_store";
 import { PostTypes } from "./PostTypes";
+import NoImg from "@/assets/No_image_available.png";
+import { AddPost } from "@/redux_store/post/postApi";
+import toast from "react-hot-toast";
+import CustomImage from "@/utils/CustomImage";
 
 interface NewPostBoxProps {
   updatePost: any;
@@ -30,69 +34,32 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
   const [postErr, setPostErr] = useState<ErrObj>({ errTxt: "", isErr: false });
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
   const [accessType, setAccessType] = useState("");
- 
-  const [creatingPost] = useState(true);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: ""
-  });
-  // const { creatingPost } = cusSelector((st) => st.posts);
-  // const { userDetails } = cusSelector((st) => st.UI);
-
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
+  const [creatingPost, setCreatingPost] = useState(false);
+  const { userDetails } = cusSelector((st) => st.auth);
 
   const formSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
-
-    if (
-      textPost.trim().length === 0 &&
-      media.length === 0 &&
-      accessType?.length === 0
-    )
+    setCreatingPost(true);
+    if (textPost.trim().length === 0 && media.length === 0 && accessType?.length === 0)
       return setPostErr({ errTxt: "post can't be empty", isErr: true });
-
-/*     dispatch(
-      createNewPost({
-        media: media,
-        type: "post",
-        writtenText: textPost,
-      })
-    ); */
-
-    const token = userData?.token;
-
     const formData = new FormData();
 
-    formData.append("leaderid", userData?.data?.leader_detail?.id || "");
+    formData.append("leaderid", userDetails?.id || "");
     formData.append("written_text", textPost || "");
     formData.append("access_type", accessType);
 
-
     for (let i = 0; i < apimedia.length; i++) {
       const item: any = apimedia[i];
-      
-      formData.append("media",  item?.media );
+
+      formData.append("media", item?.media);
     }
 
     try {
-      const data = await fetchAddPost(formData, token);
+      const data = await AddPost(formData);
+
       if (data?.success) {
         updatePost(data);
+        toast.success(data.message);
       }
     } catch (error) {
       console.log(error);
@@ -101,6 +68,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
     setMedia([]);
     setApiMedia([]);
     setTextPost("");
+    setCreatingPost(false);
   };
 
   const accessTypeOptions = (data: any) => {
@@ -188,9 +156,10 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
       <CommonBox title="create post">
         <form className="flex flex-col gap-4 py-4" onSubmit={formSubmitHandler}>
           <div className="flex items-start gap-3">
-            <Image
-              src={userDetails?.displayPic as string}
+            <CustomImage
+              src={(userDetails?.useimage as string) || NoImg}
               alt="user image"
+              priority={true}
               width={1000}
               height={1000}
               className="rounded-full w-14 overflow-hidden bg-red-500 aspect-square object-center object-cover self-start"
@@ -259,6 +228,7 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
                     {el.type === "image" && (
                       <Image
                         src={el.media}
+                        priority={true}
                         width={1000}
                         height={1000}
                         alt="media post"

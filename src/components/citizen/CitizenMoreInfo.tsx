@@ -8,82 +8,17 @@ import { cusSelector } from "@/redux_store/cusHooks";
 import { fetchGetSingleCitizen } from "../api/profile";
 
 interface CitizenMoreInfoProps {}
-interface UserDetail {
-  token: string;
-  id: string;
-}
-
-interface UserDetails {
-  firstname: string;
-  email: string;
-  phoneNo: string;
-  gender: string;
-  dob: string;
-  bloodGroup: string;
-  higherEducation: string;
-  country: string;
-  socialMedia: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-  };
-  about: string;
-}
 
 export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
-  const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
-  const [userData, setUserData] = useState<UserDetail>({
-    token: "",
-    id: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth)
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserData(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
-  console.log(userData);
-
-  useEffect(() => {
-    (async () => {
-      if (userData?.id?.length > 0) {
-        const citizenid = userData?.id;
-        const token = userData?.token;
-
-        console.log(citizenid?.length);
-        console.log(token);
-        try {
-          const data = await fetchGetSingleCitizen(citizenid, token);
-
-          console.log(data);
-
-         
-
-          setUserDetails(data);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    })();
-  }, []);
-
-  console.log(userDetails);
-
-  // Conditionally showing icons based on where certain link is present or not.
   const socialNetworks: (JSX.Element | string)[] = [
     userDetails?.socialMedia?.facebook ? (
       <Link
-        target="_blank"
+        target='_blank'
         href={userDetails.socialMedia.facebook}
-        className=" text-sky-950 text-[1.6rem]"
-        key={Math.random()}
-      >
+        className=' text-sky-950 text-[1.6rem]'
+        key={Math.random()}>
         <FaFacebook />
       </Link>
     ) : (
@@ -91,11 +26,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     ),
     userDetails?.socialMedia?.instagram ? (
       <Link
-        target="_blank"
+        target='_blank'
         href={userDetails.socialMedia.instagram}
-        className=" text-sky-950 text-[1.6rem]"
-        key={Math.random()}
-      >
+        className=' text-sky-950 text-[1.6rem]'
+        key={Math.random()}>
         <FaInstagram />
       </Link>
     ) : (
@@ -103,11 +37,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     ),
     userDetails?.socialMedia?.twitter ? (
       <Link
-        target="_blank"
+        target='_blank'
         href={userDetails.socialMedia.twitter}
-        className=" text-sky-950 text-[1.6rem]"
-        key={Math.random()}
-      >
+        className=' text-sky-950 text-[1.6rem]'
+        key={Math.random()}>
         <FaTwitter />
       </Link>
     ) : (

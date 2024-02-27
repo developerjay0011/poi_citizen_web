@@ -22,55 +22,28 @@ interface FullPostProps {
   userId: string;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
-
-export const FullPost: FC<FullPostProps> = ({
-  onClose,
-  posts,
-  postId,
-  userId,
-}) => {
+export const FullPost: FC<FullPostProps> = ({ onClose, posts, postId, userId, }) => {
   const [curPostIndex, setCurPostIndex] = useState<number>(0);
   const curPost = posts[curPostIndex];
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-  const dispatch = cusDispatch();
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
-  const likePerPostHandler = () => {};
-
+  const { userDetails } = cusSelector((st) => st.auth);
+  const likePerPostHandler = () => { };
   const increasePostCount = () => {
     setCurPostIndex((lst) => {
       if (lst < posts.length - 1) return lst + 1;
       else return posts.length - 1;
     });
   };
-
   const decreasePostCount = () => {
     setCurPostIndex((lst) => {
       if (lst > 0) return lst - 1;
       else return 0;
     });
   };
+  const CommentHandler = (comment: string) => { };
 
-  const CommentHandler = (comment: string) => {};
+  const likeChangeHandler = (id: string) => { };
 
-  const likeChangeHandler = (id: string) => {};
+
 
   return (
     <>
@@ -112,6 +85,7 @@ export const FullPost: FC<FullPostProps> = ({
             <div className="w-full h-full p-10 overflow-hidden">
               {curPost.type === "image" && (
                 <Image
+                  priority={true}
                   src={curPost.media}
                   alt={`post ${curPostIndex}`}
                   width={1000}
@@ -147,6 +121,7 @@ export const FullPost: FC<FullPostProps> = ({
                 src={userImg}
                 alt="post user dp"
                 width={1000}
+                priority={true}
                 height={1000}
                 className="w-14 aspect-square rounded-full object-cover object-center"
               />
@@ -162,22 +137,19 @@ export const FullPost: FC<FullPostProps> = ({
                 </button>
               )}
             </div>
-
-            {/* Interactions per media */}
             <InteractionsPerMedia
               curPost={curPost}
               likePerPostHandler={likePerPostHandler}
             />
 
             <div className="flex flex-col overflow-y-scroll main_scrollbar">
-              {/* comments box */}
               <ul className="flex flex-col gap-5 bg-white mt-4">
-                {curPost.comments.map((el) => (
+                {curPost?.comments?.map((el) => (
                   <SingleComment
                     {...el}
                     key={el.id}
-                    postId={postId}
-                    likeChangeHandler={likeChangeHandler}
+                    postId={''}
+                    likeChangeHandler={() => { }}
                     postPerMedia
                   />
                 ))}
@@ -200,31 +172,12 @@ interface InteractionsPerMediaProps {
   likePerPostHandler: () => void;
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
-
 const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   curPost,
   likePerPostHandler,
 }) => {
   const [firstTime, setFirstTime] = useState(true);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  const { userDetails } = cusSelector((st) => st.auth);
 
   const [showLikeAnimation, setShowLikeAnimation] = useState(
     curPost.likes.some((el) => el.userId === userDetails?.id)
@@ -257,9 +210,8 @@ const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
   return (
     <div className="mt-6 pb-3 flex items-center gap-6 border-b">
       <button
-        className={`flex flex-col gap-3 relative transition-all ${
-          showLikeAnimation ? "text-rose-500" : "text-black"
-        }`}
+        className={`flex flex-col gap-3 relative transition-all ${showLikeAnimation ? "text-rose-500" : "text-black"
+          }`}
         onClick={() => {
           setFirstTime(false);
           likePerPostHandler();
@@ -270,9 +222,8 @@ const InteractionsPerMedia: FC<InteractionsPerMediaProps> = ({
 
         {!firstTime && (
           <BsFillHeartFill
-            className={`text-lg overlay ${
-              showLikeAnimation ? "fadeOut" : "fadeIn"
-            }`}
+            className={`text-lg overlay ${showLikeAnimation ? "fadeOut" : "fadeIn"
+              }`}
           />
         )}
 

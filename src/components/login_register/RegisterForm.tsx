@@ -12,10 +12,15 @@ import { LoginFormFields, RegisterFormFields } from "@/utils/typesUtils";
 import { LPInputField } from "@/utils/LPInputField";
 import { cusDispatch } from "@/redux_store/cusHooks";
 import { MdLock, MdMail, MdPerson, MdPhone } from "react-icons/md";
-import { registerUser, verifyRegisterOTP } from "@/redux_store/auth/authAPI";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { fetchRegister } from "../api/Auth";
+import {
+  CheckCitizenRegExists,
+  fetchRegister,
+  sendOtp,
+  verifyOtp,
+} from "@/redux_store/auth/authAPI";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 
 let interval: NodeJS.Timer;
 let OTP_TIME = 120;
@@ -26,10 +31,12 @@ export const RegisterForm: FC = () => {
   const [resendOTPTime, setResendOTPTime] = useState(OTP_TIME);
   const [registering, setRegistering] = useState(false);
   const [verifying, setVerifying] = useState(false);
-
-  // const { registering, verifyingOTP } = cusSelector((st) => st.auth)
-  const dispatch = cusDispatch();
-
+  const [registerdata2, setRegisterdata] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+  });
   const openOTPForm = () => setShowOTPForm(true);
   const closeOTPForm = () => {
     clearInterval(interval); // clearing Interval
@@ -55,20 +62,27 @@ export const RegisterForm: FC = () => {
       const userData = getValues() as RegisterFormFields;
       setRegistering(true);
 
-      await dispatch(registerUser({ data: userData }));
+      const body = { mobile: userData.phoneNo || "" };
 
-      // Starts a OTP resend Timer
-      interval = setInterval(() => {
-        if (resendOTPTime > 0)
-          setResendOTPTime((lst) => {
-            if (lst > 0) return lst - 1;
-            return 0;
-          });
-        else {
-          setResendOTPTime(OTP_TIME);
-          clearInterval(interval);
-        }
-      }, 1000);
+      const sandOtp = await sendOtp(body);
+      if (sandOtp?.success) {
+        // Starts a OTP resend Timer
+        interval = setInterval(() => {
+          if (resendOTPTime > 0)
+            setResendOTPTime((lst) => {
+              if (lst > 0) return lst - 1;
+              return 0;
+            });
+          else {
+            setResendOTPTime(OTP_TIME);
+            clearInterval(interval);
+          }
+        }, 1000);
+      } else {
+        toast.success(sandOtp.message);
+      }
+
+      // await dispatch(registerUser({ data: userData }));
     } catch (err) {
       console.error(err);
       setRegistering(false);
@@ -78,29 +92,35 @@ export const RegisterForm: FC = () => {
   const verifyOTP = async (otp: string) => {
     setVerifying(true);
     const userData = getValues() as RegisterFormFields;
-
     clearInterval(interval); // clearing resend timer
     setResendOTPTime(OTP_TIME); // Reset OTP time
-
     try {
-      const res = await dispatch(verifyRegisterOTP(userData, otp));
-
-      console.log(res);
-
-      // stopping verifying and registering
-      setVerifying(false);
+      const body = {
+        mobile: userData.phoneNo,
+        otp: otp,
+      };
+      const resBody = {
+        name: registerdata2?.name,
+        email: registerdata2?.email,
+        mobile: registerdata2?.mobile,
+        password: registerdata2?.password,
+      };
+      const sandOtp = await verifyOtp(body);
+      if (sandOtp?.success) {
+        setVerifying(false);
+        setRegistering(false);
+        const registerData = await fetchRegister(resBody);
+        if (registerData?.success) {
+          toast.success(registerData.message);
+        } else {
+          toast.error(registerData.message);
+        }
+        closeOTPForm();
+        router.push(AuthRoutes.login);
+      } else {
+        toast.success(sandOtp.message);
+      }
       setRegistering(false);
-      // close form
-      closeOTPForm();
-
-      // showing a message
-      toast.success(() => (
-        <p>
-          <strong className="capitalize">{userData.fullName}</strong> Registered
-          Successfully
-        </p>
-      ));
-      router.push("/"); // redirecting back to login
     } catch (err) {
       console.error(err);
       setVerifying(false);
@@ -116,48 +136,42 @@ export const RegisterForm: FC = () => {
       mobile: data?.phoneNo,
       password: data?.password,
     };
+    setRegisterdata(resBody);
     setRegistering(true);
     try {
-      const registerData = await fetchRegister(resBody);
-
-      if (registerData?.success) {
-        router.push("/user");
+      const body = {
+        email: data?.email,
+        mobile: data?.phoneNo,
+      };
+      const checkReg = await CheckCitizenRegExists(body);
+      if (checkReg?.success == true) {
+        const body = { mobile: data?.phoneNo || "" };
+        const sandOtp = await sendOtp(body);
+        if (sandOtp?.success) {
+          setShowOTPForm(true);
+          interval = setInterval(() => {
+            if (resendOTPTime > 0)
+              setResendOTPTime((lst) => {
+                if (lst > 0) return lst - 1;
+                return 0;
+              });
+            else {
+              setResendOTPTime(OTP_TIME);
+              clearInterval(interval);
+            }
+          }, 1000);
+          openOTPForm();
+          setRegistering(false);
+        } else {
+          toast.error(sandOtp.message);
+        }
+      } else {
+        toast.error(checkReg.message);
       }
     } catch (error) {
       console.log(error);
     }
     setRegistering(false);
-
-    /*    try {
-      setRegistering(true);
-
-      const res = await dispatch(
-        registerUser({ data: data as RegisterFormFields })
-      );
-
-      console.log(res);
-
-      // Starts a OTP resend Timer
-      interval = setInterval(() => {
-        if (resendOTPTime > 0)
-          setResendOTPTime((lst) => {
-            if (lst > 0) return lst - 1;
-            return 0;
-          });
-        else {
-          setResendOTPTime(OTP_TIME);
-          clearInterval(interval);
-        }
-      }, 1000);
-
-      // Open OTP form after successful data submission
-      openOTPForm();
-
-      // setRegistering(false)
-    } catch (err) {
-      setRegistering(false);
-      console.error(err);
-    } */
   };
 
   return (
@@ -170,6 +184,7 @@ export const RegisterForm: FC = () => {
         {/* For Screens less than 1090px */}
 
         <Image
+          priority={true}
           src={Logo}
           alt="poi logo"
           className="hidden w-auto self-start m-auto max-lg:block h-[10rem]"
@@ -299,8 +314,11 @@ export const RegisterForm: FC = () => {
           </button>
 
           <p className="mt-8">
-            Already Registered ?{" "}
-            <Link href="/" className="underline hover:font-[600]">
+            Already Registered ?
+            <Link
+              href={AuthRoutes.login}
+              className="underline hover:font-[600]"
+            >
               Login
             </Link>
           </p>

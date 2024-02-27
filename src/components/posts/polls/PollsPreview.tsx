@@ -5,40 +5,20 @@ import { PollOption } from './PollOption'
 import { motion as m } from 'framer-motion'
 import { dateConverter } from '@/utils/utility'
 import { RootState } from '@/redux_store'
+import CustomImage from '@/utils/CustomImage'
 
 interface PollsPreviewProps {
   pollDetails: any;
   onClose: () => void
 }
 
-interface UserDetails {
-  token: string;
-  id: string;
-}
 
 export const PollsPreview: FC<PollsPreviewProps> = ({
   onClose,
   pollDetails,
 }) => {
-  /* const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
 
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []); */
-
-  const userDetails: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
 
   return (
     <>
@@ -48,14 +28,14 @@ export const PollsPreview: FC<PollsPreviewProps> = ({
         exit={{ opacity: 0 }}
         className='fixed top-0 left-0 w-full h-[100dvh] z-10 '>
         <div
-          className={`w-full h-full backdrop-blur-[3px] bg-sky-950 bg-opacity-40 z-20 overflow-y-scroll flex justify-center ${
-            pollDetails.imgOptions.length > 4 || pollDetails.options.length > 4
+          className={`w-full h-full backdrop-blur-[3px] bg-sky-950 bg-opacity-40 z-20 overflow-y-scroll flex justify-center ${pollDetails.imgOptions.length > 4 || pollDetails.options.length > 4
               ? 'max-[650px]:py-5'
               : ''
-          }`}>
+            }`}>
           <section className='border shadow-sm rounded-md px-5 py-2 bg-white w-1/2 max-[650px]:w-[80%] self-center'>
             <div className='flex items-center gap-3 py-4 text-sky-950 border-b'>
-              <Image
+              <CustomImage
+                priority={true}
                 src={userDetails?.displayPic as string}
                 alt='user pic'
                 className='w-12 aspect-square object-cover object-center rounded-full'
@@ -83,7 +63,7 @@ export const PollsPreview: FC<PollsPreviewProps> = ({
               {/* MEDIA */}
               <section className='w-full flex flex-col gap-3'>
                 {pollDetails.pollType === 'image' &&
-                  pollDetails.imgOptions.map((el : any, i : any) => (
+                  pollDetails.imgOptions.map((el: any, i: any) => (
                     <PollOption
                       id={el.id}
                       index={i + 1}
@@ -94,7 +74,7 @@ export const PollsPreview: FC<PollsPreviewProps> = ({
                   ))}
 
                 {pollDetails.pollType === 'text' &&
-                  pollDetails.options.map((el : any, i: any) => (
+                  pollDetails.options.map((el: any, i: any) => (
                     <PollOption
                       id={el.id}
                       index={i + 1}

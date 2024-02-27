@@ -12,7 +12,6 @@ export const store = configureStore({
     requests: requestSlice.reducer,
     suggestions: suggestionSlice.reducer,
     auth: authSlice.reducer,
-    post: postSlice.reducer
   },
 })
 

@@ -14,7 +14,10 @@ export interface RegisterData {
   mobile: string;
 
 }
-
+export interface ForgotPassword {
+  email: string;
+  password: string;
+}
 export interface LoginFormFields {
   userId: string
   password: string
@@ -174,7 +177,7 @@ export interface Attachments {
 }
 
 export interface RequestComplaintData extends RequestComplaintFormFields {
-  attachments: Attachments[]
+  attachments: Attachments[];
 }
 
 export interface RequestComplaintDetails {

@@ -15,7 +15,7 @@ export const fetchAddStory = async (formData: any, token: any) => {
 
     return response.data;
   } catch (error) {
-    throw error; // You can throw or handle the error as per your requirement
+    throw error; 
   }
 };
 

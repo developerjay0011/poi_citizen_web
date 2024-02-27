@@ -30,12 +30,7 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
 
   const PrintHandler = async () => {
     if (!letterDiv.current) return
-
-    console.log(getComputedStyle(letterDiv.current).height)
   }
-
-  console.log(description)
-
   return (
     <>
       <m.div
@@ -105,6 +100,7 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
                     <Image
                       src={signature}
                       width={1000}
+                      priority={true}
                       height={1000}
                       alt='signature'
                       className='w-full h-[4cm] object-contain'
