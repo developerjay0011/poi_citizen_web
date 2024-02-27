@@ -18,7 +18,12 @@
   left: 0;
   height: 100%;
   width: 100%;
+}
+
+.react-like-posts-fb_modal {
   object-fit: contain;
+  max-height: 100vh;
+  max-width: 100vh;
 }
 
 .react-like-posts-fb .col-1,
@@ -28,8 +33,6 @@
 .react-like-posts-fb .col-5 {
   position: relative;
   cursor: pointer;
-  border-radius: 8px;
-  overflow: hidden;
 }
 
 .react-like-posts-fb .col-1 {
@@ -99,11 +102,10 @@
   left: 0;
   top: 0;
   width: 100%;
-  max-height: 100vh;
+  height: 100vh;
   align-items: center;
   background-color: black;
   z-index: 999;
-  overflow: hidden;
 }
 
 .react-like-posts-fb-clone .main-content {
@@ -111,6 +113,7 @@
   width: 100%;
   align-items: center;
   justify-content: center;
+
 }
 
 .react-like-posts-fb-clone img,
