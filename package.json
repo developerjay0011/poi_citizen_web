@@ -12,7 +12,6 @@
     "@ckeditor/ckeditor5-build-classic": "^39.0.1",
     "@ckeditor/ckeditor5-react": "^6.1.0",
     "@hookform/error-message": "^2.0.1",
-    "@joelfernando06/react-fb-image-grid": "^0.1.8",
     "@react-pdf/renderer": "^3.1.12",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/crypto-js": "^4.1.1",
