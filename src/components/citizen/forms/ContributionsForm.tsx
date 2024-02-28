@@ -14,6 +14,7 @@ import {
   addNewContribution,
 } from "@/redux_store/contributions/contributionAPI";
 import toast from "react-hot-toast";
+import { tryCatch } from "@/config/try-catch";
 
 interface ContributionFormProps {
   onClose: () => void;
@@ -115,14 +116,13 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
       description: data.clothes.description,
     };
 
-    try {
+    tryCatch(
+      async () => {
       const data = await SaveContribution(body);
       if (data?.success) {
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     onClose();
     dispatch(addNewContribution({ ...data }));
   };

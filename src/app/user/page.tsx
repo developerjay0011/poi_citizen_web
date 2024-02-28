@@ -11,59 +11,24 @@ import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
 import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";
 import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
 import { requestActions } from "@/redux_store/requests/requestSlice";
+import { tryCatch } from "@/config/try-catch";
 
 const CitizenHomePage = () => {
   const dispatch = cusDispatch();
   const { userDetails } = cusSelector((st) => st.auth);
   useEffect(() => {
     (async () => {
-      try {
+      tryCatch(
+        async () => {
         if (userDetails?.id) {
           const data = await GetRaisedComplaints(userDetails?.id);
-          console.log(data, "complaintActionscomplaintActions");
-
-          if (data.length > 0) {
-            dispatch(complaintActions.storeComplaints(data));
-          }
+          dispatch(complaintActions.storeComplaints(data));
+          const dataRequest = await GetRaisedRequests(userDetails?.id);
+          dispatch(requestActions.storeRequest(dataRequest));
+          const dataSuggestions = await GetSuggestions(userDetails?.id);
+          dispatch(suggestionActions.storeSuggestions(data));
         }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [userDetails]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        if (userDetails?.id) {
-          const data = await GetRaisedRequests(userDetails?.id);
-
-          if (data.length > 0) {
-            dispatch(requestActions.storeComplaints(data));
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [userDetails]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        if (userDetails?.id) {
-          const data = await GetSuggestions(userDetails?.id);
-
-          console.log(data, "suggestionssuggestions in page 11");
-          
-
-          if (data.length > 0) {
-            dispatch(suggestionActions.storeComplaints(data));
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
+      })
     })();
   }, [userDetails]);
 

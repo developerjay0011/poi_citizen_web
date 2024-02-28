@@ -1,13 +1,16 @@
 import { BriefLeaderDetails } from '@/components/citizen/forms/RequestComplaintForm'
+import { getImageUrl } from '@/config/get-image-url'
 import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
 import { BiX } from 'react-icons/bi'
 import { MdArrowDropDown } from 'react-icons/md'
+import { LeaderDetails } from './typesUtils'
+import CustomImage from './CustomImage'
 
 interface ImageMultiSelectIPProps {
-  options: BriefLeaderDetails[]
+  options: LeaderDetails[]
   placeholder: string
-  setValue: (val: BriefLeaderDetails[] | '') => void
+  setValue: (val: LeaderDetails[] | '') => void
 }
 
 export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
@@ -17,12 +20,12 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
 }) => {
   const [showOptions, setShowOptions] = useState(false)
   const [filterStr, setFilterStr] = useState('')
-  const [selectedLeaders, setSelectedLeaders] = useState<BriefLeaderDetails[]>(
+  const [selectedLeaders, setSelectedLeaders] = useState<LeaderDetails[]>(
     []
   )
 
   const filteredOptions = options.filter((el) =>
-    filterStr ? el.name.toLowerCase().includes(filterStr) : el
+    filterStr ? el.username.toLowerCase().includes(filterStr) : el
   )
 
   useEffect(() => {
@@ -55,9 +58,9 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
           <div className='flex flex-wrap items-center gap-1 flex-1'>
             {selectedLeaders.map((el) => (
               <span
-                key={el.leaderId}
+                key={el.id}
                 className='flex capitalize pl-3 pr-1 w-max bg-white items-center gap-1 border border-slate-300 rounded text-[14px]'>
-                {el.name}
+                {el.username}
                 <BiX
                   className='text-lg cursor-pointer'
                   onClick={() =>
@@ -103,13 +106,13 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                 {filteredOptions.length > 0 ? (
                   filteredOptions.map((el) => (
                     <li
-                      key={el.leaderId}
+                      key={el.id}
                       onClick={() => {
                         setSelectedLeaders((lst) => {
                           const leaders = [...lst]
 
                           const index = leaders.findIndex(
-                            (leader) => leader.leaderId === el.leaderId
+                            (leader) => leader.id === el.id
                           )
 
                           if (index === -1) leaders.push({ ...el })
@@ -121,16 +124,16 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                         setFilterStr('')
                       }}
                       className='flex items-center hover:bg-slate-100 p-3 gap-3 last_noti border-slate-200'>
-                      <Image
-                        src={el.leaderProfilePic}
-                        priority={true}
-                        alt='Display pic'
-                        className='w-10 aspect-square rounded-full object-cover object-center'
+                      <CustomImage
+                        src={getImageUrl(el.image)}
+                        alt="trending user"
+                        width={1000}
+                        height={1000}
+                        className="rounded-full w-12 aspect-square object-cover object-center"
                       />
-
-                      <div className='flex flex-col items-center text-sm'>
-                        <h6 className='font-medium capitalize'>{el.name}</h6>
-                        <p className='text-gray-500 capitalize'>
+                      <div className='flex flex-col text-sm'>
+                        <h6 className='font-medium capitalize'>{el.username}</h6>
+                        <p className='text-gray-500 capitalize text-align-left'>
                           {el.designation}
                         </p>
                       </div>

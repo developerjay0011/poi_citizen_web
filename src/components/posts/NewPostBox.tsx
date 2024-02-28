@@ -16,6 +16,7 @@ import NoImg from "@/assets/No_image_available.png";
 import { AddPost } from "@/redux_store/post/postApi";
 import toast from "react-hot-toast";
 import CustomImage from "@/utils/CustomImage";
+import { tryCatch } from "@/config/try-catch";
 
 interface NewPostBoxProps {
   updatePost: any;
@@ -54,16 +55,15 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
       formData.append("media", item?.media);
     }
 
-    try {
+    tryCatch(
+      async () => {
       const data = await AddPost(formData);
 
       if (data?.success) {
         updatePost(data);
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
 
     setMedia([]);
     setApiMedia([]);

@@ -13,6 +13,7 @@ import {
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import toast from "react-hot-toast";
 import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
+import { tryCatch } from "@/config/try-catch";
 
 interface UserDetails {
   token: string;
@@ -30,9 +31,6 @@ export const SuggestionPage: FC = () => {
   });
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
-
-  console.log(suggestions, "suggestionssuggestionssuggestions");
-
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
 
@@ -48,21 +46,21 @@ export const SuggestionPage: FC = () => {
   }, []);
 
   const getSuggestion = async () => {
-    try {
+    tryCatch(
+      async () => {
       if (userDetails?.id) {
         const data = await GetSuggestions(userDetails?.id);
 
         if (data.length >= 0) {
-          dispatch(suggestionActions.storeComplaints(data));
+          dispatch(suggestionActions.storeSuggestions(data));
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
-
-  const addNewSuggestionHandler = async (suggestion: RequestComplaintData) => {
-    console.log(suggestion, "complaint");
+  useEffect(() => {
+    getSuggestion()
+  }, [dispatch, userDetails]) 
+  const addNewSuggestionHandler = async (suggestion: any) => {
 
     const formData = new FormData();
     formData.append("id", "");
@@ -70,37 +68,26 @@ export const SuggestionPage: FC = () => {
     formData.append("subject", suggestion.subject || "");
     formData.append("description", suggestion?.description || "");
     formData.append("deletedDocs", "");
-    if (typeof suggestion.signatureDoc === "string") {
-      formData.append("signature", suggestion.signatureDoc);
-    } else if (suggestion.signatureDoc instanceof FileList) {
-      for (const file of Array.from(suggestion.signatureDoc)) {
-        formData.append("signature", file);
-      }
-    } else {
-      formData.append("signature", suggestion.signatureDoc);
-    }
-
+    formData.append("signature", suggestion.signatureDoc || "");
     for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
       const item: any = suggestion.attachmentsDoc[i];
 
       formData.append("attachments", item?.file);
     }
     for (let i = 0; i < suggestion.to.length; i++) {
-      const item: any = suggestion.to[i];
+      const item: any = suggestion.to[i].id;
 
       formData.append("to", item);
     }
 
-    try {
+    tryCatch(
+      async () => {
       const data = await SaveSuggestion(formData);
       if (data?.success) {
-        console.log(data);
         getSuggestion();
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     closeForm();
 
     // dispatch(addNewSuggestions(suggestion));
@@ -115,15 +102,14 @@ export const SuggestionPage: FC = () => {
   );
 
   const handleDetele = async (id: string) => {
-    try {
+    tryCatch(
+      async () => {
       const data = await DeleteSuggestion(id);
       if (data?.success) {
         getSuggestion();
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
   return (

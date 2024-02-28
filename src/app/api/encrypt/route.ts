@@ -5,7 +5,6 @@ export const POST = async (req: Request) => {
   try {
     const { body } = req
 
-    console.log(body)
     // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
     //   publicKey: ''
     // })

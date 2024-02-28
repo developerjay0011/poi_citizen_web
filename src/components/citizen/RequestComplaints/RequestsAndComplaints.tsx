@@ -23,9 +23,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
           to={el.to}
           key={el.id}
           description={el.description}
-          requestComplaintNo={
-            type === "complaint" ? el.complaintno : el.requestno
-          }
+          ticket_code={el.ticket_code}
           type={type}
           requestComplaintDeleteFn={() => deleteHandler(el.id)}
           submitting={submitting}

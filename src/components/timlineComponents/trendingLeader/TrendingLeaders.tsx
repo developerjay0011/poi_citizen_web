@@ -12,8 +12,8 @@ export const TrendingLeaders: FC = () => {
   const Gelfollowinglist = async () => {
     if (userDetails?.id) {
       const data = await fetchCitizenFollowingList(userDetails?.id);
-      const trending = await fetchTrendingLeaderList();
       dispatch(followActions.Following(data));
+      const trending = await fetchTrendingLeaderList();
       dispatch(authActions.Settrendingleader(trending));
     }
   };

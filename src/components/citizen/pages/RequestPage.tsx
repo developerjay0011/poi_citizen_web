@@ -9,13 +9,10 @@ import {
   DeleteRequest,
   GetRaisedRequests,
   RaiseRequest,
-  addNewRequest,
-  deleteRequest,
-  fetchAllRequests,
 } from "@/redux_store/requests/requestAPI";
-import { RequestComplaintData } from "@/utils/typesUtils";
 import toast from "react-hot-toast";
 import { requestActions } from "@/redux_store/requests/requestSlice";
+import { tryCatch } from "@/config/try-catch";
 
 interface UserDetails {
   token: string;
@@ -38,7 +35,7 @@ export const RequestPage: FC = () => {
   const showForm = () => setShowRequestForm(true);
   const closeForm = () => setShowRequestForm(false);
 
-  console.log(requests, "requestsrequests");
+
 
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
@@ -52,22 +49,19 @@ export const RequestPage: FC = () => {
   }, []);
 
   const getRequests = async () => {
-    try {
+    tryCatch(
+      async () => {
       if (userDetails?.id) {
         const data = await GetRaisedRequests(userDetails?.id);
 
         if (data.length >= 0) {
-          dispatch(requestActions.storeComplaints(data));
+          dispatch(requestActions.storeRequest(data));
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
-  const addNewRequestHandler = async (request: RequestComplaintData) => {
-    console.log(request, "complaintgetRequests");
-
+  const addNewRequestHandler = async (request: any) => {
     const formData = new FormData();
 
     formData.append("id", "");
@@ -76,63 +70,47 @@ export const RequestPage: FC = () => {
     formData.append("description", request?.description || "");
     formData.append("deletedDocs", "");
 
-    // Check if signatureDoc is a string or a FileList
-    if (typeof request.signatureDoc === "string") {
-      formData.append("signature", request.signatureDoc);
-    } else if (request.signatureDoc instanceof FileList) {
-      for (const file of Array.from(request.signatureDoc)) {
-        formData.append("signature", file);
-      }
-    } else {
-      formData.append("signature", request.signatureDoc);
-    }
-
+    formData.append("signature", request?.signatureDoc || "");
     for (let i = 0; i < request.attachmentsDoc.length; i++) {
       const item: any = request.attachmentsDoc[i];
 
       formData.append("attachments", item?.file);
     }
     for (let i = 0; i < request.to.length; i++) {
-      const item: any = request.to[i];
+      const item: any = request.to[i].id;
 
       formData.append("to", item);
     }
 
-    try {
+    tryCatch(
+      async () => {
       const data = await RaiseRequest(formData);
-      console.log(data);
-
       if (data?.success) {
-        console.log(data);
         getRequests();
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     closeForm();
 
-    // dispatch(addNewRequest(request));
   };
 
-  /*  useEffect(() => {
-    dispatch(fetchAllRequests())
-  }, [dispatch]) */
+   useEffect(() => {
+    getRequests()
+  }, [dispatch,userDetails]) 
 
   const searchFilteredRequests = requests.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
   );
 
   const handleDetele = async (id: string) => {
-    try {
+    tryCatch(
+      async () => {
       const data = await DeleteRequest(id);
       if (data?.success) {
         toast.success(data.message);
         getRequests();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
   return (

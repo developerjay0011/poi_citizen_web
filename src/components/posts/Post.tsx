@@ -15,6 +15,7 @@ import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import PostGrid from "../PostGrid";
 import { Shortlistbytime, islike } from "./utils";
+import { tryCatch } from "@/config/try-catch";
 
 
 interface PostProps extends PostDetails {
@@ -47,7 +48,8 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
       post_leaderid: post?.leaderid,
       userid: userDetails?.id,
     };
-    try {
+    tryCatch(
+      async () => {
       if (!is_like) {
         const data = await LikePost(likeBody);
         toast.success(data.message);
@@ -57,9 +59,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
         toast.success(data.message);
         Getpost();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
 
@@ -110,55 +110,33 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
       </div>
       <div className="w-full h-[2px] bg-zinc-100 my-6" />
 
-        <div className="w-full h-[2px] bg-zinc-100 my-5" />
-
-        {/* POST Interactions */}
-        <div className="mb-5 flex items-center gap-6">
-          <button
-            className={`flex flex-col gap-3 relative transition-all ${
-              likeCount ? "text-rose-500" : "text-black"
-            }`}
-            onClick={() => {
-              likeChangeHandler();
-              setFirstTime(false);
-              setShowLikeAnimation((lst: any) => !lst);
-              handleLike(allData);
-            }}
-          >
-            <BsFillHeartFill className="text-lg" />
-
-            {!firstTime && (
-              <BsFillHeartFill
-                className={`text-lg overlay ${
-                  showLikeAnimation ? "fadeOut" : "fadeIn"
-                }`}
-              />
-            )}
-
-            <span className="text-[14px] absolute -top-4 left-4 font-[500]">
-              {likeCount}
-            </span>
-          </button>
-
-          <button
-            className={`flex flex-col gap-3 relative transition-all hover:text-rose-500 ${
-              showComments ? "text-rose-500" : "text-black"
-            }`}
-            onClick={() => setShowComments((lst) => !lst)}
-          >
-            <BiSolidMessageAltDetail className="text-[1.4rem]" />
-            <span className="text-[14px] absolute -top-4 left-5 font-[500]">
-              {comments?.length}
-            </span>
-          </button>
-
-          <button className="flex flex-col gap-3 relative transition-all hover:text-rose-500">
-            <BiShareAlt className="text-[1.4rem]" />
-            <span className="text-[14px] absolute -top-4 left-5 font-[500]">
-              0
-            </span>
-          </button>
-        </div>
+      {/* Action */}
+      <div className="mb-5 flex items-center gap-6">
+        <button className={`flex flex-col gap-3 relative transition-all ${is_like ? "text-rose-500" : "text-black"}`}
+          onClick={() => { setFirstTime(false); setShowLikeAnimation(!is_like); handleLike(); }}
+        >
+          {is_like ? (<BsFillHeartFill className="text-lg" />) : (<BsHeart className="text-lg" />)}
+          {!firstTime && (<BsFillHeartFill className={`text-lg overlay ${showLikeAnimation ? "fadeOut" : "fadeIn"}`} />)}
+          <span className="text-[14px] absolute -top-4 left-4 font-[500]">
+            {post?.likes?.length}
+          </span>
+        </button>
+        <button
+          className={`flex flex-col gap-3 relative transition-all hover:text-rose-500 ${showComments ? "text-rose-500" : "text-black"}`}
+          onClick={() => setShowComments((lst) => !lst)}
+        >
+          <BiSolidMessageAltDetail className="text-[1.4rem]" />
+          <span className="text-[14px] absolute -top-4 left-5 font-[500]">
+            {post?.comments?.length}
+          </span>
+        </button>
+        {/* <button className="flex flex-col gap-3 relative transition-all hover:text-rose-500">
+          <BiShareAlt className="text-[1.4rem]" />
+          <span className="text-[14px] absolute -top-4 left-5 font-[500]">
+            0
+          </span>
+        </button> */}
+      </div>
 
 
 

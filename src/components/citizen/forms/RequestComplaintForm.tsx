@@ -15,6 +15,7 @@ import { ImageMultiSelectIP } from "@/utils/ImageMultiSelectIP";
 import Image, { StaticImageData } from "next/image";
 import { FaSignature } from "react-icons/fa";
 import { Attachments, ErrObj, RequestComplaintData } from "@/utils/typesUtils";
+import { cusSelector } from "@/redux_store/cusHooks";
 
 const FORM_HEADINGS = {
   request: "Raise a Request",
@@ -42,7 +43,7 @@ export interface RequestComplaintFormFields {
 
 export interface BriefLeaderDetails {
   leaderId: string;
-  name: string;
+  username: string;
   leaderProfilePic: string | StaticImageData;
   designation: string;
   dislike: string;
@@ -50,39 +51,6 @@ export interface BriefLeaderDetails {
   isSeen: string;
   requestComplaintSeenDate: string;
 }
-
-const DUMMY_LEADERS: BriefLeaderDetails[] = [
-  {
-    leaderId: GenerateId(),
-    name: "narendar modi",
-    designation: "prime minister",
-    leaderProfilePic: MODI,
-    dislike: "0",
-    requestComplaintStatus: "0",
-    isSeen: "0",
-    requestComplaintSeenDate: "",
-  },
-  {
-    leaderId: GenerateId(),
-    name: "rahul gandhi",
-    designation: "youth minister",
-    leaderProfilePic: RAHUL,
-    dislike: "0",
-    requestComplaintStatus: "0",
-    isSeen: "0",
-    requestComplaintSeenDate: "",
-  },
-  {
-    leaderId: GenerateId(),
-    name: "arvind kejriwal",
-    designation: "chief minister",
-    leaderProfilePic: ARVIND,
-    dislike: "0",
-    requestComplaintStatus: "0",
-    isSeen: "0",
-    requestComplaintSeenDate: "",
-  },
-];
 
 let firstTime = true;
 
@@ -103,6 +71,9 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
   const [attachmentsDoc, setAttachmentsDoc] = useState<Attachments[]>([]);
   const [signature, setSignature] = useState("");
   const [signatureDoc, setSignatureDoc] = useState("");
+
+  const { leaderlist } = cusSelector((st) => st.complaints);
+
   const {
     handleSubmit,
     register,
@@ -112,7 +83,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
     formState: { errors },
   } = useForm<RequestComplaintFormFields>();
 
-  const formSubmitHandler = (data: RequestComplaintFormFields) => {
+  const formSubmitHandler = (data: any) => {
     submitHandler({ ...data, attachmentsDoc, signatureDoc });
     firstTime = false;
   };
@@ -167,7 +138,6 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
       });
     }
   };
-
   return (
     <>
       <m.div
@@ -227,8 +197,8 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
 
                 <ImageMultiSelectIP
                   placeholder="select leader"
-                  options={DUMMY_LEADERS.map((el) => el)}
-                  setValue={setToFieldValue}
+                  options={leaderlist.map((el:any) => el)}
+                  setValue={(value:any)=>setToFieldValue(value)}
                 />
 
                 <section className="col-span-2 flex flex-col gap-1 ">

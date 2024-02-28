@@ -13,6 +13,7 @@ import { authActions } from "@/redux_store/auth/authSlice";
 import { RootState } from "@/redux_store";
 import { ProtectedRoutes } from "@/constants/routes";
 import { EditCitizenProfile, getProfile } from "@/redux_store/auth/authAPI";
+import { tryCatch } from "@/config/try-catch";
 interface EditFormProps { }
 
 const genders = ["male", "female", "others"];
@@ -66,7 +67,8 @@ const EditForm: FC<EditFormProps> = () => {
       twitter_link: data?.twitter_link || "",
       about_me: data?.about_me,
     };
-    try {
+    tryCatch(
+      async () => {
       const editData = await EditCitizenProfile(postBody);
       if (editData?.success) {
         toast.success(editData?.message);
@@ -76,9 +78,7 @@ const EditForm: FC<EditFormProps> = () => {
       } else {
         toast.error(editData?.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
   useEffect(() => {

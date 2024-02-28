@@ -1,12 +1,15 @@
+import { getImageUrl } from '@/config/get-image-url'
 import Image, { StaticImageData } from 'next/image'
 import { FC } from 'react'
 import { BsThreeDots } from 'react-icons/bs'
 
 interface FollowerProps {
   displayImg: string | StaticImageData
+  data: any,
+  handleUnfollow:(id:string)=>void
 }
 
-export const Follower: FC<FollowerProps> = ({ displayImg }) => {
+export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }) => {
   return (
     <li className='border rounded-md bg-white p-4 flex gap-2 items-center relative'>
       <button className='absolute top-2 right-3 text-xl'>
@@ -14,7 +17,7 @@ export const Follower: FC<FollowerProps> = ({ displayImg }) => {
       </button>
       <Image
         priority={true}
-        src={displayImg}
+        src={getImageUrl(data?.image)}
         alt='user display pic'
         width={1000}
         height={1000}
@@ -23,18 +26,20 @@ export const Follower: FC<FollowerProps> = ({ displayImg }) => {
 
       <div className='flex flex-col flex-grow'>
         <h3 className='flex flex-col font-semibold text-lg capitalize'>
-          Narender modi
-          <span className='text-[14px] font-normal'>prime minister</span>
+          { data?.name}
+          <span className='text-[14px] font-normal'> {data?.name}</span>
         </h3>
 
         <p className='text-[14px] flex justify-between'>
           0 followers
-          <button
-            type='button'
-            className='border border-orange-500 text-orange-500 font-medium text-sm bg-orange-50 px-2 py-[2px] rounded hover:bg-orange-500 hover:text-orange-50 transition-all'>
-            un Follow
-          </button>
+         
         </p>
+        <button
+          onClick={() => { handleUnfollow(data?.leaderid)}}
+          type='button'
+          className='border mt-5 border-orange-500 text-orange-500 font-medium text-sm bg-orange-50 px-2 py-[2px] rounded hover:bg-orange-500 hover:text-orange-50 transition-all'>
+          Unfollow
+        </button>
       </div>
     </li>
   )

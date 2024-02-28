@@ -156,7 +156,7 @@ export const FullPost: FC<FullPostProps> = ({ onClose, posts, userId, }) => {
                 CommentHandler={CommentHandler}
                 allData=""
                 setUpdateComment=""
-              />
+              />*/}
             </div>
           </div>
         </m.section>

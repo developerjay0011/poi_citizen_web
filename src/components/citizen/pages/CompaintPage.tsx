@@ -4,16 +4,17 @@ import { FiSearch } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
-import { RequestComplaintData } from "@/utils/typesUtils";
+import { LeaderDetails, RequestComplaintData } from "@/utils/typesUtils";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import {
-  addNewComplaint,
   DeleteComplaint,
+  getLeaderList,
   GetRaisedComplaints,
   RaiseComplaint,
 } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
+import { tryCatch } from "@/config/try-catch";
 export const ComplaintPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
@@ -21,25 +22,30 @@ export const ComplaintPage: FC = () => {
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
   const { userDetails } = cusSelector((st) => st.auth);
+
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
 
   const getComplaint = async () => {
-    try {
+    tryCatch(
+      async () => {
       if (userDetails?.id) {
         const data = await GetRaisedComplaints(userDetails?.id);
-        console.log(data, "complaintActionscomplaintActions");
-
-        if (data.length >= 0) {
           dispatch(complaintActions.storeComplaints(data));
+      }
+    })
+  };
+  const getLeader = async () => {
+    tryCatch(
+      async () => {
+        if (userDetails?.id) {
+          const data = await getLeaderList();
+          dispatch(complaintActions.setLeader(data));
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    )
   };
-
-  const addNewComplaintHandler = async (complaint: RequestComplaintData) => {
+  const addNewComplaintHandler = async (complaint: any) => {
     const formData = new FormData();
 
     formData.append("id", "");
@@ -48,16 +54,8 @@ export const ComplaintPage: FC = () => {
     formData.append("description", complaint?.description || "");
     formData.append("deletedDocs", "");
 
-    // Check if signatureDoc is a string or a FileList
-    if (typeof complaint.signatureDoc === "string") {
-      formData.append("signature", complaint.signatureDoc);
-    } else if (complaint.signatureDoc instanceof FileList) {
-      for (const file of Array.from(complaint.signatureDoc)) {
-        formData.append("signature", file);
-      }
-    } else {
-      formData.append("signature", complaint.signatureDoc);
-    }
+   
+       
 
     for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
       const item: any = complaint.attachmentsDoc[i];
@@ -65,22 +63,21 @@ export const ComplaintPage: FC = () => {
       formData.append("attachments", item?.file);
     }
     for (let i = 0; i < complaint.to.length; i++) {
-      const item: any = complaint.to[i];
+      const item: any = complaint.to[i]?.id;
 
       formData.append("to", item);
     }
+    formData.append("signature", complaint.signatureDoc);
 
-    try {
+    tryCatch(
+      async () => {
       const data = await RaiseComplaint(formData);
       if (data?.success) {
         toast.success(data.message);
         getComplaint()
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     closeForm();
-    dispatch(addNewComplaint(complaint));
   };
 
   const searchFilteredComplaints = complaints.filter((el) =>
@@ -88,16 +85,20 @@ export const ComplaintPage: FC = () => {
   );
 
   const handleDelete = async (id: string) => {
-    try {
+    tryCatch(
+      async () => {
       const data = await DeleteComplaint(id);
       if (data?.success) {
         toast.success(data.message);
         getComplaint()
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
+
+  useEffect(() => {
+    getComplaint()
+    getLeader();
+  }, []);
 
   return (
     <>
