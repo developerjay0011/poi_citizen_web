@@ -35,7 +35,7 @@ export interface RequestComplaintFormFields {
   description: string;
   to: BriefLeaderDetails[] | "";
   signature: string | FileList;
-  signatureDoc:string | FileList;
+  signatureDoc: string | FileList;
   attachments: Attachments[];
   attachmentsDoc: Attachments[];
 }
@@ -235,17 +235,17 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                 />
 
                 <section className="col-span-2 flex flex-col gap-1 ">
+                  <span className="capitalize font-[500]">
+                    description
+                    {<strong className="text-rose-500">*</strong>}
+                  </span>
                   <input
                     type="text"
                     {...register("description", {
                       // required: 'Description is required',
                     })}
-                    className="hidden"
+                    className="border border-slate-300 bg-slate-100 py-[.7rem] px-4 outline-none rounded-md text-base transition-all focus:bg-slate-200 focus:border-slate-400 placeholder:capitalize"
                   />
-                  <span className="capitalize font-[500]">
-                    description
-                    {<strong className="text-rose-500">*</strong>}
-                  </span>
 
                   <div>{/* <CkEditor onChange={onChange} /> */}</div>
 

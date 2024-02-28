@@ -17,10 +17,10 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
 }) => {
   const requestComplaintJsx =
     requestOrComplaints.length > 0 ? (
-      requestOrComplaints.map((el) => (
+      requestOrComplaints.map((el:any) => (
         <ComplaintRequestVal
           subject={el.subject}
-          to={JSON.parse(el.to) as ToDetails[]}
+          to={el.to}
           key={el.id}
           description={el.description}
           requestComplaintNo={
@@ -30,7 +30,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
           requestComplaintDeleteFn={() => deleteHandler(el.id)}
           submitting={submitting}
           createdDate={el.createdDate}
-          attachments={JSON.parse(el.attachments)}
+          attachments={el.attachments}
           signature={el.signature}
         />
       ))

@@ -7,14 +7,12 @@ import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { RequestComplaintForm } from "../forms/RequestComplaintForm";
 import {
   DeleteSuggestion,
+  GetSuggestions,
   SaveSuggestion,
-  addNewSuggestions,
-  deleteSuggestion,
-  fetchAllSuggestions,
 } from "@/redux_store/suggestions/suggestionAPI";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import toast from "react-hot-toast";
-
+import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
 
 interface UserDetails {
   token: string;
@@ -33,6 +31,8 @@ export const SuggestionPage: FC = () => {
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
 
+  console.log(suggestions, "suggestionssuggestionssuggestions");
+
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
 
@@ -47,8 +47,21 @@ export const SuggestionPage: FC = () => {
     }
   }, []);
 
-  const addNewSuggestionHandler = async (suggestion: RequestComplaintData) => {
+  const getSuggestion = async () => {
+    try {
+      if (userDetails?.id) {
+        const data = await GetSuggestions(userDetails?.id);
 
+        if (data.length >= 0) {
+          dispatch(suggestionActions.storeComplaints(data));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addNewSuggestionHandler = async (suggestion: RequestComplaintData) => {
     console.log(suggestion, "complaint");
 
     const formData = new FormData();
@@ -66,6 +79,8 @@ export const SuggestionPage: FC = () => {
       for (const file of Array.from(suggestion.signatureDoc)) {
         formData.append("signature", file);
       }
+    } else {
+      formData.append("signature", suggestion.signatureDoc);
     }
 
     for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
@@ -76,7 +91,7 @@ export const SuggestionPage: FC = () => {
     for (let i = 0; i < suggestion.to.length; i++) {
       const item: any = suggestion.to[i];
 
-      formData.append("to", item.name);
+      formData.append("to", item);
     }
 
     try {
@@ -85,7 +100,7 @@ export const SuggestionPage: FC = () => {
 
       if (data?.success) {
         console.log(data);
-
+        getSuggestion();
         toast.success(data.message);
       }
     } catch (error) {
@@ -93,13 +108,12 @@ export const SuggestionPage: FC = () => {
     }
     closeForm();
 
-
-    dispatch(addNewSuggestions(suggestion));
+    // dispatch(addNewSuggestions(suggestion));
   };
 
-  useEffect(() => {
-    dispatch(fetchAllSuggestions());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchAllSuggestions());
+  // }, [dispatch]);
 
   const searchFilteredSuggestions = suggestions.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
@@ -109,6 +123,7 @@ export const SuggestionPage: FC = () => {
     try {
       const data = await DeleteSuggestion(id);
       if (data?.success) {
+        getSuggestion();
         toast.success(data.message);
       }
     } catch (error) {
