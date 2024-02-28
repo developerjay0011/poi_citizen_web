@@ -117,7 +117,7 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
                   {moment(comments?.created_date).fromNow()}
                 </strong>
                 <button
-                  className={`flex flex-col gap-3 relative transition-all ${comments?.likes?.length ? "text-rose-500" : "text-black"}`}
+                  className={`flex flex-col gap-3 relative transition-all ${is_like ? "text-rose-500" : "text-black"}`}
                   onClick={() => {
                     setFirstTime(false);
                     handleLike(comments?.id)
@@ -148,7 +148,7 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
                 )}
               </section>
             </div>
-
+            {/* 
             {userId === userDetails?.id && (
               <div className="relative ml-auto">
                 <button type="button" onClick={() => setShowCommentOptions((lst) => !lst)}>
@@ -165,7 +165,7 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
                   )}
                 </AnimatePresence>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* COMMENT REPLY */}

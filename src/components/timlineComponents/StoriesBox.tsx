@@ -113,7 +113,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
   // };
 
   return (
-    <>
+    <div style={{ display: getStories?.length > 0 ? "flex" : "none" }}>
       <CommonBox
         title="My Stories"
         cusJSX={[
@@ -180,7 +180,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
           </ul>
         </div>
       </CommonBox>
-    </>
+    </div>
   );
 };
 
