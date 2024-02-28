@@ -20,6 +20,7 @@ const CitizenHomePage = () => {
       try {
         if (userDetails?.id) {
           const data = await GetRaisedComplaints(userDetails?.id);
+          console.log(data, "complaintActionscomplaintActions");
 
           if (data.length > 0) {
             dispatch(complaintActions.storeComplaints(data));
@@ -38,7 +39,7 @@ const CitizenHomePage = () => {
           const data = await GetRaisedRequests(userDetails?.id);
 
           if (data.length > 0) {
-            dispatch(requestActions.storeComplaints(data))
+            dispatch(requestActions.storeComplaints(data));
           }
         }
       } catch (error) {
@@ -53,8 +54,11 @@ const CitizenHomePage = () => {
         if (userDetails?.id) {
           const data = await GetSuggestions(userDetails?.id);
 
+          console.log(data, "suggestionssuggestions in page 11");
+          
+
           if (data.length > 0) {
-            dispatch(suggestionActions.storeComplaints(data))
+            dispatch(suggestionActions.storeComplaints(data));
           }
         }
       } catch (error) {

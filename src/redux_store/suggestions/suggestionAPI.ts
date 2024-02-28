@@ -53,7 +53,7 @@ export const DeleteSuggestion = async (citizenid: string) => {
 
 const REQUEST_ENDPOINT = 'suggestions'
 
-export const fetchAllSuggestions = () => async (dispatch: AppDispatch) => {
+/* export const fetchAllSuggestions = () => async (dispatch: AppDispatch) => {
   try {
     const body = JSON.stringify({
       eventID: '0002',
@@ -115,4 +115,4 @@ export const deleteSuggestion =
       dispatch(suggestionActions.setError({ errTxt: err.message, isErr: true }))
       dispatch(suggestionActions.setSubmitting(false))
     }
-  }
+  } */

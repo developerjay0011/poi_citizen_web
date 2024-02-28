@@ -7,14 +7,12 @@ import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { RequestComplaintForm } from "../forms/RequestComplaintForm";
 import {
   DeleteSuggestion,
+  GetSuggestions,
   SaveSuggestion,
-  addNewSuggestions,
-  deleteSuggestion,
-  fetchAllSuggestions,
 } from "@/redux_store/suggestions/suggestionAPI";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import toast from "react-hot-toast";
-
+import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
 
 interface UserDetails {
   token: string;
@@ -25,14 +23,47 @@ interface UserDetails {
 export const SuggestionPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
-  const { userDetails } = cusSelector((st) => st.auth);
+  const [userDetails, setUserDetails] = useState<UserDetails>({
+    token: "",
+    id: "",
+    displayPic: "",
+  });
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
+
+  console.log(suggestions, "suggestionssuggestionssuggestions");
 
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
 
+  useEffect(() => {
+    var storedUserString = sessionStorage.getItem("user");
+    if (storedUserString !== null) {
+      var storedUser = JSON.parse(storedUserString);
+
+      setUserDetails(storedUser);
+    } else {
+      console.log("User data not found in session storage");
+    }
+  }, []);
+
+  const getSuggestion = async () => {
+    try {
+      if (userDetails?.id) {
+        const data = await GetSuggestions(userDetails?.id);
+
+        if (data.length >= 0) {
+          dispatch(suggestionActions.storeComplaints(data));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addNewSuggestionHandler = async (suggestion: RequestComplaintData) => {
+    console.log(suggestion, "complaint");
+
     const formData = new FormData();
     formData.append("id", "");
     formData.append("citizenid", userDetails?.id || "");
@@ -45,6 +76,8 @@ export const SuggestionPage: FC = () => {
       for (const file of Array.from(suggestion.signatureDoc)) {
         formData.append("signature", file);
       }
+    } else {
+      formData.append("signature", suggestion.signatureDoc);
     }
 
     for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
@@ -55,12 +88,14 @@ export const SuggestionPage: FC = () => {
     for (let i = 0; i < suggestion.to.length; i++) {
       const item: any = suggestion.to[i];
 
-      formData.append("to", item.name);
+      formData.append("to", item);
     }
 
     try {
       const data = await SaveSuggestion(formData);
       if (data?.success) {
+        console.log(data);
+        getSuggestion();
         toast.success(data.message);
       }
     } catch (error) {
@@ -68,13 +103,12 @@ export const SuggestionPage: FC = () => {
     }
     closeForm();
 
-
-    dispatch(addNewSuggestions(suggestion));
+    // dispatch(addNewSuggestions(suggestion));
   };
 
-  useEffect(() => {
-    dispatch(fetchAllSuggestions());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchAllSuggestions());
+  // }, [dispatch]);
 
   const searchFilteredSuggestions = suggestions.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
@@ -84,6 +118,7 @@ export const SuggestionPage: FC = () => {
     try {
       const data = await DeleteSuggestion(id);
       if (data?.success) {
+        getSuggestion();
         toast.success(data.message);
       }
     } catch (error) {

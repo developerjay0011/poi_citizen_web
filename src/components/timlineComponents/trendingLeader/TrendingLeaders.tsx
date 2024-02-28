@@ -33,7 +33,7 @@ export const TrendingLeaders: FC = () => {
         className={`border rounded-md w-full bg-white text-sky-950 max-h-[25rem] overflow-hidden flex flex-col`}
       >
         <h2 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:rounded-full after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-6 py-3 border-b font-[500] text-[16px] capitalize">
-          Trending Citizen
+          Trending Leader
         </h2>
         <div className="overflow-y-scroll flex-1 main_scrollbar">
           <ul className="flex flex-col">

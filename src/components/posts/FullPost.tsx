@@ -152,9 +152,10 @@ export const FullPost: FC<FullPostProps> = ({ onClose, posts, userId, }) => {
                   />
                 ))} */}
               </ul>
-              <NewCommentForm
+              {/* <NewCommentForm
                 CommentHandler={CommentHandler}
                 allData=""
+                setUpdateComment=""
               />
             </div>
           </div>

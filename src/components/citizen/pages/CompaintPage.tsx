@@ -9,9 +9,11 @@ import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import {
   addNewComplaint,
   DeleteComplaint,
+  GetRaisedComplaints,
   RaiseComplaint,
 } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
+import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 export const ComplaintPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
@@ -21,6 +23,21 @@ export const ComplaintPage: FC = () => {
   const { userDetails } = cusSelector((st) => st.auth);
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
+
+  const getComplaint = async () => {
+    try {
+      if (userDetails?.id) {
+        const data = await GetRaisedComplaints(userDetails?.id);
+        console.log(data, "complaintActionscomplaintActions");
+
+        if (data.length >= 0) {
+          dispatch(complaintActions.storeComplaints(data));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const addNewComplaintHandler = async (complaint: RequestComplaintData) => {
     const formData = new FormData();
@@ -38,6 +55,8 @@ export const ComplaintPage: FC = () => {
       for (const file of Array.from(complaint.signatureDoc)) {
         formData.append("signature", file);
       }
+    } else {
+      formData.append("signature", complaint.signatureDoc);
     }
 
     for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
@@ -48,13 +67,14 @@ export const ComplaintPage: FC = () => {
     for (let i = 0; i < complaint.to.length; i++) {
       const item: any = complaint.to[i];
 
-      formData.append("to", item.name);
+      formData.append("to", item);
     }
 
     try {
       const data = await RaiseComplaint(formData);
       if (data?.success) {
         toast.success(data.message);
+        getComplaint()
       }
     } catch (error) {
       console.log(error);
@@ -72,6 +92,7 @@ export const ComplaintPage: FC = () => {
       const data = await DeleteComplaint(id);
       if (data?.success) {
         toast.success(data.message);
+        getComplaint()
       }
     } catch (error) {
       console.log(error);

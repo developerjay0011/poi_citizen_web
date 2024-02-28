@@ -5,42 +5,106 @@ import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import { DeleteRequest, RaiseRequest, } from "@/redux_store/requests/requestAPI";
+import {
+  DeleteRequest,
+  GetRaisedRequests,
+  RaiseRequest,
+  addNewRequest,
+  deleteRequest,
+  fetchAllRequests,
+} from "@/redux_store/requests/requestAPI";
 import { RequestComplaintData } from "@/utils/typesUtils";
 import toast from "react-hot-toast";
+import { requestActions } from "@/redux_store/requests/requestSlice";
+
+interface UserDetails {
+  token: string;
+  id: string;
+  displayPic: string;
+}
+
 export const RequestPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showRequestForm, setShowRequestForm] = useState(false);
-  const { userDetails } = cusSelector((st) => st.auth);
+  const [userDetails, setUserDetails] = useState<UserDetails>({
+    token: "",
+    id: "",
+    displayPic: "",
+  });
+  const dispatch = cusDispatch();
   const { requests, submitting, err } = cusSelector((st) => st.requests);
+  // const { submitting, err } = cusSelector((st) => st.requests);
+
   const showForm = () => setShowRequestForm(true);
   const closeForm = () => setShowRequestForm(false);
+
+  console.log(requests, "requestsrequests");
+
+  useEffect(() => {
+    var storedUserString = sessionStorage.getItem("user");
+    if (storedUserString !== null) {
+      var storedUser = JSON.parse(storedUserString);
+
+      setUserDetails(storedUser);
+    } else {
+      console.log("User data not found in session storage");
+    }
+  }, []);
+
+  const getRequests = async () => {
+    try {
+      if (userDetails?.id) {
+        const data = await GetRaisedRequests(userDetails?.id);
+
+        if (data.length >= 0) {
+          dispatch(requestActions.storeComplaints(data));
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addNewRequestHandler = async (request: RequestComplaintData) => {
+    console.log(request, "complaintgetRequests");
+
     const formData = new FormData();
+
     formData.append("id", "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", request.subject || "");
     formData.append("description", request?.description || "");
     formData.append("deletedDocs", "");
+
+    // Check if signatureDoc is a string or a FileList
     if (typeof request.signatureDoc === "string") {
       formData.append("signature", request.signatureDoc);
     } else if (request.signatureDoc instanceof FileList) {
       for (const file of Array.from(request.signatureDoc)) {
         formData.append("signature", file);
       }
+    } else {
+      formData.append("signature", request.signatureDoc);
     }
+
     for (let i = 0; i < request.attachmentsDoc.length; i++) {
       const item: any = request.attachmentsDoc[i];
+
       formData.append("attachments", item?.file);
     }
     for (let i = 0; i < request.to.length; i++) {
       const item: any = request.to[i];
-      formData.append("to", item.name);
+
+      formData.append("to", item);
     }
 
     try {
       const data = await RaiseRequest(formData);
+      console.log(data);
+
       if (data?.success) {
+        console.log(data);
+        getRequests();
         toast.success(data.message);
       }
     } catch (error) {
@@ -49,7 +113,11 @@ export const RequestPage: FC = () => {
     closeForm();
 
     // dispatch(addNewRequest(request));
-  }
+  };
+
+  /*  useEffect(() => {
+    dispatch(fetchAllRequests())
+  }, [dispatch]) */
 
   const searchFilteredRequests = requests.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
@@ -60,6 +128,7 @@ export const RequestPage: FC = () => {
       const data = await DeleteRequest(id);
       if (data?.success) {
         toast.success(data.message);
+        getRequests();
       }
     } catch (error) {
       console.log(error);

@@ -110,33 +110,55 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
       </div>
       <div className="w-full h-[2px] bg-zinc-100 my-6" />
 
-      {/* Action */}
-      <div className="mb-5 flex items-center gap-6">
-        <button className={`flex flex-col gap-3 relative transition-all ${post?.likes?.length ? "text-rose-500" : "text-black"}`}
-          onClick={() => { setFirstTime(false); setShowLikeAnimation(!is_like); handleLike(); }}
-        >
-          {is_like ? (<BsFillHeartFill className="text-lg" />) : (<BsHeart className="text-lg" />)}
-          {!firstTime && (<BsFillHeartFill className={`text-lg overlay ${showLikeAnimation ? "fadeOut" : "fadeIn"}`} />)}
-          <span className="text-[14px] absolute -top-4 left-4 font-[500]">
-            {post?.likes?.length}
-          </span>
-        </button>
-        <button
-          className={`flex flex-col gap-3 relative transition-all hover:text-rose-500 ${showComments ? "text-rose-500" : "text-black"}`}
-          onClick={() => setShowComments((lst) => !lst)}
-        >
-          <BiSolidMessageAltDetail className="text-[1.4rem]" />
-          <span className="text-[14px] absolute -top-4 left-5 font-[500]">
-            {post?.comments?.length}
-          </span>
-        </button>
-        {/* <button className="flex flex-col gap-3 relative transition-all hover:text-rose-500">
-          <BiShareAlt className="text-[1.4rem]" />
-          <span className="text-[14px] absolute -top-4 left-5 font-[500]">
-            0
-          </span>
-        </button> */}
-      </div>
+        <div className="w-full h-[2px] bg-zinc-100 my-5" />
+
+        {/* POST Interactions */}
+        <div className="mb-5 flex items-center gap-6">
+          <button
+            className={`flex flex-col gap-3 relative transition-all ${
+              likeCount ? "text-rose-500" : "text-black"
+            }`}
+            onClick={() => {
+              likeChangeHandler();
+              setFirstTime(false);
+              setShowLikeAnimation((lst: any) => !lst);
+              handleLike(allData);
+            }}
+          >
+            <BsFillHeartFill className="text-lg" />
+
+            {!firstTime && (
+              <BsFillHeartFill
+                className={`text-lg overlay ${
+                  showLikeAnimation ? "fadeOut" : "fadeIn"
+                }`}
+              />
+            )}
+
+            <span className="text-[14px] absolute -top-4 left-4 font-[500]">
+              {likeCount}
+            </span>
+          </button>
+
+          <button
+            className={`flex flex-col gap-3 relative transition-all hover:text-rose-500 ${
+              showComments ? "text-rose-500" : "text-black"
+            }`}
+            onClick={() => setShowComments((lst) => !lst)}
+          >
+            <BiSolidMessageAltDetail className="text-[1.4rem]" />
+            <span className="text-[14px] absolute -top-4 left-5 font-[500]">
+              {comments?.length}
+            </span>
+          </button>
+
+          <button className="flex flex-col gap-3 relative transition-all hover:text-rose-500">
+            <BiShareAlt className="text-[1.4rem]" />
+            <span className="text-[14px] absolute -top-4 left-5 font-[500]">
+              0
+            </span>
+          </button>
+        </div>
 
 
 
@@ -145,10 +167,11 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
         {showComments && (
           <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <ul className="flex flex-col gap-5">
-              {(Shortlistbytime(post?.comments) as Comment[]).map((el, index) => (
+              {(Shortlistbytime(post?.comments) as Comment[]).map((el: any, index: any) => (
                 <SingleComment
                   {...el}
                   comments={el}
+                  comment_text={el?.comment_text}
                   key={index}
                   likeChangeHandler={() => Getpost()}
                   newNestedCommentHandler={() => Getpost()}

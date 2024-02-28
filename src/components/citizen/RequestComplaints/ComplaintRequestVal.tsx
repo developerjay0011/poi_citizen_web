@@ -74,7 +74,7 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
           {/* created date */}
           <p className="flex items-center gap-2 ml-auto">
             <BsCalendarDate className="text-orange-500" />{" "}
-            {dateConverter(createdDate)}
+            {/* {dateConverter(createdDate)} */}
           </p>
         </div>
 
