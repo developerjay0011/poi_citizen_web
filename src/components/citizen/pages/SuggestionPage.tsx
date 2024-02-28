@@ -65,14 +65,11 @@ export const SuggestionPage: FC = () => {
     console.log(suggestion, "complaint");
 
     const formData = new FormData();
-
     formData.append("id", "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", suggestion.subject || "");
     formData.append("description", suggestion?.description || "");
     formData.append("deletedDocs", "");
-
-    // Check if signatureDoc is a string or a FileList
     if (typeof suggestion.signatureDoc === "string") {
       formData.append("signature", suggestion.signatureDoc);
     } else if (suggestion.signatureDoc instanceof FileList) {
@@ -96,8 +93,6 @@ export const SuggestionPage: FC = () => {
 
     try {
       const data = await SaveSuggestion(formData);
-      console.log(data);
-
       if (data?.success) {
         console.log(data);
         getSuggestion();

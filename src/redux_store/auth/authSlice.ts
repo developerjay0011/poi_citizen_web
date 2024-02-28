@@ -8,12 +8,11 @@ interface AuthState {
 }
 let userDetails: any = getCookie(USER_INFO);
 userDetails = userDetails && JSON.parse(userDetails);
-
 const init: AuthState = {
-  trendingleader: [],
   userDetails: {
     id: userDetails?.id,
   },
+  trendingleader: [],
 };
 
 export const authSlice = createSlice({

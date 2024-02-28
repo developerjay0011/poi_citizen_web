@@ -43,8 +43,7 @@ export const ForgetPassword: FC<ForgetPasswordProps> = ({ onClose }) => {
           <button onClick={onClose} className="absolute top-5 right-5">
             <BiX className="text-3xl" />
           </button>
-
-          <Image src={Logo} alt="poi logo" className="w-auto h-[8rem]" />
+          <Image priority={true} src={Logo} alt="poi logo" className="w-auto h-[8rem]" />
           <AnimatePresence mode="wait">
             {curFormPos === 1 && (
               <ForgetUserIdField

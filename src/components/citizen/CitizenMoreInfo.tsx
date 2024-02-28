@@ -6,7 +6,7 @@ import { FaFacebook, FaInstagram, FaRedhat, FaTwitter } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
 
-interface CitizenMoreInfoProps {}
+interface CitizenMoreInfoProps { }
 interface UserDetail {
   token: string;
   id: string;
@@ -36,7 +36,7 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     userDetails?.socialMedia?.facebook ? (
       <Link
         target="_blank"
-        href={userDetails.socialMedia.facebook}
+        href={userDetails?.socialMedia.facebook}
         className=" text-sky-950 text-[1.6rem]"
         key={Math.random()}
       >
@@ -48,7 +48,7 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     userDetails?.socialMedia?.instagram ? (
       <Link
         target="_blank"
-        href={userDetails.socialMedia.instagram}
+        href={userDetails?.socialMedia.instagram}
         className=" text-sky-950 text-[1.6rem]"
         key={Math.random()}
       >
@@ -60,7 +60,7 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     userDetails?.socialMedia?.twitter ? (
       <Link
         target="_blank"
-        href={userDetails.socialMedia.twitter}
+        href={userDetails?.socialMedia.twitter}
         className=" text-sky-950 text-[1.6rem]"
         key={Math.random()}
       >

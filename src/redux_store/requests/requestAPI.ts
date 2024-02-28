@@ -102,10 +102,7 @@ export const deleteRequest = (id: string) => async (dispatch: AppDispatch) => {
     })
 
     const res = await ConnectToAPI(REQUEST_ENDPOINT, body)
-
-    console.log(res)
     dispatch(requestActions.setSubmitting(false))
-
     dispatch(fetchAllRequests())
   } catch (err: any) {
     console.error(err)

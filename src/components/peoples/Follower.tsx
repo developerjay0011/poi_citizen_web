@@ -13,6 +13,7 @@ export const Follower: FC<FollowerProps> = ({ displayImg }) => {
         <BsThreeDots />
       </button>
       <Image
+        priority={true}
         src={displayImg}
         alt='user display pic'
         width={1000}

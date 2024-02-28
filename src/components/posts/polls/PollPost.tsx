@@ -1,44 +1,29 @@
 "use client";
 import { dateConverter } from "@/utils/utility";
-import Image from "next/image";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { PollDetails } from "@/utils/typesUtils";
 import { cusSelector } from "@/redux_store/cusHooks";
-import { AnimatePresence } from "framer-motion";
 import { PollOption } from "./PollOption";
 import { RootState } from "@/redux_store";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
+import { VoteAdd } from "@/redux_store/post/postApi";
 
 interface PollPostProps extends PollDetails {
-  username: string;
-  userId: string;
-  postId: string;
-  createdDate: string;
+  Getpost: any,
+  allData: any,
+  userdetails: any,
+  post: any,
+  index: string
 }
 
-export const PollPost: FC<PollPostProps> = ({
-  imgOptions,
-  options,
-  pollType,
-  title,
-  postId,
-  userId,
-  username,
-  createdDate,
-}) => {
-  const userDetails: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
-  // const [userDetails] = useState("");
-  // const { userDetails } = cusSelector((st) => st.UI)
-
-  // Calculating votes count
-  const votes =
-    pollType === "image"
-      ? imgOptions.reduce((prev, el) => el.votes + prev, 0)
-      : options.reduce((prev, el) => el.votes + prev, 0);
-
+export const PollPost: FC<PollPostProps> = ({ userdetails, post, Getpost }) => {
+  const { userDetails } = cusSelector((state: RootState) => state.auth);
+  const isUserExist = post?.votes_by?.length > 0 ? post?.votes_by?.some((item: any) => item.userid === userDetails?.id && post?.poll_options?.map((item2: any) => item2?.id)?.includes(item?.optionid)) : false
+  const calculatePercentage = (votes: any, totalVotes: any) => {
+    const percentage = (votes / totalVotes) * 100;
+    return percentage.toFixed(0);
+  };
   return (
     <>
       <section className="border shadow-sm rounded-md px-5 py-2 bg-white">
@@ -53,42 +38,44 @@ export const PollPost: FC<PollPostProps> = ({
 
           {/* Info and date of publish */}
           <div>
-            <h4 className="font-[600] text-lg text-orange-500">{username}</h4>
+            <h4 className="font-[600] text-lg text-orange-500">{userdetails?.name}</h4>
             <p className="flex items-center capitalize gap-2 text-sm font-[500]">
-              <span>created a poll at {dateConverter(createdDate)}</span>
+              <span>created a poll at {dateConverter(post?.createddate)}</span>
             </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-5 my-5">
-          {/* TEXT POST */}
-          <p className="text-[16px]">{title}</p>
-
-          <p className="font-medium text-zinc-600">{votes} votes</p>
-
-          {/* MEDIA */}
+          <p className="text-[16px]">{post?.title}</p>
           <section className="w-full flex flex-col gap-3">
-            {pollType === "image" &&
-              imgOptions.map((el, i) => (
-                <PollOption
-                  id={el.id}
-                  index={i + 1}
-                  pollText={el.text}
-                  key={el.id}
-                  pollImg={el.media}
-                />
-              ))}
-
-            {pollType === "text" &&
-              options.map((el, i) => (
-                <PollOption
-                  id={el.id}
-                  index={i + 1}
-                  pollText={el.option}
-                  key={el.id}
-                />
-              ))}
+            {post?.poll_options.map((el: any, i: any) => (
+              <PollOption
+                id={el.id}
+                isUserExist={isUserExist}
+                key={i}
+                index={i + 1}
+                pollText={el.text}
+                pollImg={post?.polltype !== "text" ? el.image : ""}
+                alldata={el}
+                isselected={post?.votes_by?.filter((item2: any) => item2?.userid == userDetails?.id && el?.id == item2?.optionid)?.length > 0}
+                Onvote={async () => {
+                  const vote = await VoteAdd({
+                    "pollid": post?.id,
+                    "leaderid": post?.leaderid,
+                    "userid": userDetails?.id,
+                    "usertype": "citizen",
+                    "optionid": el?.id
+                  })
+                  if (vote?.success) {
+                    Getpost()
+                  }
+                }}
+                isshow={post?.view_access == "public" && isUserExist}
+                calculatePercentage={() => post?.view_access == "public" && isUserExist ? calculatePercentage(el?.votes, post?.poll_options?.reduce((acc: any, cur: any) => acc + cur.votes, 0)) : null}
+              />
+            ))}
           </section>
+          <p className="font-medium text-zinc-600" style={{ textAlign: "right" }}>{post?.votes_by?.length} votes</p>
         </div>
       </section>
     </>

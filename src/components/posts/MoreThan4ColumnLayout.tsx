@@ -14,16 +14,56 @@ export const MoreThan4ColumnImgLayout: FC<{
   postId: string
   userId: string
 }> = ({ onClick, media, hidePost, showFullPost, postId, userId }) => {
+  {/* MEDIA */ }
+  {/* {post?.media?.length > 0 && (
+            <section className="w-full">
+              <figure className="w-full relative" onClick={showFullPost}>
 
+                {(post?.media as MediaPost[]).map((el: any, index) => {
+                  console.log(getImageUrl(el?.media))
+                  return index < 1 && (el?.type === "image/jpeg" ? (
+                    <Image
+                      key={index}
+                      src={getImageUrl(el?.media)}
+                      width={1000}
+                      height={1000}
+                      // style={{ objectFit: "contain" }}
+                      alt="user post"
+                      className="object-cover object-center w-full h-[500px]"
+                    />
+                  ) : (
+                    <video
+                      key={index}
+                      src={getImageUrl(el?.media)}
+                      className="object-cover object-center w-full h-full"
+                      controls
+                    />
+                  )
+                  )
+                })}
+              </figure>
+              {post?.media?.length > 1 && (
+                <MoreThan4ColumnImgLayout
+                  hidePost={hideFullPost}
+                  showFullPost={showPostDetials}
+                  media={post?.media as MediaPost[]}
+                  onClick={showFullPost}
+                  postId={post?.id}
+                  userId={post?.leaderid}
+                />
+              )}
+            </section>
+          )} */}
   return (
     <>
       <figure className='w-full relative grid grid-cols-2 gap-1' onClick={onClick}>
         {media.map((el, i) => {
-          if (i == 3) {
+          if (i == 2) {
             return el.type?.startsWith("image") ? (
               <Image
                 key={i}
                 src={getImageUrl(el.media)}
+                priority={true}
                 style={{ objectFit: "contain" }}
                 width={1000}
                 height={1000}
@@ -39,14 +79,15 @@ export const MoreThan4ColumnImgLayout: FC<{
               />
             )
           }
-          if (i == 4)
+          if (i == 3)
             return (
               <div className='relative' key={el.id}>
                 <Image
                   src={getImageUrl(el.media)}
                   width={1000}
+                  priority={true}
                   height={1000}
-                  style={{ objectFit: "contain" }}
+                  style={{ objectFit: "contain", }}
                   alt='user post'
                   className='object-cover object-center w-full h-full'
                 />
@@ -61,14 +102,14 @@ export const MoreThan4ColumnImgLayout: FC<{
       </figure>
 
       <AnimatePresence>
-        {showFullPost && (
+        {/* {showFullPost && (
           <FullPost
             onClose={hidePost}
             posts={media}
             postId={postId}
             userId={userId}
           />
-        )}
+        )} */}
       </AnimatePresence>
     </>
   )

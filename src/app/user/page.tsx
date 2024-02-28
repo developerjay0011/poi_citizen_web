@@ -1,14 +1,11 @@
 "use client";
-import { CitizenFeed } from "@/components/citizen/CitizenFeed";
 import { TimeLinePage } from "@/components/posts/TimeLinePage";
 import { BriefProfileInfoBox } from "@/components/timlineComponents/BriefProfileInfoBox";
 import { ShortcutsBox } from "@/components/timlineComponents/ShortcutsBox";
 import { TrendingLeaders } from "@/components/timlineComponents/trendingLeader/TrendingLeaders";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import { GetPostsForCitizen } from "@/redux_store/post/postApi";
-import { postActions } from "@/redux_store/post/postSlice";
 import { GetRaisedComplaints } from "@/redux_store/complaints/complaintsApi";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
 import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";

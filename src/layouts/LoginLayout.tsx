@@ -20,6 +20,7 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
       <section className="min-h-[100dvh] w-full flex  items-center justify-center relative">
         {/* BG IMAGE */}
         <Image
+          priority={true}
           src={BackgroundImg}
           alt="background"
           className="w-full h-full absolute top-0 left-0 -z-10 object-cover object-center opacity-40"
@@ -30,6 +31,7 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
             {/* POI LOGO */}
             <Link href={AuthRoutes.login} className="self-start">
               <Image
+                priority={true}
                 src={Logo}
                 alt="poi logo"
                 className="h-[13rem] w-auto self-start max-lg:m-auto max-lg:h-[10rem]"

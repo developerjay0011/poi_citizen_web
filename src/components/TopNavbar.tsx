@@ -13,14 +13,12 @@ import { AnimatePresence } from "framer-motion";
 import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
 import { ProtectedRoutes } from "@/constants/routes";
-import NoImg from "@/assets/No_image_available.png";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 
-interface TopNavbarProps {}
-
+interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
   const router = useRouter();
   const { userDetails } = cusSelector((st) => st.auth);
@@ -32,11 +30,8 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
     document.addEventListener("click", (e) => {
-      // hiding usernav bar when clicked anywhere except usericon
       if (!(e.target as HTMLElement).closest("#userDisplayPic"))
         setShowAdminMenu(false);
-
-      // hiding notification box when clicked anywhere except usericon
       if (!(e.target as HTMLElement).closest("#briefNotiBox"))
         setShowBriefNoti(false);
     });
@@ -60,9 +55,10 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
       <nav className="py-3 px-8 bg-sky-950 text-orange-50 flex items-center gap-5 max-[1000px]:hidden">
         {/* LOGO */}
         <Image
-          src={POILogo || NoImg}
+          src={POILogo}
           alt="poi logo"
           className="h-12 w-auto"
+          priority={true}
           onClick={() => router.push(ProtectedRoutes.user)}
         />
 
@@ -161,6 +157,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
             alt="poi logo"
             className="h-12 w-auto"
             onClick={() => router.push(ProtectedRoutes.user)}
+            priority={true}
           />
 
           <button>
@@ -214,6 +211,7 @@ const BriefUserInfo: FC<{
         <li className="flex items-center p-4 last_noti gap-2 hover:bg-gray-100">
           <Image
             src={userPic}
+            priority={true}
             alt="user dp"
             width={1000}
             height={1000}

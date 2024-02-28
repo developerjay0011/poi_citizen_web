@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { CloseAccount, DeactiveAccount } from "@/redux_store/citizen/citizenApi";
 
-interface ShortcutsBoxProps {}
+interface ShortcutsBoxProps { }
 
 class Shortcut {
   id = GenerateId();
@@ -71,10 +71,8 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {
       var storedUser = JSON.parse(storedUserString);
-
       setUserData(storedUser);
     } else {
-      console.log("User data not found in session storage");
     }
   }, []);
 
@@ -94,12 +92,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
   };
   const CloseAccountHandler = async () => {
     const citizenid = userData?.id;
-    // const token = userData?.token;
-
-    // const data = await fetchCloseAccount(citizenid, token);
     const data = await CloseAccount(citizenid);
-
-    console.log(data);
     if (data?.success) {
       setShowCloseConfirmBox(false);
       router.push(AuthRoutes.login);

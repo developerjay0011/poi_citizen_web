@@ -41,7 +41,7 @@ const birthdays = [
 
 const prefixArr = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
 
-interface BirthdayNotificationsProps {}
+interface BirthdayNotificationsProps { }
 export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
   const { userDetails } = cusSelector((st) => st.auth)
   const [index, setIndex] = useState(0)
@@ -71,6 +71,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
     <section className='border rounded-md bg-white text-sky-950 overflow-hidden'>
       <div className='flex gap-3 bg-violet-500 px-4 py-2 items-center text-violet-50'>
         <Image
+          priority={true}
           src={birthday.img}
           alt='display pic'
           width={1000}
@@ -91,6 +92,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
 
       <ul className='py-4 px-10 relative'>
         <Image
+          priority={true}
           src={Sparkles}
           alt='background'
           className='absolute top-0 left-0 object-cover object-center w-full h-full'
@@ -118,6 +120,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
           {/*  */}
 
           <Image
+            priority={true}
             src={'https://wpkixx.com/html/pitnik/images/resources/dob-cake.gif'}
             alt='birthday gif'
             unoptimized={true}

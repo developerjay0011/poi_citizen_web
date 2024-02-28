@@ -113,10 +113,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
   } = useForm<RequestComplaintFormFields>();
 
   const formSubmitHandler = (data: RequestComplaintFormFields) => {
-    console.log({ ...data, attachmentsDoc, signature });
-
     submitHandler({ ...data, attachmentsDoc, signatureDoc });
-
     firstTime = false;
   };
 
@@ -333,6 +330,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                       <Image
                         src={signature}
                         alt=""
+                        priority={true}
                         width={1000}
                         height={1000}
                         className="w-20 aspect-square object-cover object-center bg-white"

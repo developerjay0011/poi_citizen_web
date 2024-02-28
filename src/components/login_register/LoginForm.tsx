@@ -27,7 +27,7 @@ import toast from "react-hot-toast";
 interface ForgetPassword {
   onClose: () => void;
 }
-interface LoginFormProps {}
+interface LoginFormProps { }
 export const LoginForm: FC<LoginFormProps> = () => {
   const router = useRouter();
   const [loggingIn, setLoggingIn] = useState(false);
@@ -65,8 +65,6 @@ export const LoginForm: FC<LoginFormProps> = () => {
     setLoggingIn(true);
     try {
       const loginData = await fetchLogin(resBody);
-      // console.log(loginData?.data?.id, "loginData?.data?.id");
-
       if (loginData?.data) {
         router.push(ProtectedRoutes.user);
         dispatch(authActions.logIn(loginData?.data));
@@ -95,6 +93,7 @@ export const LoginForm: FC<LoginFormProps> = () => {
       >
         {/* For Screens less than 1090px */}
         <Image
+          priority={true}
           src={Logo}
           alt="poi logo"
           className="hidden w-auto self-start m-auto max-lg:block h-[10rem]"
