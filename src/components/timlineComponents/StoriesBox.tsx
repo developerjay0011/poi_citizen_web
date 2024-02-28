@@ -164,6 +164,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
                 return (
                   <Story
                     key={index}
+                    data={el}
                     userImage={getImageUrl(el?.image)}
                     img={getImageUrl(el?.posts[0]?.media[0]?.media)}
                     stories={el?.posts}
@@ -191,6 +192,7 @@ interface StoryProps {
   handleDelete: any;
   userImage: string;
   stories: Array<any>;
+  data: any
 }
 
 interface Media {
@@ -205,11 +207,17 @@ const Story: FC<StoryProps> = ({
   // handleDelete,
   userImage,
   stories,
+  data
 }) => {
   const [showMorePostOptions, setShowMorePostOptions] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const { userDetails } = cusSelector((st) => st.auth);
   const leaderid = userDetails?.id;
+  const heading = {
+    heading: data.name,
+    subheading: data.written_text,
+    profileImage: userImage
+  }
   // const deletePostHandler = async (leaderid: string, id: string) => {
   //   handleDelete(leaderid, id);
   //   setShowMorePostOptions(false);
@@ -283,6 +291,7 @@ const Story: FC<StoryProps> = ({
               stories={stories?.map((item) => ({
                 url: getImageUrl(item.media[0].media),
                 type: item.media[0].type == "video/mp4" ? "video" : "image",
+                header: heading
               }))}
               defaultInterval={1500}
               width={432}

@@ -5,6 +5,8 @@ import { suggestionSlice } from './suggestions/suggestionSlice'
 import { authSlice } from './auth/authSlice'
 import { postSlice } from './post/postSlice'
 import { followSlice } from './follow/followSlice'
+import { contributionsSlice } from './contributions/contributionsSlice'
+
 
 
 export const store = configureStore({
@@ -15,6 +17,7 @@ export const store = configureStore({
     auth: authSlice.reducer,
     post: postSlice.reducer,
     follow: followSlice.reducer,
+    contribution: contributionsSlice.reducer
   },
 })
 

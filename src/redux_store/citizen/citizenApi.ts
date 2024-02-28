@@ -20,3 +20,4 @@ export const CloseAccount = async (citizenid: string) => {
         }
     );
 };
+

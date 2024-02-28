@@ -11,12 +11,14 @@ interface ImageMultiSelectIPProps {
   options: LeaderDetails[]
   placeholder: string
   setValue: (val: LeaderDetails[] | '') => void
+  title:string
 }
 
 export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
   options,
   placeholder,
   setValue,
+  title
 }) => {
   const [showOptions, setShowOptions] = useState(false)
   const [filterStr, setFilterStr] = useState('')
@@ -48,7 +50,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
     <>
       <section className='flex flex-col gap-2'>
         <span className='capitalize font-[500]'>
-          to
+          {title}
           {<strong className='text-rose-500'>*</strong>}
         </span>
         <section

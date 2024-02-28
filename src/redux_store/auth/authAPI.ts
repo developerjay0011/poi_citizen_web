@@ -115,3 +115,12 @@ export const EditCitizenProfile = async (formData: any) => {
 };
 
 
+export const GetBirthdayList = async () => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(APIRoutes.GetBirthdayList);
+      return res.data;
+    }
+  );
+};
+

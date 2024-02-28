@@ -18,20 +18,16 @@ export const GetContributions = async (citizenid: string) => {
 export const SaveContribution = async (formData: any) => {
   return tryCatch(
     async () => {
-      const res = await Axios.post(APIRoutes.SaveContribution, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
+      const res = await Axios.post(APIRoutes.SaveContribution, formData);
       return res.data;
     }
   );
 }
 
-export const DeleteContribution = async (citizenid: string) => {
+export const DeleteContribution = async (contributionid: string) => {
   return tryCatch(
     async () => {
-      const res = await Axios.get(insertVariables(APIRoutes.DeleteContribution, { citizenid }));
+      const res = await Axios.get(insertVariables(APIRoutes.DeleteContribution, { contributionid }));
       return res.data;
     }
   );

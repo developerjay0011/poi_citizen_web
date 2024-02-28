@@ -58,6 +58,7 @@ export const APIRoutes = {
   ReplyToComment: `${API_Prefix}/Post/ReplyToComment`,
   VoteAdd: `${API_Prefix}/Citizen/AddVoteOfPOll`,
   getLeaderList: `${API_Prefix}/Leader/GetLeaderList`,
+  GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
 
   TrendingLeaderList: `${API_Prefix}/Leader/TrendingLeaderList`,
   FollowLeader: `${API_Prefix}/Citizen/FollowLeaderByCitizen`,
@@ -80,8 +81,8 @@ export const APIRoutes = {
   SaveSuggestion: `${API_Prefix}/Citizen/SaveSuggestion`,
   DeleteSuggestion: `${API_Prefix}/Citizen/DeleteSuggestion/{{suggestionid}}`,
 
-  GetContributions: `${API_Prefix}/api/Citizen/GetContributions/{{citizenid}}`,
-  SaveContribution: `${API_Prefix}/api/Citizen/SaveContribution`,
-  DeleteContribution: `${API_Prefix}/api/Citizen/DeleteContribution/{{contributionid}}`,
+  GetContributions: `${API_Prefix}/Citizen/GetContributions/{{citizenid}}`,
+  SaveContribution: `${API_Prefix}/Citizen/SaveContribution`,
+  DeleteContribution: `${API_Prefix}/Citizen/DeleteContribution/{{contributionid}}`,
 
 }       
