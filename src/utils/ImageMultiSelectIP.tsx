@@ -11,14 +11,16 @@ interface ImageMultiSelectIPProps {
   options: LeaderDetails[]
   placeholder: string
   setValue: (val: LeaderDetails[] | '') => void
-  title:string
+  title: string
+  svalue: LeaderDetails[]
 }
 
 export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
   options,
   placeholder,
   setValue,
-  title
+  title,
+  svalue
 }) => {
   const [showOptions, setShowOptions] = useState(false)
   const [filterStr, setFilterStr] = useState('')
@@ -35,6 +37,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
       if (!(e.target as HTMLElement).closest('#multiSelectImgField'))
         setShowOptions(false)
     }
+    setSelectedLeaders(svalue)
     document.addEventListener('click', showOptionsEventListener)
 
     return () => {

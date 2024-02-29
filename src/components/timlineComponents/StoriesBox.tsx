@@ -31,51 +31,7 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
     (state: RootState) => state.auth?.userDetails
   );
 
-  // const mediaChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
-  //   setStoryMedia([]);
-  //   const data = e.target.files as FileList;
-  //   if (!data || data.length === 0) return;
-  //   const newMedia: Media[] = [];
-
-  //   for (let i = 0; i < data.length; i++) {
-  //     const uploadData = data[i];
-
-  //     // checking for media type
-  //     const type = uploadData.type.split("/")[0];
-
-  //     // converting data into base 64
-  //     const convertedData = await convertFileToBase64(uploadData);
-
-  //     newMedia.push({
-  //       type: type,
-  //       media: uploadData,
-  //       id: GenerateId(),
-  //     });
-  //   }
-
-  //   setStoryMedia((oldMedia) => [...oldMedia, ...newMedia]);
-
-  //   const token = userDetails?.token;
-
-  //   const formData = new FormData();
-
-  //   formData.append("leaderid", userDetails?.id || "");
-  //   formData.append("written_text", textPost || "");
-  //   formData.append("access_type", "open");
-
-  //   for (let i = 0; i < data.length; i++) {
-  //     const item: any = data[i];
-  //     formData.append("media", item);
-  //   }
-  //   try {
-  //     const data = await fetchAddStory(formData, token);
-  //     if (data?.success) {
-  //       setUpdateStory(data);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+ 
   const citizenid = userDetails?.id;
 
   useEffect(() => {
@@ -116,45 +72,11 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
     <div style={{ display: getStories?.length > 0 ? "flex" : "none" }}>
       <CommonBox
         title="My Stories"
-        cusJSX={[
-          <Link
-            key={id}
-            href={ProtectedRoutes.leader}
-            className="text-sm font-normal hover:underline text-orange-500"
-          >
-            see all
-          </Link>,
-        ]}
+      
       >
         <div className="w-[660px]  ">
           <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
-            {/* <li className=" w-44 h-[300px] aspect-[9/16] rounded-lg relative  ">
-              <label htmlFor="media">
-                <input
-                  type="file"
-                  className="hidden"
-                  id="media"
-                  multiple
-                  onChange={mediaChangeHandler}
-                />
-                <BsPlusCircle className="absolute top-3 left-3 z-10 text-white text-[38px] shadow" />
-
-                <figure className="absolute top-0 left-0 w-full h-full object-cover object-center story_img">
-                  <CustomImage
-                    src={
-                      storyMedia?.length > 0
-                        ? URL.createObjectURL(storyMedia[0]?.media)
-                        : ""
-                    }
-                    alt=""
-                    width={1000}
-                    height={1000}
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute top-0 left-0 w-full bg-black bg-opacity-25 h-full"></div>
-                </figure>
-              </label>
-            </li> */}
+           
 
             {getStories.map(
               (

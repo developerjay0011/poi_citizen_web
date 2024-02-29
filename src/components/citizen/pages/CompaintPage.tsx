@@ -18,6 +18,9 @@ import { tryCatch } from "@/config/try-catch";
 export const ComplaintPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<any>();
+
+  const [isEdit, setIsEdit] = useState(false);
 
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
@@ -48,7 +51,7 @@ export const ComplaintPage: FC = () => {
   const addNewComplaintHandler = async (complaint: any) => {
     const formData = new FormData();
 
-    formData.append("id", "");
+    formData.append("id", isEdit ?  selectedValue?.id  : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", complaint.subject || "");
     formData.append("description", complaint?.description || "");
@@ -56,19 +59,22 @@ export const ComplaintPage: FC = () => {
 
    
        
+    if (complaint.attachmentsDoc) {
+      for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
+        const item: any = complaint.attachmentsDoc[i];
 
-    for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
-      const item: any = complaint.attachmentsDoc[i];
-
-      formData.append("attachments", item?.file);
+        formData.append("attachments", item?.file);
+      }
     }
+   
     for (let i = 0; i < complaint.to.length; i++) {
       const item: any = complaint.to[i]?.id;
 
       formData.append("to", item);
     }
-    formData.append("signature", complaint.signatureDoc);
-
+    if (complaint.signatureDoc) {
+      formData.append("signature", complaint.signatureDoc);
+    }
     tryCatch(
       async () => {
       const data = await RaiseComplaint(formData);
@@ -133,7 +139,7 @@ export const ComplaintPage: FC = () => {
                 {/* ADD OR EDIT Button */}
                 <button
                   className="px-5 py-2 bg-orange-500 text-orange-50 rounded-md text-sm capitalize transition-all hover:bg-orange-600"
-                  onClick={showForm}
+                  onClick={() => { showForm(), setIsEdit(false) }}
                 >
                   raise a complaint
                 </button>
@@ -166,8 +172,8 @@ export const ComplaintPage: FC = () => {
             requestOrComplaints={searchFilteredComplaints}
             type="complaint"
             submitting={submitting}
-            // deleteHandler={(id: string) => dispatch(deleteComplaint(id))}
             deleteHandler={(id: string) => handleDelete(id)}
+            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id)}}
           />
         </section>
       </section>
@@ -177,6 +183,8 @@ export const ComplaintPage: FC = () => {
           <RequestComplaintForm
             submitHandler={addNewComplaintHandler}
             type="complaint"
+            isEdit={isEdit}
+            selectedValue={selectedValue}
             onClose={closeForm}
             err={err}
             submitting={submitting}

@@ -44,19 +44,13 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
             animate={{ y: 0 }}
             exit={{ y: -100 }}
             className='bg-white relative h-max flex flex-col gap-5'>
-            {/* <div className='flex justify-between items-start'>
-              <h4 className='text-3xl font-semibold'>{heading} Preview</h4>
-
-              <button type='button' onClick={onClose}>
-                <BiX className='text-4xl' />
-              </button>
-            </div> */}
+          
 
             {/* PDF Preview */}
             <div className='letter_preview'>
               <div
                 ref={letterDiv}
-                className='flex flex-col w-full h-full overflow-hidden gap-[1cm]'>
+                className='flex flex-col w-full h-full overflow-hidden gap-[1cm] p-8 '>
                 {/* Date and Req/comp no */}
                 <p className='self-end'>
                   req/comp no/{dateConverterNumeric(new Date().toDateString())}

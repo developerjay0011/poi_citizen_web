@@ -24,6 +24,8 @@ interface UserDetails {
 export const SuggestionPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<any>();
+  const [isEdit, setIsEdit] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
@@ -63,16 +65,18 @@ export const SuggestionPage: FC = () => {
   const addNewSuggestionHandler = async (suggestion: any) => {
 
     const formData = new FormData();
-    formData.append("id", "");
+    formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", suggestion.subject || "");
     formData.append("description", suggestion?.description || "");
     formData.append("deletedDocs", "");
     formData.append("signature", suggestion.signatureDoc || "");
-    for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
-      const item: any = suggestion.attachmentsDoc[i];
+    if (suggestion?.attachmentsDoc) {
+      for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
+        const item: any = suggestion.attachmentsDoc[i];
 
-      formData.append("attachments", item?.file);
+        formData.append("attachments", item?.file);
+      }
     }
     for (let i = 0; i < suggestion.to.length; i++) {
       const item: any = suggestion.to[i].id;
@@ -145,7 +149,7 @@ export const SuggestionPage: FC = () => {
                 {/* ADD OR EDIT Button */}
                 <button
                   className="px-5 py-2 bg-orange-500 text-orange-50 rounded-md text-sm capitalize transition-all hover:bg-orange-600"
-                  onClick={showForm}
+                  onClick={() => { showForm(), setIsEdit(false) }}
                 >
                   new suggestion
                 </button>
@@ -179,7 +183,7 @@ export const SuggestionPage: FC = () => {
             requestOrComplaints={searchFilteredSuggestions}
             type="suggestion"
             submitting={submitting}
-            // deleteHandler={(id: string) => dispatch(deleteSuggestion(id))}
+            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
             deleteHandler={(id: string) => handleDetele(id)}
           />
         </section>
@@ -191,6 +195,8 @@ export const SuggestionPage: FC = () => {
           <RequestComplaintForm
             onClose={closeForm}
             type="suggestion"
+            isEdit={isEdit}
+            selectedValue={selectedValue}
             submitHandler={addNewSuggestionHandler}
             err={err}
             submitting={submitting}

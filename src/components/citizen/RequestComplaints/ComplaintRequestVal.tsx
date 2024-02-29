@@ -5,7 +5,7 @@ import { Attachments, ToDetails } from "@/utils/typesUtils";
 import { AnimatePresence } from "framer-motion";
 import { ToDetailsBox } from "./ToDetailsBox";
 import Image from "next/image";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdDownload, MdEdit } from "react-icons/md";
 import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
 import { dateConverter } from "@/utils/utility";
 import { getImageUrl } from "@/config/get-image-url";
@@ -19,6 +19,7 @@ interface ComplaintRequestValProps {
   ticket_code: string;
   type: "complaint" | "request" | "suggestion";
   requestComplaintDeleteFn: () => void;
+  requestComplaintEditFn: () => void;
   submitting: boolean;
   createdDate: string;
   signature: string;
@@ -44,6 +45,7 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   createdDate,
   signature,
   attachments,
+  requestComplaintEditFn
 }) => {
   const descRef = useRef<HTMLParagraphElement>(null);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
@@ -137,10 +139,16 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
         </div>
 
         <div className="flex self-end gap-2">
-          <button type="button" className="pdf_hover">
-            <span>download pdf</span>
+          {/* <button type="button" className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500">
+            <MdDownload className="text-3xl" />
+          </button> */}
+          <button
+            type="button"
+            onClick={() => requestComplaintEditFn()}
+            className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
+          >
+            <MdEdit className="text-3xl" />
           </button>
-
           <button
             type="button"
             onClick={() => setShowConfirmBox(true)}
