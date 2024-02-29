@@ -28,8 +28,6 @@ export const ComplaintPage: FC = () => {
     try {
       if (userDetails?.id) {
         const data = await GetRaisedComplaints(userDetails?.id);
-        console.log(data, "complaintActionscomplaintActions");
-
         if (data.length >= 0) {
           dispatch(complaintActions.storeComplaints(data));
         }

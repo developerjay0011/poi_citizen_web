@@ -47,9 +47,7 @@ export const ForgetPassword: FC<ForgetPasswordProps> = ({ onClose }) => {
           <AnimatePresence mode="wait">
             {curFormPos === 1 && (
               <ForgetUserIdField
-                setUserINP={(data) => {
-                  setUserINP(data);
-                }}
+                setUserINP={(data) => { setUserINP(data); }}
                 userINP={userINP}
                 proceedFn={() => setCurFormPos(2)}
               />

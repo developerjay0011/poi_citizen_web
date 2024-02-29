@@ -16,6 +16,27 @@ export const CreateNewPasswordForm: FC<CreateNewPasswordFormProps> = ({
   const [pass1, setPass1] = useState("");
   const [pass2, setPass2] = useState("");
   const [registering, setRegistering] = useState(false);
+
+
+  const Password = () => {
+    const specialChar = `~!@#$%^&*()-_+={}[]|:;"'<>,.`.split("");
+    if (pass1.length < 8) {
+      toast.success("Password must atleast 8 char long");
+      return false
+    }
+    if (!pass1.split("").some((el: string) => !isNaN(+el))) {
+      toast.success("Password should contain atleast one number");
+      return false
+    }
+    if (!pass1.split("").some((el: string) => specialChar.includes(el))) {
+      toast.success(`Password should contain atleast one special character`);
+      return false
+    }
+    return true
+  }
+
+
+
   const newPasswordSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
     setRegistering(true);
@@ -23,17 +44,19 @@ export const CreateNewPasswordForm: FC<CreateNewPasswordFormProps> = ({
       email: number,
       password: pass1,
     };
-    if (pass1 != pass1) {
+    if (pass1 != pass2) {
       toast.success("Please check both password");
       return;
     }
-    const sandOtp = await fetchForgotPassword(body);
-    setRegistering(false);
-    if (sandOtp?.success) {
-      toast.success(sandOtp.message);
-      proceedFn();
-    } else {
-      toast.error(sandOtp.message);
+    if (Password()) {
+      const sandOtp = await fetchForgotPassword(body);
+      setRegistering(false);
+      if (sandOtp?.success) {
+        toast.success(sandOtp.message);
+        proceedFn();
+      } else {
+        toast.error(sandOtp.message);
+      }
     }
   };
 
@@ -59,7 +82,6 @@ export const CreateNewPasswordForm: FC<CreateNewPasswordFormProps> = ({
 
         <label htmlFor="userId" className="flex flex-col gap-2">
           <span className="max-[500px]:text-[14px]">Confirm New password</span>
-
           <input
             value={pass2}
             onChange={(e) => setPass2(e.target.value)}
