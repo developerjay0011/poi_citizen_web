@@ -5,7 +5,7 @@ export const ProtectedRoutes = {
   leader: '/leader',
   followers: "/user/profile/followers",
   feed: '/user/profile/feed',
-  leaderProfile: "/leader/profile",
+  leaderProfile: "/user/leader/about",
   edit_profile: "/user/profile/settings/edit-profile",
   analytics: '/admin/analytics',
   profile: '/admin/profile',
@@ -84,5 +84,7 @@ export const APIRoutes = {
   GetContributions: `${API_Prefix}/Citizen/GetContributions/{{citizenid}}`,
   SaveContribution: `${API_Prefix}/Citizen/SaveContribution`,
   DeleteContribution: `${API_Prefix}/Citizen/DeleteContribution/{{contributionid}}`,
+
+  getSingleLeader: `${API_Prefix}/Leader/getSingleLeader/{{leaderid}}`,
 
 }       

@@ -6,6 +6,7 @@ interface AuthState {
   userDetails: any;
   trendingleader: [];
   birthdaylist: any[],
+  leaderData:any
 }
 let userDetails: any = getCookie(USER_INFO);
 userDetails = userDetails && JSON.parse(userDetails);
@@ -15,6 +16,7 @@ const init: AuthState = {
   },
   trendingleader: [],
   birthdaylist: [],
+  leaderData:[]
 };
 
 export const authSlice = createSlice({
@@ -32,6 +34,9 @@ export const authSlice = createSlice({
     },
     setBirthdayList(state, action: PayloadAction<any | null>) {
       state.birthdaylist = action.payload;
+    },
+    setLeaderData(state, action: PayloadAction<any | null>) {
+      state.leaderData = action.payload;
     },
     logOut(state) {
       state.userDetails = null;
