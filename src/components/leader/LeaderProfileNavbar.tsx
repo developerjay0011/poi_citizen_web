@@ -12,7 +12,7 @@ export const LeaderProfileNavbar: FC<LeaderProfileNavbarProps> = () => {
           activeLinkClasses="after:absolute text-orange-500 after:w-full after:h-[3px] after:bg-orange-400 after:top-[160%] after:left-0 max-[950px]:after:top-full max-[1238px]:after:top-full"
           normalClasses="text-sky-950"
           className="text-lg font-[500] capitalize relative"
-          href={ProtectedRoutes.feed}
+          href={ProtectedRoutes.leaderFeed}
         >
           Feed
         </CusLink>

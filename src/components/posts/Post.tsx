@@ -84,7 +84,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
           </h4>
           <p className="flex items-center capitalize gap-2 text-sm font-[500]">
             <span>
-              Published on:{" "}{dateConverter(post?.createddate)}
+              {/* Published on:{" "}{dateConverter(post?.createddate)} */}
             </span>
           </p>
         </div>

@@ -109,9 +109,12 @@ export const RequestPage: FC = () => {
     tryCatch(
       async () => {
       const data = await DeleteRequest(id);
-      if (data?.success) {
+        if (data?.success) {
+          closeForm();
         toast.success(data.message);
+
         getRequests();
+       
       }
     })
   };
