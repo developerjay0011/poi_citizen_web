@@ -52,6 +52,20 @@ export const CommentPost = async (resBody: any) => {
   });
 };
 
+
+
+export const GetStoriesForCitizen = async (citizenid: string) => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(insertVariables(APIRoutes.GetStoriesForCitizen, { citizenid }));
+      return res.data;
+    }
+  );
+};
+
+
+
+
 const ConvertCommonpost = (list = []): any => {
   var combinedData = [] as any;
   list?.forEach((userData: any) => {

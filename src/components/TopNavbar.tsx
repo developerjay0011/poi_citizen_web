@@ -12,11 +12,13 @@ import { RiUserAddFill } from "react-icons/ri";
 import { AnimatePresence } from "framer-motion";
 import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
-import { ProtectedRoutes } from "@/constants/routes";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
+import { getCookie } from "cookies-next";
+import { TOKEN_KEY } from "@/constants/common";
 
 interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
@@ -28,6 +30,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   const [showBriefNoti, setShowBriefNoti] = useState(false);
   const [searchUserStr, setSearchUserStr] = useState("");
   const [showMobileNav, setShowMobileNav] = useState(false);
+  let token: any = getCookie(TOKEN_KEY);
   useEffect(() => {
     document.addEventListener("click", (e) => {
       if (!(e.target as HTMLElement).closest("#userDisplayPic"))
@@ -41,6 +44,10 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
       if (userDetails?.id) {
         const res = await getProfile(userDetails?.id);
         dispatch(authActions.logIn(res));
+      } else {
+        if (!token) {
+          router.push(AuthRoutes.login)
+        }
       }
     })();
   }, [dispatch, userDetails?.id]);

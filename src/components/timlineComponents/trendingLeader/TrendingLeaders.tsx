@@ -43,7 +43,7 @@ export const TrendingLeaders: FC = () => {
                   <TrendingLeader
                     key={index}
                     {...el}
-                    following={async () => await Gelfollowinglist()}
+                    following={() => Gelfollowinglist()}
                     isfollowing={isFollow(el?.id)}
                   />
                 );

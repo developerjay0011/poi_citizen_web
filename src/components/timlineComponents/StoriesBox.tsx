@@ -1,36 +1,24 @@
 import { RootState } from "@/redux_store";
-import { cusSelector } from "@/redux_store/cusHooks";
+import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { CommonBox } from "@/utils/CommonBox";
-import { PostType } from "@/utils/typesUtils";
-import { GenerateId, convertFileToBase64 } from "@/utils/utility";
+import { GenerateId } from "@/utils/utility";
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, FC, useEffect, useState } from "react";
-import { BsPlusCircle, BsThreeDots } from "react-icons/bs";
+import { FC, useEffect, useState } from "react";
 import Stories from "react-insta-stories";
-import { PostOptions } from "../posts/PostOptions";
 import Modal from "react-modal";
 import { ProtectedRoutes } from "@/constants/routes";
-import CustomImage from "@/utils/CustomImage";
-import {
-  AddStory,
-  DeleteStory,
-  GetStoriesForCitizen,
-} from "@/redux_store/story/storyApi";
 import { getImageUrl } from "@/config/get-image-url";
+import { GetStoriesForCitizen } from "@/redux_store/post/postApi";
+import { postActions } from "@/redux_store/post/postSlice";
 interface StoriesBoxProps { }
 
 export const StoriesBox: FC<StoriesBoxProps> = () => {
-  const [storyMedia, setStoryMedia] = useState<Media[]>([]);
-  const [textPost, setTextPost] = useState("");
-  const [getStories, setGetStories] = useState([]);
-  const [updateStory, setUpdateStory] = useState({});
   const { userDetails } = cusSelector((st) => st.auth);
   const id = GenerateId();
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth?.userDetails
-  );
-
+  const { stories } = cusSelector((state) => state.post);
+  const dispatch = cusDispatch();
+  const citizenid = userDetails?.id;
   // const mediaChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
   //   setStoryMedia([]);
   //   const data = e.target.files as FileList;
@@ -76,44 +64,47 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
   //     console.log(error);
   //   }
   // };
-  const citizenid = userDetails?.id;
+  const setmidea = (posts: any[], heading: { heading: string; profileImage: string }) => {
+    const postdata = posts.flatMap((element) =>
+      element.media?.map((media: any) => ({
+        postid: element.id,
+        url: getImageUrl(media.media),
+        duration: 5000,
+        type: media.type?.includes("image") ? "image" : "video",
+        header: {
+          ...heading,
+          subheading: element.written_text,
+        },
+      }))
+    );
+
+    return postdata || [];
+  };
+  const fetchStories = async () => {
+    if (citizenid) {
+      const data = await GetStoriesForCitizen(citizenid);
+      console.log(citizenid)
+      if (data.length > 0) {
+        const setdata = data.map((item: any, index: number) => ({
+          name: item.name,
+          leaderid: item.leaderid,
+          image: item.image,
+          index: index,
+          media: setmidea(item.posts, { heading: item.name, profileImage: getImageUrl(item.image) }),
+        }));
+        dispatch(postActions.storeStories(setdata as any));
+      }
+    }
+  };
 
   useEffect(() => {
-    (async () => {
-      try {
-        if (citizenid) {
-          const data = await GetStoriesForCitizen(citizenid);
-          if (data?.length > 0) {
-            setGetStories(data);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [userData, updateStory, citizenid]);
+    fetchStories()
+  }, [citizenid]);
 
-  // const handleDelete = async (leaderid: string, id: string) => {
-  //   const token = userData?.token;
 
-  //   const postBody = {
-  //     id: id,
-  //     leaderid: leaderid,
-  //   };
-
-  //   try {
-  //     // const data = await fetchDeleteStory(postBody, token);
-  //     const data = await DeleteStory(postBody);
-  //     if (data) {
-  //       setUpdateStory(data);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
-    <div style={{ display: getStories?.length > 0 ? "flex" : "none" }}>
+    <div style={{ display: stories?.length > 0 ? "flex" : "none" }}>
       <CommonBox
         title="My Stories"
         cusJSX={[
@@ -128,55 +119,16 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
       >
         <div className="w-[660px]  ">
           <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
-            {/* <li className=" w-44 h-[300px] aspect-[9/16] rounded-lg relative  ">
-              <label htmlFor="media">
-                <input
-                  type="file"
-                  className="hidden"
-                  id="media"
-                  multiple
-                  onChange={mediaChangeHandler}
+            {stories?.map((el: | { media?: any[]; index?: number, leaderid: string; image: string; name: string; } | undefined) => {
+              return (
+                <Story
+                  userImage={getImageUrl(el?.image as string)}
+                  key={el?.index}
+                  stories={el?.media as any}
+                  name={el?.name as string}
                 />
-                <BsPlusCircle className="absolute top-3 left-3 z-10 text-white text-[38px] shadow" />
-
-                <figure className="absolute top-0 left-0 w-full h-full object-cover object-center story_img">
-                  <CustomImage
-                    src={
-                      storyMedia?.length > 0
-                        ? URL.createObjectURL(storyMedia[0]?.media)
-                        : ""
-                    }
-                    alt=""
-                    width={1000}
-                    height={1000}
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className="absolute top-0 left-0 w-full bg-black bg-opacity-25 h-full"></div>
-                </figure>
-              </label>
-            </li> */}
-
-            {getStories.map(
-              (
-                el: { posts?: any; id: string; image: string } | undefined,
-                index
-              ) => {
-                return (
-                  <Story
-                    key={index}
-                    userImage={getImageUrl(el?.image)}
-                    img={getImageUrl(el?.posts[0]?.media[0]?.media)}
-                    stories={el?.posts}
-                    id={el?.id || ""}
-                    handleDelete={() => { }}
-                  />
-                );
-              }
-            )}
-
-            {/* {IMAGES.slice(0, 5).map((el, index) => {
-              return <Story key={index} img={el} id="" handleDelete="" />;
-            })} */}
+              );
+            })}
           </ul>
         </div>
       </CommonBox>
@@ -185,81 +137,29 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
 };
 
 interface StoryProps {
-  img: string;
-  self?: boolean;
-  id: string;
-  handleDelete: any;
   userImage: string;
   stories: Array<any>;
+  name: string
 }
 
-interface Media {
-  type: string;
-  media: File;
-  id: string;
-}
 
-const Story: FC<StoryProps> = ({
-  // img,
-  // id,
-  // handleDelete,
-  userImage,
-  stories,
-}) => {
-  const [showMorePostOptions, setShowMorePostOptions] = useState(false);
+const Story: FC<StoryProps> = ({ userImage, stories, name }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const { userDetails } = cusSelector((st) => st.auth);
-  const leaderid = userDetails?.id;
-  // const deletePostHandler = async (leaderid: string, id: string) => {
-  //   handleDelete(leaderid, id);
-  //   setShowMorePostOptions(false);
-  // };
+  const storyContent = { width: 'auto', maxWidth: '100%', maxHeight: '100%', margin: 'auto', }
+  const [storiesdata, setStoriesdata] = useState({}) as any
 
   return (
     <>
-      <li
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        {/* User Img */}
+      <li onClick={() => { setIsOpen(true); }} className="item-center flex flex-col gap-1">
         <Image
           priority={true}
           src={userImage}
           width={1000}
           height={1000}
           alt="user display pic"
-          className=" top-3 left-3 border-4 border-blue z-20 w-20 aspect-square rounded-full object-cover object-center shadow"
+          className="border-4 border-blue w-20 aspect-square rounded-full object-cover object-center shadow"
         />
-
-        {/* Story Image */}
-        {/* <figure className="absolute top-0 left-0 w-full h-full object-cover object-center story_img">
-          <Image
-            src={img}
-            alt=""
-            width={1000}
-            height={1000}
-            className="w-full h-full object-cover object-center"
-          />
-
-          <div className="absolute top-0 left-0 w-full bg-black bg-opacity-25 h-full"></div>
-        </figure> */}
-        {/* <div className="ml-auto relative" id="moreOptions">
-          <button
-            onClick={() => setShowMorePostOptions((lst) => !lst)}
-            className="absolute right-0 rotate-90 top-6"
-          >
-            <BsThreeDots className="text-2xl" />
-          </button>
-
-          {showMorePostOptions && (
-            <PostOptions
-              deletePostHandler={() => deletePostHandler(leaderid, id)}
-              userId={leaderid}
-              onClose={() => setShowMorePostOptions(false)}
-            />
-          )}
-        </div> */}
+        <figcaption className='text-[14px] mt-[1px]'> {name}</figcaption>
       </li>
       {
         <Modal
@@ -275,19 +175,66 @@ const Story: FC<StoryProps> = ({
               marginRight: "-50%",
               transform: "translate(-50%, -50%)",
             },
+            overlay: {
+              background: "rgb(0,0,0,0.5)"
+            }
           }}
           contentLabel="Example Modal"
         >
           <div className="object-center">
-            <Stories
-              stories={stories?.map((item) => ({
-                url: getImageUrl(item.media[0].media),
-                type: item.media[0].type == "video/mp4" ? "video" : "image",
-              }))}
-              defaultInterval={1500}
-              width={432}
-              height={768}
-            />
+            <div className="object-center relative">
+              <Stories
+                stories={stories as any}
+                storyContainerStyles={{ borderRadius: 8, overflow: "hidden" }}
+                defaultInterval={1500}
+                // header={(item: any) => {
+                //   return (
+                //     <div onClick={() => { alert() }} className="flex gap-[10px] item-start bg-red-200">
+                //       <div className="flex gap-[10px]">
+                //         <div className="h-[60px] w-[60px]">
+                //           <CustomImage
+                //             src={item?.profileImage}
+                //             width={100}
+                //             height={100}
+                //             alt="user display pic"
+                //             className="border-[1px] border-blue aspect-square rounded-full object-cover"
+                //           />
+                //         </div>
+                //         <div className="gap-[10px]">
+                //           <figcaption className='text-[14px] mt-[1px]' style={{ color: "white" }}>{item?.heading}</figcaption>
+                //           <figcaption className='text-[11px]' style={{ color: "white" }}>{item?.subheading}</figcaption>
+                //         </div>
+                //       </div>
+                //       <div id="moreOptions" onClick={(e) => {
+                //         setPause(true); setShowMorePostOptions(!showMorePostOptions)
+                //         alert()
+                //         console.log(e)
+                //       }} className="flex" style={{ display: self ? "flex" : "none" }}>
+                //         <button onClick={() => {
+                //           setPause(true);
+                //           setShowMorePostOptions(!showMorePostOptions)
+                //         }} className="flex flex-col self-end" >
+                //           <BsThreeDots className="text-2xl" style={{ color: "white" }} />
+                //         </button>
+                //         {showMorePostOptions && (
+                //           <PostOptions
+                //             deletePostHandler={() => deletePostHandler()}
+                //             userId={''}
+                //             onClose={() => { }}
+                //           />
+                //         )}
+                //       </div>
+                //     </div>
+                //   )
+                // }}
+                width={432}
+                height={768}
+                storyStyles={storyContent}
+                onAllStoriesEnd={(s: any, st: any) => { setIsOpen(false) }}
+                onStoryStart={(s: any, st: any) => { setStoriesdata(st) }}
+                keyboardNavigation={true}
+              />
+            </div>
           </div>
           <i className="ti-close"></i>
         </Modal>
