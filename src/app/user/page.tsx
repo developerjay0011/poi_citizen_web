@@ -20,11 +20,11 @@ const CitizenHomePage = () => {
       try {
         if (userDetails?.id) {
           const data = await GetRaisedComplaints(userDetails?.id);
-          console.log(data, "complaintActionscomplaintActions");
-
-          if (data.length > 0) {
-            dispatch(complaintActions.storeComplaints(data));
-          }
+          if (data.length > 0) { dispatch(complaintActions.storeComplaints(data)); }
+          const RaisedRequests = await GetRaisedRequests(userDetails?.id);
+          if (RaisedRequests.length > 0) { dispatch(requestActions.storeComplaints(RaisedRequests)); }
+          const Suggestions = await GetSuggestions(userDetails?.id);
+          if (Suggestions.length > 0) { dispatch(suggestionActions.storeComplaints(Suggestions)); }
         }
       } catch (error) {
         console.log(error);
@@ -32,40 +32,8 @@ const CitizenHomePage = () => {
     })();
   }, [userDetails]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        if (userDetails?.id) {
-          const data = await GetRaisedRequests(userDetails?.id);
 
-          if (data.length > 0) {
-            dispatch(requestActions.storeComplaints(data));
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [userDetails]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        if (userDetails?.id) {
-          const data = await GetSuggestions(userDetails?.id);
-
-          console.log(data, "suggestionssuggestions in page 11");
-          
-
-          if (data.length > 0) {
-            dispatch(suggestionActions.storeComplaints(data));
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [userDetails]);
 
   return (
     <section className="w-full relative">

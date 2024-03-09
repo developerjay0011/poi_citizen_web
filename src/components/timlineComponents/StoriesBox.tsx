@@ -19,81 +19,10 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
   const { stories } = cusSelector((state) => state.post);
   const dispatch = cusDispatch();
   const citizenid = userDetails?.id;
-  // const mediaChangeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
-  //   setStoryMedia([]);
-  //   const data = e.target.files as FileList;
-  //   if (!data || data.length === 0) return;
-  //   const newMedia: Media[] = [];
-
-  //   for (let i = 0; i < data.length; i++) {
-  //     const uploadData = data[i];
-
-  //     // checking for media type
-  //     const type = uploadData.type.split("/")[0];
-
-  //     // converting data into base 64
-  //     const convertedData = await convertFileToBase64(uploadData);
-
-  //     newMedia.push({
-  //       type: type,
-  //       media: uploadData,
-  //       id: GenerateId(),
-  //     });
-  //   }
-
-  //   setStoryMedia((oldMedia) => [...oldMedia, ...newMedia]);
-
-  //   const token = userDetails?.token;
-
-  //   const formData = new FormData();
-
-  //   formData.append("leaderid", userDetails?.id || "");
-  //   formData.append("written_text", textPost || "");
-  //   formData.append("access_type", "open");
-
-  //   for (let i = 0; i < data.length; i++) {
-  //     const item: any = data[i];
-  //     formData.append("media", item);
-  //   }
-  //   try {
-  //     const data = await fetchAddStory(formData, token);
-  //     if (data?.success) {
-  //       setUpdateStory(data);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  const setmidea = (posts: any[], heading: { heading: string; profileImage: string }) => {
-    const postdata = posts.flatMap((element) =>
-      element.media?.map((media: any) => ({
-        postid: element.id,
-        url: getImageUrl(media.media),
-        duration: 5000,
-        type: media.type?.includes("image") ? "image" : "video",
-        header: {
-          ...heading,
-          subheading: element.written_text,
-        },
-      }))
-    );
-
-    return postdata || [];
-  };
   const fetchStories = async () => {
     if (citizenid) {
       const data = await GetStoriesForCitizen(citizenid);
-      console.log(citizenid)
-      if (data.length > 0) {
-        const setdata = data.map((item: any, index: number) => ({
-          name: item.name,
-          leaderid: item.leaderid,
-          image: item.image,
-          index: index,
-          media: setmidea(item.posts, { heading: item.name, profileImage: getImageUrl(item.image) }),
-        }));
-        dispatch(postActions.storeStories(setdata as any));
-      }
+      dispatch(postActions.storeStories(data as any));
     }
   };
 

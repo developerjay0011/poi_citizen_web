@@ -54,9 +54,7 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
 
             {/* PDF Preview */}
             <div className='letter_preview'>
-              <div
-                ref={letterDiv}
-                className='flex flex-col w-full h-full overflow-hidden gap-[1cm]'>
+              <div ref={letterDiv} className='flex flex-col w-full h-full overflow-hidden gap-[1cm] p-[1cm]'>
                 {/* Date and Req/comp no */}
                 <p className='self-end'>
                   req/comp no/{dateConverterNumeric(new Date().toDateString())}
