@@ -50,14 +50,14 @@ export const RequestPage: FC = () => {
   const getRequests = async () => {
     tryCatch(
       async () => {
-      if (userDetails?.id) {
-        const data = await GetRaisedRequests(userDetails?.id);
+        if (userDetails?.id) {
+          const data = await GetRaisedRequests(userDetails?.id);
 
-        if (data.length >= 0) {
-          dispatch(requestActions.storeRequest(data));
+          if (data.length >= 0) {
+            dispatch(requestActions.storeRequest(data));
+          }
         }
-      }
-    })
+      })
   };
 
   const addNewRequestHandler = async (request: any) => {
@@ -68,7 +68,7 @@ export const RequestPage: FC = () => {
     formData.append("subject", request.subject || "");
     formData.append("description", request?.description || "");
     formData.append("deletedDocs", "");
-        formData.append("signature", request?.signatureDoc || "");
+    formData.append("signature", request?.signatureDoc || "");
     if (request.attachmentsDoc) {
       for (let i = 0; i < request.attachmentsDoc.length; i++) {
         const item: any = request.attachmentsDoc[i];
@@ -84,19 +84,19 @@ export const RequestPage: FC = () => {
 
     tryCatch(
       async () => {
-      const data = await RaiseRequest(formData);
-      if (data?.success) {
-        getRequests();
-        toast.success(data.message);
-      }
-    })
+        const data = await RaiseRequest(formData);
+        if (data?.success) {
+          getRequests();
+          toast.success(data.message);
+        }
+      })
     closeForm();
 
   };
 
-   useEffect(() => {
+  useEffect(() => {
     getRequests()
-  }, [dispatch,userDetails]) 
+  }, [dispatch, userDetails])
 
   const searchFilteredRequests = requests.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
@@ -105,15 +105,14 @@ export const RequestPage: FC = () => {
   const handleDetele = async (id: string) => {
     tryCatch(
       async () => {
-      const data = await DeleteRequest(id);
+        const data = await DeleteRequest(id);
         if (data?.success) {
           closeForm();
-        toast.success(data.message);
+          toast.success(data.message);
+          getRequests();
 
-        getRequests();
-       
-      }
-    })
+        }
+      })
   };
 
   return (

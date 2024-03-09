@@ -32,12 +32,13 @@ export const ComplaintPage: FC = () => {
   const getComplaint = async () => {
     tryCatch(
       async () => {
-      if (userDetails?.id) {
-        const data = await GetRaisedComplaints(userDetails?.id);
-        if (data.length >= 0) {
-          dispatch(complaintActions.storeComplaints(data));
-      }
-    })
+        if (userDetails?.id) {
+          const data = await GetRaisedComplaints(userDetails?.id);
+          if (data.length >= 0) {
+            dispatch(complaintActions.storeComplaints(data));
+          }
+        }
+      })
   };
   const getLeader = async () => {
     tryCatch(
@@ -52,14 +53,14 @@ export const ComplaintPage: FC = () => {
   const addNewComplaintHandler = async (complaint: any) => {
     const formData = new FormData();
 
-    formData.append("id", isEdit ?  selectedValue?.id  : "");
+    formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", complaint.subject || "");
     formData.append("description", complaint?.description || "");
     formData.append("deletedDocs", "");
 
-   
-       
+
+
     if (complaint.attachmentsDoc) {
       for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
         const item: any = complaint.attachmentsDoc[i];
@@ -67,7 +68,7 @@ export const ComplaintPage: FC = () => {
         formData.append("attachments", item?.file);
       }
     }
-   
+
     for (let i = 0; i < complaint.to.length; i++) {
       const item: any = complaint.to[i]?.id;
 
@@ -78,12 +79,12 @@ export const ComplaintPage: FC = () => {
     }
     tryCatch(
       async () => {
-      const data = await RaiseComplaint(formData);
-      if (data?.success) {
-        toast.success(data.message);
-        getComplaint()
-      }
-    })
+        const data = await RaiseComplaint(formData);
+        if (data?.success) {
+          toast.success(data.message);
+          getComplaint()
+        }
+      })
     closeForm();
   };
 
@@ -94,12 +95,12 @@ export const ComplaintPage: FC = () => {
   const handleDelete = async (id: string) => {
     tryCatch(
       async () => {
-      const data = await DeleteComplaint(id);
-      if (data?.success) {
-        toast.success(data.message);
-        getComplaint()
-      }
-    })
+        const data = await DeleteComplaint(id);
+        if (data?.success) {
+          toast.success(data.message);
+          getComplaint()
+        }
+      })
   };
 
   useEffect(() => {
@@ -174,7 +175,7 @@ export const ComplaintPage: FC = () => {
             type="complaint"
             submitting={submitting}
             deleteHandler={(id: string) => handleDelete(id)}
-            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id)}}
+            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
           />
         </section>
       </section>

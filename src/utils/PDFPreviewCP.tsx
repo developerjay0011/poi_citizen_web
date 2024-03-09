@@ -44,7 +44,7 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
             animate={{ y: 0 }}
             exit={{ y: -100 }}
             className='bg-white relative h-max flex flex-col gap-5'>
-          
+
 
             {/* PDF Preview */}
             <div className='letter_preview'>
@@ -103,11 +103,11 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
                   <p className='text-right'>{userDetails?.username}</p>
                 </div>
 
-                {attachments !== 0 && (
+                {/* {attachments !== 0 && (
                   <p className='mt-auto text-center'>
                     {attachments} attachments
                   </p>
-                )}
+                )} */}
               </div>
             </div>
 

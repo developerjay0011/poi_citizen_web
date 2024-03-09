@@ -16,7 +16,7 @@ const CitizenProfileFollowingsPage = () => {
   const { userDetails } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
   console.log(following)
-  const getFollowingList = async() => {
+  const getFollowingList = async () => {
     const data = await fetchCitizenFollowingList(userDetails?.id);
     dispatch(followActions.Following(data));
   }
@@ -29,7 +29,7 @@ const CitizenProfileFollowingsPage = () => {
       receiverid: id,
     };
     const response = await fetchUnFollowLeader(postBody);
-    if (response?.success) {  
+    if (response?.success) {
       toast.success(response?.message);
       getFollowingList();
     } else {
@@ -49,18 +49,15 @@ const CitizenProfileFollowingsPage = () => {
             searchStr={searchString}
             setSearchStr={changeSearchString}>
             <ul className='grid grid-cols-4 gap-5'>
-            {following?.length > 0 &&
-              following.map((el: any, index:number) => {
-                return (
-               
-                  <Follower key={index} handleUnfollow={handleUnFollower} data={el} displayImg={MODI} />
-      
-                );
-              })
-                }
-              </ul>
-         
-           
+              {following?.length > 0 &&
+                following.map((el: any, index: number) => {
+                  return (
+                    <Follower key={index} handleUnfollow={handleUnFollower} data={el} displayImg={MODI} />
+                  );
+                })}
+            </ul>
+
+
           </PeoplesComponentWrapper>
         </div>
       </div>

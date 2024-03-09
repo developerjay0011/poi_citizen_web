@@ -50,7 +50,7 @@ const prefixArr = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
 
 interface BirthdayNotificationsProps { }
 export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
-  const { userDetails ,birthdaylist} = cusSelector((st) => st.auth)
+  const { userDetails, birthdaylist } = cusSelector((st) => st.auth)
   const [index, setIndex] = useState(0)
   const birthday = birthdays[index]
   const dispatch = cusDispatch();
@@ -72,7 +72,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
   // TEMP
   useEffect(() => {
     setGreetingsSent(birthday.sendGreetings)
-    
+
   }, [birthday])
   const GetBirthday = async () => {
     tryCatch(
@@ -89,7 +89,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
   };
   useEffect(() => {
     GetBirthday()
-  }, [dispatch, userDetails]) 
+  }, [dispatch, userDetails])
 
 
   return (
@@ -115,8 +115,8 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
       </div>
 
       <ul className='py-4 px-10 relative'>
-    
-       
+
+
         {/* Toggle btns */}
         <button
           type='button'
@@ -148,20 +148,20 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
             className='w-[85%] aspect-square object-contain'
           />
 
-          <h2 className='text-center text-xl text-slate-500 w-max z-10'>
+          <h2 className='text-center text-xl text-slate-500 pb-4 w-max z-10'>
             <strong className='text-orange-500 capitalize'>
               {birthdaylist[index]?.name}
             </strong>{' '}
             Birthday
           </h2>
 
-          <button
+          {/* <button
             type='button'
             onClick={sendGreetingHanlder}
             hidden={birthday.sendGreetings}
             className={`text-sm mt-5 transition-all px-5 py-1 rounded-full capitalize bg-orange-500 text-orange-50 hover:text-orange-500 hover:bg-orange-100 hover:font-medium`}>
             send greetings
-          </button>
+          </button> */}
 
           {birthday.sendGreetings && (
             <p className='flex gap-1 items-center mt-5 bg-green-100 px-4 text-sm font-medium py-2 rounded-full text-green-800'>

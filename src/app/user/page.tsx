@@ -16,22 +16,20 @@ import { BirthdayNotifications } from "@/components/timlineComponents/BirthdayNo
 
 const CitizenHomePage = () => {
   const dispatch = cusDispatch();
-  const { userDetails } = cusSelector((st) => st.auth);
+  const { userDetails, birthdaylist } = cusSelector((st) => st.auth);
   useEffect(() => {
     (async () => {
       tryCatch(
         async () => {
-        if (userDetails?.id) {
-          const data = await GetRaisedComplaints(userDetails?.id);
-          if (data.length > 0) { dispatch(complaintActions.storeComplaints(data)); }
-          const RaisedRequests = await GetRaisedRequests(userDetails?.id);
-          if (RaisedRequests.length > 0) { dispatch(requestActions.storeComplaints(RaisedRequests)); }
-          const Suggestions = await GetSuggestions(userDetails?.id);
-          if (Suggestions.length > 0) { dispatch(suggestionActions.storeComplaints(Suggestions)); }
-        }
-      } catch (error) {
-        console.log(error);
-      }
+          if (userDetails?.id) {
+            const data = await GetRaisedComplaints(userDetails?.id);
+            if (data.length > 0) { dispatch(complaintActions.storeComplaints(data)); }
+            const RaisedRequests = await GetRaisedRequests(userDetails?.id);
+            if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
+            const Suggestions = await GetSuggestions(userDetails?.id);
+            if (Suggestions.length > 0) { dispatch(suggestionActions.setSubmitting(Suggestions)); }
+          }
+        })
     })();
   }, [userDetails]);
 
@@ -40,7 +38,7 @@ const CitizenHomePage = () => {
       <div className="flex gap-5">
         {/* LEFT FEED */}
         <div className="flex flex-col gap-5 self-start max-[1200px]:hidden w-[23%]">
-          <BirthdayNotifications/>
+          {birthdaylist?.length > 0 && <BirthdayNotifications />}
           <TrendingLeaders />
           <ShortcutsBox />
         </div>

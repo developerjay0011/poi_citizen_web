@@ -18,9 +18,9 @@ export const PeoplesComponentWrapper: FC<PeoplesComponentWrapperProps> = ({
   return (
     <section className='border bg-white shadow-sm flex flex-col rounded-md'>
       {/* Filter networks */}
-      <section className='flex justify-between flex-col py-2 gap-3'>
+      <section className='flex justify-between flex-col'>
         <div className='flex justify-between max-[450px]:flex-col'>
-          <h2 className='flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:rounded-full after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-4 text-[22px] font-semibold capitalize'>
+          <h2 className='flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:rounded-full after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-3 text-[22px] font-semibold capitalize'>
             {heading}
           </h2>
 
@@ -42,7 +42,7 @@ export const PeoplesComponentWrapper: FC<PeoplesComponentWrapperProps> = ({
 
         {/* Filters */}
 
-        <div className='w-[96%] h-[1px] bg-zinc-200 m-auto' />
+        <div className='w-[100%] h-[1px] bg-zinc-200 ' />
       </section>
 
       <section className='px-7 py-5'>{children}</section>

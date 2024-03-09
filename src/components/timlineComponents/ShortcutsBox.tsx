@@ -13,7 +13,6 @@ import { GenerateId } from "@/utils/utility";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
 import { AnimatePresence } from "framer-motion";
-import { fetchCloseAccount, fetchDeactiveAccount } from "../api/profile";
 import { useRouter } from "next/navigation";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { CloseAccount, DeactiveAccount } from "@/redux_store/citizen/citizenApi";
@@ -103,7 +102,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
 
   return (
     <CommonBox title="shortcuts">
-      <div className="flex flex-col py-4 gap-5 pr-16 font-normal">
+      <div className="flex flex-col py-4 gap-5 font-normal">
         {Shortcuts.map((el) => (
           <ShortcutBtn {...el} key={el.id} />
         ))}
