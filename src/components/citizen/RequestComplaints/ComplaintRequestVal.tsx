@@ -5,19 +5,21 @@ import { Attachments, ToDetails } from "@/utils/typesUtils";
 import { AnimatePresence } from "framer-motion";
 import { ToDetailsBox } from "./ToDetailsBox";
 import Image from "next/image";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdDownload, MdEdit } from "react-icons/md";
 import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
 import { dateConverter } from "@/utils/utility";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
+import moment from "moment";
 
 interface ComplaintRequestValProps {
   subject: string;
   to: ToDetails[];
   description: string;
-  requestComplaintNo: string;
+  ticket_code: string;
   type: "complaint" | "request" | "suggestion";
   requestComplaintDeleteFn: () => void;
+  requestComplaintEditFn: () => void;
   submitting: boolean;
   createdDate: string;
   signature: string;
@@ -36,13 +38,14 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   subject,
   to,
   description,
-  requestComplaintNo,
+  ticket_code,
   type,
   requestComplaintDeleteFn,
   submitting,
   createdDate,
   signature,
   attachments,
+  requestComplaintEditFn
 }) => {
   const descRef = useRef<HTMLParagraphElement>(null);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
@@ -64,17 +67,17 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
       <li className="border self-start rounded-md flex flex-col p-3 gap-3 bg-gray-50 border-gray-300">
         <div className="flex justify-between py-2 font-medium">
           {/* ID no */}
-          {type !== "suggestion" && (
+         
             <p className="capitalize">
-              <strong className="text-orange-500"># </strong> {type[0]}-
-              {requestComplaintNo}
+              <strong className="text-orange-500"># </strong> 
+              {ticket_code}
             </p>
-          )}
+          
 
           {/* created date */}
           <p className="flex items-center gap-2 ml-auto">
             <BsCalendarDate className="text-orange-500" />{" "}
-            {/* {dateConverter(createdDate)} */}
+            {moment(createdDate).format('DD, MMM YYYY')}
           </p>
         </div>
 
@@ -95,7 +98,7 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
                   className={`cursor-pointer toList w-10 aspect-square bg-red-100 object-cover object-center rounded-full border-2 border-gray-50 ${TOClasses[i]}`}
                 >
                   <CustomImage
-                    src={getImageUrl(el.leaderProfilePic as string)}
+                    src={getImageUrl(el.image as string)}
                     alt="leader img"
                     width={1000}
                     height={1000}
@@ -136,10 +139,16 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
         </div>
 
         <div className="flex self-end gap-2">
-          <button type="button" className="pdf_hover">
-            <span>download pdf</span>
+          {/* <button type="button" className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500">
+            <MdDownload className="text-3xl" />
+          </button> */}
+          <button
+            type="button"
+            onClick={() => requestComplaintEditFn()}
+            className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
+          >
+            <MdEdit className="text-3xl" />
           </button>
-
           <button
             type="button"
             onClick={() => setShowConfirmBox(true)}

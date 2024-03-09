@@ -105,6 +105,15 @@ export const getProfile = async (citizenid: string) => {
   );
 };
 
+export const getSingleLeader = async (leaderid: string) => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(insertVariables(APIRoutes.getSingleLeader, { leaderid }));
+      return res.data;
+    }
+  );
+};
+
 export const EditCitizenProfile = async (formData: any) => {
   return tryCatch(
     async () => {
@@ -114,4 +123,13 @@ export const EditCitizenProfile = async (formData: any) => {
   );
 };
 
+
+export const GetBirthdayList = async () => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(APIRoutes.GetBirthdayList);
+      return res.data;
+    }
+  );
+};
 

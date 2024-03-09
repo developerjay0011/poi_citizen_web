@@ -15,6 +15,7 @@ import { BsFillHeartFill, BsHeart } from "react-icons/bs";
 import { islike } from "./utils";
 import { LikeComment, ReplyToComment, UnLikeComment } from "@/redux_store/post/postApi";
 import toast from "react-hot-toast";
+import { tryCatch } from "@/config/try-catch";
 
 interface SingleCommentProps extends Comment {
   likeChangeHandler: () => void;
@@ -51,7 +52,8 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
       post_leaderid: post?.leaderid,
       userid: userDetails?.id,
     };
-    try {
+    tryCatch(
+      async () => {
       if (!is_like) {
         const data = await LikeComment(likeBody);
         likeChangeHandler();
@@ -61,9 +63,7 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
         toast.success(data.message);
         likeChangeHandler()
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
   useEffect(() => {
     if (!commentReply.startsWith(name)) {

@@ -17,7 +17,7 @@ export const requestSlice = createSlice({
   name: 'citizenRequest',
   initialState: init,
   reducers: {
-    storeComplaints(state, action: PayloadAction<RequestComplaintDetails[]>) {
+    storeRequest(state, action: PayloadAction<RequestComplaintDetails[]>) {
       state.requests = action.payload
     },
     setSubmitting(state, action: PayloadAction<boolean>) {

@@ -4,81 +4,87 @@ import { FiSearch } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
-import { RequestComplaintData } from "@/utils/typesUtils";
+import { LeaderDetails, RequestComplaintData } from "@/utils/typesUtils";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import {
-  addNewComplaint,
   DeleteComplaint,
+  getLeaderList,
   GetRaisedComplaints,
   RaiseComplaint,
 } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
+import { tryCatch } from "@/config/try-catch";
 export const ComplaintPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<any>();
+
+  const [isEdit, setIsEdit] = useState(false);
 
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
   const { userDetails } = cusSelector((st) => st.auth);
+
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
 
   const getComplaint = async () => {
-    try {
+    tryCatch(
+      async () => {
       if (userDetails?.id) {
         const data = await GetRaisedComplaints(userDetails?.id);
         if (data.length >= 0) {
           dispatch(complaintActions.storeComplaints(data));
+      }
+    })
+  };
+  const getLeader = async () => {
+    tryCatch(
+      async () => {
+        if (userDetails?.id) {
+          const data = await getLeaderList();
+          dispatch(complaintActions.setLeader(data));
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    )
   };
-
-  const addNewComplaintHandler = async (complaint: RequestComplaintData) => {
+  const addNewComplaintHandler = async (complaint: any) => {
     const formData = new FormData();
 
-    formData.append("id", "");
+    formData.append("id", isEdit ?  selectedValue?.id  : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", complaint.subject || "");
     formData.append("description", complaint?.description || "");
     formData.append("deletedDocs", "");
 
-    // Check if signatureDoc is a string or a FileList
-    if (typeof complaint.signatureDoc === "string") {
-      formData.append("signature", complaint.signatureDoc);
-    } else if (complaint.signatureDoc instanceof FileList) {
-      for (const file of Array.from(complaint.signatureDoc)) {
-        formData.append("signature", file);
+   
+       
+    if (complaint.attachmentsDoc) {
+      for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
+        const item: any = complaint.attachmentsDoc[i];
+
+        formData.append("attachments", item?.file);
       }
-    } else {
-      formData.append("signature", complaint.signatureDoc);
     }
-
-    for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
-      const item: any = complaint.attachmentsDoc[i];
-
-      formData.append("attachments", item?.file);
-    }
+   
     for (let i = 0; i < complaint.to.length; i++) {
-      const item: any = complaint.to[i];
+      const item: any = complaint.to[i]?.id;
 
       formData.append("to", item);
     }
-
-    try {
+    if (complaint.signatureDoc) {
+      formData.append("signature", complaint.signatureDoc);
+    }
+    tryCatch(
+      async () => {
       const data = await RaiseComplaint(formData);
       if (data?.success) {
         toast.success(data.message);
         getComplaint()
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     closeForm();
-    dispatch(addNewComplaint(complaint));
   };
 
   const searchFilteredComplaints = complaints.filter((el) =>
@@ -86,16 +92,20 @@ export const ComplaintPage: FC = () => {
   );
 
   const handleDelete = async (id: string) => {
-    try {
+    tryCatch(
+      async () => {
       const data = await DeleteComplaint(id);
       if (data?.success) {
         toast.success(data.message);
         getComplaint()
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
+
+  useEffect(() => {
+    getComplaint()
+    getLeader();
+  }, []);
 
   return (
     <>
@@ -130,7 +140,7 @@ export const ComplaintPage: FC = () => {
                 {/* ADD OR EDIT Button */}
                 <button
                   className="px-5 py-2 bg-orange-500 text-orange-50 rounded-md text-sm capitalize transition-all hover:bg-orange-600"
-                  onClick={showForm}
+                  onClick={() => { showForm(), setIsEdit(false) }}
                 >
                   raise a complaint
                 </button>
@@ -163,8 +173,8 @@ export const ComplaintPage: FC = () => {
             requestOrComplaints={searchFilteredComplaints}
             type="complaint"
             submitting={submitting}
-            // deleteHandler={(id: string) => dispatch(deleteComplaint(id))}
             deleteHandler={(id: string) => handleDelete(id)}
+            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id)}}
           />
         </section>
       </section>
@@ -174,6 +184,8 @@ export const ComplaintPage: FC = () => {
           <RequestComplaintForm
             submitHandler={addNewComplaintHandler}
             type="complaint"
+            isEdit={isEdit}
+            selectedValue={selectedValue}
             onClose={closeForm}
             err={err}
             submitting={submitting}

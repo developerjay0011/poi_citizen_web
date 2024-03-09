@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { BiX } from 'react-icons/bi'
 import { motion as m } from 'framer-motion'
 import { FaThumbsDown } from 'react-icons/fa'
+import { getImageUrl } from '@/config/get-image-url'
 
 interface ToDetailsBoxProps {
   onClose: () => void
@@ -48,7 +49,7 @@ export const ToDetailsBox: FC<ToDetailsBoxProps> = ({ onClose, toList }) => {
 
 const ToListRow: FC<ToDetails> = ({
   designation,
-  leaderProfilePic,
+  image,
   name,
   requestComplaintStatus,
   isSeen,
@@ -58,7 +59,7 @@ const ToListRow: FC<ToDetails> = ({
       <li className='flex gap-4 items-center p-5 last_noti'>
         <Image
           priority={true}
-          src={leaderProfilePic}
+          src={getImageUrl(image as string)}
           alt='leader img'
           width={1000}
           height={1000}

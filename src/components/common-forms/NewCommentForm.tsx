@@ -5,6 +5,7 @@ import { BiRightArrow } from "react-icons/bi";
 import { CommentPost } from "@/redux_store/post/postApi";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
+import { tryCatch } from "@/config/try-catch";
 
 interface NewCommentFormProps {
   CommentHandler: (comment: string) => void;
@@ -27,12 +28,11 @@ export const NewCommentForm: FC<NewCommentFormProps> = ({ CommentHandler, allDat
       "userimg": userDetails?.image ? userDetails?.image : '',
       'comment_text': commentText,
     };
-    try {
+    tryCatch(
+      async () => {
       const data = await CommentPost(commentBody);
       if (data?.success) { CommentHandler(commentText); }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     if (commentText.length === 0) return;
     setCommentText("");
   };

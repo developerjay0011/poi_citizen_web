@@ -15,6 +15,8 @@ import { ImageMultiSelectIP } from "@/utils/ImageMultiSelectIP";
 import Image, { StaticImageData } from "next/image";
 import { FaSignature } from "react-icons/fa";
 import { Attachments, ErrObj, RequestComplaintData } from "@/utils/typesUtils";
+import { cusSelector } from "@/redux_store/cusHooks";
+import { getImageUrl } from "@/config/get-image-url";
 
 const FORM_HEADINGS = {
   request: "Raise a Request",
@@ -28,6 +30,8 @@ interface RequestComplaintFormProps {
   submitting: boolean;
   err: ErrObj;
   type: keyof typeof FORM_HEADINGS;
+  isEdit: boolean,
+  selectedValue:any
 }
 
 export interface RequestComplaintFormFields {
@@ -42,7 +46,7 @@ export interface RequestComplaintFormFields {
 
 export interface BriefLeaderDetails {
   leaderId: string;
-  name: string;
+  username: string;
   leaderProfilePic: string | StaticImageData;
   designation: string;
   dislike: string;
@@ -50,39 +54,6 @@ export interface BriefLeaderDetails {
   isSeen: string;
   requestComplaintSeenDate: string;
 }
-
-const DUMMY_LEADERS: BriefLeaderDetails[] = [
-  {
-    leaderId: GenerateId(),
-    name: "narendar modi",
-    designation: "prime minister",
-    leaderProfilePic: MODI,
-    dislike: "0",
-    requestComplaintStatus: "0",
-    isSeen: "0",
-    requestComplaintSeenDate: "",
-  },
-  {
-    leaderId: GenerateId(),
-    name: "rahul gandhi",
-    designation: "youth minister",
-    leaderProfilePic: RAHUL,
-    dislike: "0",
-    requestComplaintStatus: "0",
-    isSeen: "0",
-    requestComplaintSeenDate: "",
-  },
-  {
-    leaderId: GenerateId(),
-    name: "arvind kejriwal",
-    designation: "chief minister",
-    leaderProfilePic: ARVIND,
-    dislike: "0",
-    requestComplaintStatus: "0",
-    isSeen: "0",
-    requestComplaintSeenDate: "",
-  },
-];
 
 let firstTime = true;
 
@@ -97,12 +68,17 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
   err,
   submitting,
   type,
+  isEdit,
+  selectedValue
 }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [attachments, setAttachments] = useState<Attachments[]>([]);
   const [attachmentsDoc, setAttachmentsDoc] = useState<Attachments[]>([]);
   const [signature, setSignature] = useState("");
   const [signatureDoc, setSignatureDoc] = useState("");
+
+  const { leaderlist } = cusSelector((st) => st.complaints);
+
   const {
     handleSubmit,
     register,
@@ -112,7 +88,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
     formState: { errors },
   } = useForm<RequestComplaintFormFields>();
 
-  const formSubmitHandler = (data: RequestComplaintFormFields) => {
+  const formSubmitHandler = (data: any) => {
     submitHandler({ ...data, attachmentsDoc, signatureDoc });
     firstTime = false;
   };
@@ -123,7 +99,15 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
       onClose();
     }
   }, [onClose, err, submitting]);
-
+  useEffect(() => {
+    if (isEdit) {
+      setValue("subject", selectedValue?.subject);
+      setValue("description", selectedValue?.description);
+      setValue("to", selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })));
+      setSignature(selectedValue?.signature)
+      setAttachments(selectedValue?.attachments)
+   }
+  }, []);
   const onChange = (value: string) => {
     setValue("description", value);
     trigger("description");
@@ -167,7 +151,6 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
       });
     }
   };
-
   return (
     <>
       <m.div
@@ -193,7 +176,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
               <BiX className="text-3xl" />
             </button>
             <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-5 border-b font-semibold text-3xl">
-              {FORM_HEADINGS[type]}
+              {isEdit ? FORM_HEADINGS[type].replace("Create", 'Edit').replace("Raise", 'Edit') : FORM_HEADINGS[type] }
             </h3>
 
             <form
@@ -226,9 +209,12 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                 </label>
 
                 <ImageMultiSelectIP
+                  title={"to"}
+                  svalue={isEdit ? selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })):[]}
                   placeholder="select leader"
-                  options={DUMMY_LEADERS.map((el) => el)}
-                  setValue={setToFieldValue}
+                  options={leaderlist.map((el:any) => el)}
+                  setValue={(value: any) => {
+                    setToFieldValue(value), console.log("value",value)}}
                 />
 
                 <section className="col-span-2 flex flex-col gap-1 ">
@@ -289,7 +275,8 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                       accept="image/*"
                       {...register("signature", {
                         async onChange(e: ChangeEvent<HTMLInputElement>) {
-                          const file = (e.target.files as FileList)[0];
+                          if (e.target.files){
+                            const file = (e.target.files as FileList)[0];
 
                           if (!file) return;
 
@@ -301,17 +288,22 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                           setValue("signature", signatureFile);
 
                           setSignatureDoc(file as any);
+                        }
                         },
                         validate: {
+                      
                           notAImg(file) {
-                            const type = (file as FileList)[0].type;
+                            if (file) { 
+                              const type = (file as FileList)[0]?.type;
 
-                            if (!type) return true;
+                              if (!type) return true;
 
-                            return (
-                              type.includes("image") ||
-                              "Only Image files are allowed."
-                            );
+                              return (
+                                type.includes("image") ||
+                                "Only Image files are allowed."
+                              );
+                            }
+                           
                           },
                         },
                       })}
@@ -328,7 +320,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                   {signature && (
                     <div className="relative w-max">
                       <Image
-                        src={signature}
+                        src={isEdit ? getImageUrl(signature) :signature}
                         alt=""
                         priority={true}
                         width={1000}
@@ -359,7 +351,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                   className="py-2 px-5 rounded-full capitalize text-orange-50 bg-orange-500 transition-all hover:bg-orange-600 hover:text-orange-50 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] disabled:border-none"
                   type="submit"
                 >
-                  {submitting ? "submitting..." : FORM_HEADINGS[type]}
+                  {submitting ? "submitting..." : (isEdit ? FORM_HEADINGS[type].replace("Create", 'Edit').replace("Raise", 'Edit') : FORM_HEADINGS[type])}
                 </button>
 
                 <button

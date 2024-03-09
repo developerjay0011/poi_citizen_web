@@ -8,15 +8,20 @@ import {
   MdOutlineCheckBox,
   MdOutlineCheckBoxOutlineBlank,
 } from "react-icons/md";
-import { cusDispatch } from "@/redux_store/cusHooks";
+import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import {
   SaveContribution,
-  addNewContribution,
 } from "@/redux_store/contributions/contributionAPI";
 import toast from "react-hot-toast";
+import { tryCatch } from "@/config/try-catch";
+import { getLeaderList } from "@/redux_store/complaints/complaintsApi";
+import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 
 interface ContributionFormProps {
   onClose: () => void;
+  handleAdd: () => void;
+  isEdit: boolean
+  selectedValue:any
 }
 
 export interface ContributionFormFields {
@@ -41,30 +46,22 @@ export interface ContributionFormFields {
   };
 }
 
-interface Attachment {
-  type: string;
-  file: string;
-}
+
 
 type DESC_VALS = "others" | "ration" | "clothes";
 
 const CONTRIBUTION_TYPE = ["money", "ration", "clothes", "others"];
 const MONEY_MODE = ["cash", "cheque"];
 
-interface UserDetails {
-  token: string;
-  id: string;
-  displayPic: string;
-}
 
-export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
-  const [attachments, setAttachments] = useState<Attachment | null>(null);
+
+export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd, isEdit, selectedValue }) => {
   const [selfContributor, setSelfContributor] = useState(true);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
+
+
+  const { leaderlist } = cusSelector((st) => st.complaints);
+
   const {
     handleSubmit,
     register,
@@ -74,57 +71,73 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
   } = useForm<ContributionFormFields>();
 
   const dispatch = cusDispatch();
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-      setUserDetails(storedUser);
-    } else {
-    }
-  }, []);
-
-  const formSubmitHandler = async (data: ContributionFormFields) => {
-    /*     {
-      "contributionType": "money",
-      "leaderId": "narender-modi",
-      "clothes": {
-          "description": "",
-          "quantity": 0
-      },
-      "ration": {
-          "description": "",
-          "quantity": 0
-      },
-      "money": {
-          "mode": "cash",
-          "amount": 1500
+  const getLeader = async () => {
+    tryCatch(
+      async () => {
+        if (userDetails?.id) {
+          const data = await getLeaderList();
+          dispatch(complaintActions.setLeader(data));
+        }
       }
-  } */
+    )
+  };
+
+  useEffect(() => {
+    if (isEdit) {
+      setSelfContributor(selectedValue?.contributor == "Self" ?true :false)
+      setValue("contributorName", selectedValue?.contributor_name)
+      setValue("contributorMobileNo", selectedValue?.contributor_mobile)
+      setValue("contributionType", selectedValue?.contribution_type)
+      setValue("leaderId", selectedValue?.leaderid)
+      setValue("money.mode", selectedValue?.mode)
+      setValue("money.amount", selectedValue?.amount)
+      if (selectedValue?.contribution_type == 'ration') {
+        setValue("ration.quantity", selectedValue?.quantity)
+        setValue("ration.description", selectedValue?.description)
+      } else if (selectedValue?.contribution_type == 'clothes') {
+        setValue("clothes.quantity", selectedValue?.quantity)
+        setValue("clothes.description", selectedValue?.description)
+      } else if (selectedValue?.contribution_type == 'others') {
+        setValue("others.description", selectedValue?.description)
+      }
+    
+    }
+    getLeader()
+  }, [dispatch,userDetails]);
+
+  const setToFieldValue = (val: any) =>
+    setValue("leaderId", val);
+
+  
+  const formSubmitHandler = async (data: ContributionFormFields) => {
+    console.log("data", data)
+ 
 
     const body = {
-      id: "",
+      id: isEdit ? selectedValue?.id :"",
       citizenid: userDetails?.id,
-      leaderid: data.leaderId,
-      contributor: data.leaderId,
-      contribution_type: data.contributionType,
-      contributor_name: data.leaderId,
-      contributor_mobile: "",
-      mode: data.money.mode,
-      amount: data.money.amount,
-      quantity: data.ration.quantity,
-      description: data.clothes.description,
+      leaderid: data?.leaderId,
+      contributor: selfContributor ? "Self" :"Others",
+      contribution_type: data?.contributionType,
+      contributor_name: data?.contributorName,
+      contributor_mobile: data?.contributorMobileNo,
+      mode: data?.money?.mode,
+      amount: Number(data?.money?.amount),
+      quantity: Number(data?.ration?.quantity ?? data?.clothes?.quantity),
+      description: data?.clothes?.description ?? data?.ration?.description ?? data?.others?.description
     };
 
-    try {
+    tryCatch(
+      async () => {
       const data = await SaveContribution(body);
-      if (data?.success) {
+        if (data?.success) {
+          handleAdd()
         toast.success(data.message);
+      } else {
+        toast.error(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     onClose();
-    dispatch(addNewContribution({ ...data }));
   };
 
   return (
@@ -152,7 +165,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
               <BiX className="text-3xl" />
             </button>
             <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-5 border-b font-semibold text-3xl">
-              Add a Contribution
+              {isEdit ? "Edit":"Add"} a Contribution
             </h3>
 
             <form
@@ -343,8 +356,12 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
                     })}
                   >
                     <option value="">select leader</option>
-                    <option value="narender-modi">narender modi</option>
-                    <option value="r.k.singh">r.k singh</option>
+                    {leaderlist.map((el:any) => (
+                      <option value={el.id} key={el.id}>
+                        {el.username}
+                      </option>
+                    ))}
+                    
                   </select>
                   <ErrorMessage
                     name={"leader"}
@@ -353,7 +370,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
                     className="text-red-500 text-sm first-letter:capitalize lowercase"
                   />
                 </label>
-
+              
                 {watch("contributionType") === "money" && (
                   <label htmlFor="moneyMode" className={`flex flex-col gap-2`}>
                     <span className="capitalize font-[500]">
@@ -502,7 +519,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose }) => {
                   className="py-2 px-5 rounded-full capitalize border border-orange-500 text-orange-50 bg-orange-500 hover:bg-orange-100 hover:text-orange-500 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] disabled:border-none"
                   type="submit"
                 >
-                  add contribution
+                  {isEdit ? "Edit" : "Add"} contribution
                 </button>
               </div>
             </form>

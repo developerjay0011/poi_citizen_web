@@ -5,6 +5,8 @@ import { TOKEN_KEY, USER_INFO } from "@/constants/common";
 interface AuthState {
   userDetails: any;
   trendingleader: [];
+  birthdaylist: any[],
+  leaderData:any
 }
 let userDetails: any = getCookie(USER_INFO);
 userDetails = userDetails && JSON.parse(userDetails);
@@ -13,6 +15,8 @@ const init: AuthState = {
     id: userDetails?.id,
   },
   trendingleader: [],
+  birthdaylist: [],
+  leaderData:[]
 };
 
 export const authSlice = createSlice({
@@ -27,6 +31,12 @@ export const authSlice = createSlice({
     },
     Settrendingleader(state, action: PayloadAction<any | null>) {
       state.trendingleader = action.payload;
+    },
+    setBirthdayList(state, action: PayloadAction<any | null>) {
+      state.birthdaylist = action.payload;
+    },
+    setLeaderData(state, action: PayloadAction<any | null>) {
+      state.leaderData = action.payload;
     },
     logOut(state) {
       state.userDetails = null;

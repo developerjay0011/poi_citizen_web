@@ -5,7 +5,8 @@ export const ProtectedRoutes = {
   leader: '/leader',
   followers: "/user/profile/followers",
   feed: '/user/profile/feed',
-  leaderProfile: "/leader/profile",
+  leaderProfile: "/user/leader/about",
+  leaderFeed: '/user/leader/feed',
   edit_profile: "/user/profile/settings/edit-profile",
   analytics: '/admin/analytics',
   profile: '/admin/profile',
@@ -57,6 +58,8 @@ export const APIRoutes = {
   UnLikeComment: `${API_Prefix}/Post/UnLikeComment`,
   ReplyToComment: `${API_Prefix}/Post/ReplyToComment`,
   VoteAdd: `${API_Prefix}/Citizen/AddVoteOfPOll`,
+  getLeaderList: `${API_Prefix}/Leader/GetLeaderList`,
+  GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
 
   TrendingLeaderList: `${API_Prefix}/Leader/TrendingLeaderList`,
   FollowLeader: `${API_Prefix}/Citizen/FollowLeaderByCitizen`,
@@ -79,8 +82,10 @@ export const APIRoutes = {
   SaveSuggestion: `${API_Prefix}/Citizen/SaveSuggestion`,
   DeleteSuggestion: `${API_Prefix}/Citizen/DeleteSuggestion/{{suggestionid}}`,
 
-  GetContributions: `${API_Prefix}/api/Citizen/GetContributions/{{citizenid}}`,
-  SaveContribution: `${API_Prefix}/api/Citizen/SaveContribution`,
-  DeleteContribution: `${API_Prefix}/api/Citizen/DeleteContribution/{{contributionid}}`,
+  GetContributions: `${API_Prefix}/Citizen/GetContributions/{{citizenid}}`,
+  SaveContribution: `${API_Prefix}/Citizen/SaveContribution`,
+  DeleteContribution: `${API_Prefix}/Citizen/DeleteContribution/{{contributionid}}`,
+
+  getSingleLeader: `${API_Prefix}/Leader/getLeaderProfileAllInfo/{{leaderid}}`,
 
 }       

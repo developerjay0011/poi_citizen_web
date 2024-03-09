@@ -9,13 +9,10 @@ import {
   DeleteRequest,
   GetRaisedRequests,
   RaiseRequest,
-  addNewRequest,
-  deleteRequest,
-  fetchAllRequests,
 } from "@/redux_store/requests/requestAPI";
-import { RequestComplaintData } from "@/utils/typesUtils";
 import toast from "react-hot-toast";
 import { requestActions } from "@/redux_store/requests/requestSlice";
+import { tryCatch } from "@/config/try-catch";
 
 interface UserDetails {
   token: string;
@@ -26,6 +23,8 @@ interface UserDetails {
 export const RequestPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showRequestForm, setShowRequestForm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<any>();
+  const [isEdit, setIsEdit] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
@@ -37,8 +36,6 @@ export const RequestPage: FC = () => {
 
   const showForm = () => setShowRequestForm(true);
   const closeForm = () => setShowRequestForm(false);
-
-
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {
@@ -51,87 +48,72 @@ export const RequestPage: FC = () => {
   }, []);
 
   const getRequests = async () => {
-    try {
+    tryCatch(
+      async () => {
       if (userDetails?.id) {
         const data = await GetRaisedRequests(userDetails?.id);
 
         if (data.length >= 0) {
-          dispatch(requestActions.storeComplaints(data));
+          dispatch(requestActions.storeRequest(data));
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
-  const addNewRequestHandler = async (request: RequestComplaintData) => {
-    console.log(request, "complaintgetRequests");
-
+  const addNewRequestHandler = async (request: any) => {
     const formData = new FormData();
 
-    formData.append("id", "");
+    formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", request.subject || "");
     formData.append("description", request?.description || "");
     formData.append("deletedDocs", "");
+        formData.append("signature", request?.signatureDoc || "");
+    if (request.attachmentsDoc) {
+      for (let i = 0; i < request.attachmentsDoc.length; i++) {
+        const item: any = request.attachmentsDoc[i];
 
-    // Check if signatureDoc is a string or a FileList
-    if (typeof request.signatureDoc === "string") {
-      formData.append("signature", request.signatureDoc);
-    } else if (request.signatureDoc instanceof FileList) {
-      for (const file of Array.from(request.signatureDoc)) {
-        formData.append("signature", file);
+        formData.append("attachments", item?.file);
       }
-    } else {
-      formData.append("signature", request.signatureDoc);
-    }
-
-    for (let i = 0; i < request.attachmentsDoc.length; i++) {
-      const item: any = request.attachmentsDoc[i];
-
-      formData.append("attachments", item?.file);
     }
     for (let i = 0; i < request.to.length; i++) {
-      const item: any = request.to[i];
+      const item: any = request.to[i].id;
 
       formData.append("to", item);
     }
 
-    try {
+    tryCatch(
+      async () => {
       const data = await RaiseRequest(formData);
-      console.log(data);
-
       if (data?.success) {
-        console.log(data);
         getRequests();
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     closeForm();
 
-    // dispatch(addNewRequest(request));
   };
 
-  /*  useEffect(() => {
-    dispatch(fetchAllRequests())
-  }, [dispatch]) */
+   useEffect(() => {
+    getRequests()
+  }, [dispatch,userDetails]) 
 
   const searchFilteredRequests = requests.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
   );
 
   const handleDetele = async (id: string) => {
-    try {
+    tryCatch(
+      async () => {
       const data = await DeleteRequest(id);
-      if (data?.success) {
+        if (data?.success) {
+          closeForm();
         toast.success(data.message);
+
         getRequests();
+       
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
   return (
@@ -167,7 +149,7 @@ export const RequestPage: FC = () => {
                 {/* ADD OR EDIT Button */}
                 <button
                   className="px-5 py-2 bg-orange-500 text-orange-50 rounded-md text-sm capitalize transition-all hover:bg-orange-600"
-                  onClick={showForm}
+                  onClick={() => { showForm(), setIsEdit(false) }}
                 >
                   raise a request
                 </button>
@@ -200,8 +182,8 @@ export const RequestPage: FC = () => {
             requestOrComplaints={searchFilteredRequests}
             type="request"
             submitting={submitting}
-            // deleteHandler={(id: string) => dispatch(deleteRequest(id))}
             deleteHandler={(id: string) => handleDetele(id)}
+            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
           />
         </section>
       </section>
@@ -211,6 +193,8 @@ export const RequestPage: FC = () => {
           <RequestComplaintForm
             onClose={closeForm}
             type="request"
+            isEdit={isEdit}
+            selectedValue={selectedValue}
             submitHandler={addNewRequestHandler}
             err={err}
             submitting={submitting}

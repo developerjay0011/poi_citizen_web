@@ -11,13 +11,16 @@ import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
 import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";
 import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
 import { requestActions } from "@/redux_store/requests/requestSlice";
+import { tryCatch } from "@/config/try-catch";
+import { BirthdayNotifications } from "@/components/timlineComponents/BirthdayNotifications";
 
 const CitizenHomePage = () => {
   const dispatch = cusDispatch();
   const { userDetails } = cusSelector((st) => st.auth);
   useEffect(() => {
     (async () => {
-      try {
+      tryCatch(
+        async () => {
         if (userDetails?.id) {
           const data = await GetRaisedComplaints(userDetails?.id);
           if (data.length > 0) { dispatch(complaintActions.storeComplaints(data)); }
@@ -32,14 +35,12 @@ const CitizenHomePage = () => {
     })();
   }, [userDetails]);
 
-
-
-
   return (
     <section className="w-full relative">
       <div className="flex gap-5">
         {/* LEFT FEED */}
         <div className="flex flex-col gap-5 self-start max-[1200px]:hidden w-[23%]">
+          <BirthdayNotifications/>
           <TrendingLeaders />
           <ShortcutsBox />
         </div>

@@ -17,7 +17,7 @@ export const suggestionSlice = createSlice({
   name: 'citizenRequest',
   initialState: init,
   reducers: {
-    storeComplaints(state, action: PayloadAction<RequestComplaintDetails[]>) {
+    storeSuggestions(state, action: PayloadAction<RequestComplaintDetails[]>) {
       state.suggestions = action.payload
     },
     setSubmitting(state, action: PayloadAction<boolean>) {

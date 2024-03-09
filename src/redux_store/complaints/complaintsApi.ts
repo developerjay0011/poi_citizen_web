@@ -16,14 +16,16 @@ export const GetRaisedComplaints = async (citizenid: string) => {
     }
   );
 };
-
-/* export const RaiseComplaint = async (resBody: any) => {
-  return tryCatch(async () => {
-    const res = await Axios.post(APIRoutes.RaiseComplaint, resBody)
-    return res.data;
-  });
+export const getLeaderList = async () => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(APIRoutes.getLeaderList);
+      return res.data;
+    }
+  );
 };
- */
+
+
 export const RaiseComplaint = async (formData: any) => {
   return tryCatch(
       async () => {
@@ -90,8 +92,6 @@ export const addNewComplaint =
       })
 
       await ConnectToAPI(COMPLAINT_ENPOINT, body)
-
-      dispatch(fetchAllComplaints())
       dispatch(complaintActions.setSubmitting(false))
     } catch (err: any) {
       console.error(err.message)
@@ -113,8 +113,6 @@ export const deleteComplaint =
       })
 
       await ConnectToAPI(COMPLAINT_ENPOINT, body)
-
-      dispatch(fetchAllComplaints())
       dispatch(complaintActions.setSubmitting(false))
     } catch (err: any) {
       console.error(err)

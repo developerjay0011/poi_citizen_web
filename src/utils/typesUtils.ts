@@ -177,6 +177,7 @@ export interface Attachments {
 }
 
 export interface RequestComplaintData extends RequestComplaintFormFields {
+  id:string
   attachments: Attachments[];
 }
 
@@ -192,13 +193,21 @@ export interface RequestComplaintDetails {
   requestno: string
   createdDate: string
 }
+export interface LeaderDetails {
+  id: string,
+  image: string,
+  username: string,
+  political_party: string,
+  designation: string,
+  status: boolean
+}
 
 export interface ToDetails {
   designation: string
   dislike: string
   isSeen: string
   leaderId: string
-  leaderProfilePic: string | StaticImageData
+  image: string | StaticImageData
   name: string
   requestComplaintSeenDate: string
   requestComplaintStatus: string

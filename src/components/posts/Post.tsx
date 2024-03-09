@@ -15,6 +15,7 @@ import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import PostGrid from "../PostGrid";
 import { Shortlistbytime, islike } from "./utils";
+import { tryCatch } from "@/config/try-catch";
 
 
 interface PostProps extends PostDetails {
@@ -47,7 +48,8 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
       post_leaderid: post?.leaderid,
       userid: userDetails?.id,
     };
-    try {
+    tryCatch(
+      async () => {
       if (!is_like) {
         const data = await LikePost(likeBody);
         toast.success(data.message);
@@ -57,9 +59,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
         toast.success(data.message);
         Getpost();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
 
@@ -84,7 +84,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
           </h4>
           <p className="flex items-center capitalize gap-2 text-sm font-[500]">
             <span>
-              Published on:{" "}{dateConverter(post?.createddate)}
+              {/* Published on:{" "}{dateConverter(post?.createddate)} */}
             </span>
           </p>
         </div>

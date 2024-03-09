@@ -44,17 +44,13 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
             animate={{ y: 0 }}
             exit={{ y: -100 }}
             className='bg-white relative h-max flex flex-col gap-5'>
-            {/* <div className='flex justify-between items-start'>
-              <h4 className='text-3xl font-semibold'>{heading} Preview</h4>
-
-              <button type='button' onClick={onClose}>
-                <BiX className='text-4xl' />
-              </button>
-            </div> */}
+          
 
             {/* PDF Preview */}
             <div className='letter_preview'>
-              <div ref={letterDiv} className='flex flex-col w-full h-full overflow-hidden gap-[1cm] p-[1cm]'>
+              <div
+                ref={letterDiv}
+                className='flex flex-col w-full h-full overflow-hidden gap-[1cm] p-8 '>
                 {/* Date and Req/comp no */}
                 <p className='self-end'>
                   req/comp no/{dateConverterNumeric(new Date().toDateString())}
@@ -65,7 +61,7 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
                   <strong>To</strong>
                   {to && (
                     <>
-                      <strong>{to.name}</strong>
+                      <strong>{to.username}</strong>
                       <strong>{to.designation}</strong>
                     </>
                   )}
@@ -93,18 +89,18 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
 
                 {/* Signature */}
                 <div className='self-end'>
-                  <strong className='block'>Your Sincerely,</strong>
+                  <strong className='block text-right'>Your Sincerely,</strong>
                   {signature.length > 0 && (
                     <Image
                       src={signature}
-                      width={1000}
+                      width={250}
                       priority={true}
-                      height={1000}
+                      height={250}
                       alt='signature'
-                      className='w-full h-[4cm] object-contain'
+                      className='w-full h-[4cm] object-contain object-right'
                     />
                   )}
-                  <p>{userDetails?.firstname}</p>
+                  <p className='text-right'>{userDetails?.username}</p>
                 </div>
 
                 {attachments !== 0 && (

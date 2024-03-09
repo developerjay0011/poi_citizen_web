@@ -5,8 +5,15 @@ import Sparkles from '@/assets/sparkles.png'
 import Trial from '@/assets/lips.png'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { GenerateId, calCurrentDate } from '@/utils/utility'
-import { cusSelector } from '@/redux_store/cusHooks'
+import { cusDispatch, cusSelector } from '@/redux_store/cusHooks'
 import { MdVerified } from 'react-icons/md'
+
+import { tryCatch } from '@/config/try-catch'
+import { authActions } from '@/redux_store/auth/authSlice'
+import { GetBirthdayList } from '@/redux_store/auth/authAPI'
+import { getImageUrl } from '@/config/get-image-url'
+import CustomImage from '@/utils/CustomImage'
+import moment from 'moment'
 
 const birthdays = [
   {
@@ -43,10 +50,10 @@ const prefixArr = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
 
 interface BirthdayNotificationsProps { }
 export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
-  const { userDetails } = cusSelector((st) => st.auth)
+  const { userDetails ,birthdaylist} = cusSelector((st) => st.auth)
   const [index, setIndex] = useState(0)
   const birthday = birthdays[index]
-
+  const dispatch = cusDispatch();
   const [_, setGreetingsSent] = useState(birthday.sendGreetings)
 
   const age = calCurrentDate(birthday.dob)
@@ -65,39 +72,51 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
   // TEMP
   useEffect(() => {
     setGreetingsSent(birthday.sendGreetings)
+    
   }, [birthday])
+  const GetBirthday = async () => {
+    tryCatch(
+      async () => {
+        if (userDetails?.id) {
+          const data = await GetBirthdayList();
+          console.log(data)
+
+          if (data.length >= 0) {
+            dispatch(authActions.setBirthdayList(data));
+          }
+        }
+      })
+  };
+  useEffect(() => {
+    GetBirthday()
+  }, [dispatch, userDetails]) 
+
 
   return (
     <section className='border rounded-md bg-white text-sky-950 overflow-hidden'>
       <div className='flex gap-3 bg-violet-500 px-4 py-2 items-center text-violet-50'>
-        <Image
-          priority={true}
-          src={birthday.img}
-          alt='display pic'
+        <CustomImage
+          src={getImageUrl(birthdaylist[index]?.image)}
+          alt="trending user"
           width={1000}
           height={1000}
-          className='w-[42px] aspect-square rounded-full object-cover object-center'
+          className="rounded-full w-12 aspect-square object-cover object-center"
         />
 
-        <strong>
-          {age}
+        {/* <strong>
+          {calculateAge(new Date(birthdaylist[index]?.dob))}
           {agePrefix} birthday
-        </strong>
+        </strong> */}
 
         <p className='flex flex-col ml-auto items-center'>
-          <span className='italic text-xl'>{date}</span>
-          <span className='text-base font-medium -mt-1'>{month}</span>
+          <span className='italic text-xl'>{moment(birthdaylist[index]?.dob).format('DD')}</span>
+          <span className='text-base font-medium -mt-1'>{moment(birthdaylist[index]?.dob).format('MMMM')}</span>
         </p>
       </div>
 
       <ul className='py-4 px-10 relative'>
-        <Image
-          priority={true}
-          src={Sparkles}
-          alt='background'
-          className='absolute top-0 left-0 object-cover object-center w-full h-full'
-        />
-
+    
+       
         {/* Toggle btns */}
         <button
           type='button'
@@ -131,7 +150,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
 
           <h2 className='text-center text-xl text-slate-500 w-max z-10'>
             <strong className='text-orange-500 capitalize'>
-              {birthday.name}
+              {birthdaylist[index]?.name}
             </strong>{' '}
             Birthday
           </h2>

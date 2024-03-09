@@ -7,6 +7,7 @@ interface RequestsAndComplaintsProps {
   type: "request" | "complaint" | "suggestion";
   deleteHandler: (id: string) => void;
   submitting: boolean;
+  editHandler: (id: string) => void;
 }
 
 export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
@@ -14,6 +15,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
   type,
   deleteHandler,
   submitting,
+  editHandler
 }) => {
   const requestComplaintJsx =
     requestOrComplaints.length > 0 ? (
@@ -23,10 +25,9 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
           to={el.to}
           key={el.id}
           description={el.description}
-          requestComplaintNo={
-            type === "complaint" ? el.complaintno : el.requestno
-          }
+          ticket_code={el.ticket_code}
           type={type}
+          requestComplaintEditFn={() => editHandler(el)}
           requestComplaintDeleteFn={() => deleteHandler(el.id)}
           submitting={submitting}
           createdDate={el.createdDate}

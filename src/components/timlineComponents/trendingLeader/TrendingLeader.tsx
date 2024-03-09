@@ -58,7 +58,7 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
         className="rounded-full w-12 aspect-square object-cover object-center"
       />
 
-      <Link href={`ProtectedRoutes.leader/${id}`}>
+      <Link href={`user/leader/about?id=${id}`}>
         <div className="flex flex-col">
           <h3 className="text-[14px] font-semibold capitalize">{username}</h3>
           <p className="text-[12px] capitalize">{designation}</p>

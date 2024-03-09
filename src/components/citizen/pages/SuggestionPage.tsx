@@ -13,6 +13,7 @@ import {
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import toast from "react-hot-toast";
 import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
+import { tryCatch } from "@/config/try-catch";
 
 interface UserDetails {
   token: string;
@@ -23,6 +24,8 @@ interface UserDetails {
 export const SuggestionPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState<any>();
+  const [isEdit, setIsEdit] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     token: "",
     id: "",
@@ -30,9 +33,6 @@ export const SuggestionPage: FC = () => {
   });
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
-
-  console.log(suggestions, "suggestionssuggestionssuggestions");
-
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
 
@@ -48,59 +48,50 @@ export const SuggestionPage: FC = () => {
   }, []);
 
   const getSuggestion = async () => {
-    try {
+    tryCatch(
+      async () => {
       if (userDetails?.id) {
         const data = await GetSuggestions(userDetails?.id);
 
         if (data.length >= 0) {
-          dispatch(suggestionActions.storeComplaints(data));
+          dispatch(suggestionActions.storeSuggestions(data));
         }
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
-
-  const addNewSuggestionHandler = async (suggestion: RequestComplaintData) => {
-    console.log(suggestion, "complaint");
+  useEffect(() => {
+    getSuggestion()
+  }, [dispatch, userDetails]) 
+  const addNewSuggestionHandler = async (suggestion: any) => {
 
     const formData = new FormData();
-    formData.append("id", "");
+    formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", suggestion.subject || "");
     formData.append("description", suggestion?.description || "");
     formData.append("deletedDocs", "");
-    if (typeof suggestion.signatureDoc === "string") {
-      formData.append("signature", suggestion.signatureDoc);
-    } else if (suggestion.signatureDoc instanceof FileList) {
-      for (const file of Array.from(suggestion.signatureDoc)) {
-        formData.append("signature", file);
+    formData.append("signature", suggestion.signatureDoc || "");
+    if (suggestion?.attachmentsDoc) {
+      for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
+        const item: any = suggestion.attachmentsDoc[i];
+
+        formData.append("attachments", item?.file);
       }
-    } else {
-      formData.append("signature", suggestion.signatureDoc);
-    }
-
-    for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
-      const item: any = suggestion.attachmentsDoc[i];
-
-      formData.append("attachments", item?.file);
     }
     for (let i = 0; i < suggestion.to.length; i++) {
-      const item: any = suggestion.to[i];
+      const item: any = suggestion.to[i].id;
 
       formData.append("to", item);
     }
 
-    try {
+    tryCatch(
+      async () => {
       const data = await SaveSuggestion(formData);
       if (data?.success) {
-        console.log(data);
         getSuggestion();
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
     closeForm();
 
     // dispatch(addNewSuggestions(suggestion));
@@ -115,15 +106,14 @@ export const SuggestionPage: FC = () => {
   );
 
   const handleDetele = async (id: string) => {
-    try {
+    tryCatch(
+      async () => {
       const data = await DeleteSuggestion(id);
       if (data?.success) {
         getSuggestion();
         toast.success(data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    })
   };
 
   return (
@@ -159,7 +149,7 @@ export const SuggestionPage: FC = () => {
                 {/* ADD OR EDIT Button */}
                 <button
                   className="px-5 py-2 bg-orange-500 text-orange-50 rounded-md text-sm capitalize transition-all hover:bg-orange-600"
-                  onClick={showForm}
+                  onClick={() => { showForm(), setIsEdit(false) }}
                 >
                   new suggestion
                 </button>
@@ -193,7 +183,7 @@ export const SuggestionPage: FC = () => {
             requestOrComplaints={searchFilteredSuggestions}
             type="suggestion"
             submitting={submitting}
-            // deleteHandler={(id: string) => dispatch(deleteSuggestion(id))}
+            editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
             deleteHandler={(id: string) => handleDetele(id)}
           />
         </section>
@@ -205,6 +195,8 @@ export const SuggestionPage: FC = () => {
           <RequestComplaintForm
             onClose={closeForm}
             type="suggestion"
+            isEdit={isEdit}
+            selectedValue={selectedValue}
             submitHandler={addNewSuggestionHandler}
             err={err}
             submitting={submitting}
