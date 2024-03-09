@@ -13,7 +13,7 @@ interface FollowerProps {
 
 export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }) => {
   return (
-    <Link href={`/user/leader/about?id=${data?.leaderid}`} className='border rounded-md bg-white p-4 flex gap-2 items-center relative'>
+    <div className='border rounded-md bg-white p-4 flex gap-2 items-center relative'>
       <CustomImage
         priority={true}
         src={getImageUrl(data?.image)}
@@ -22,9 +22,13 @@ export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }
         height={1000}
         className='rounded-full w-20 aspect-square object-cover object-center bg-rose-100'
       />
+     
       <div className='flex flex-col flex-grow'>
-        <h3 className='flex flex-col font-semibold text-lg capitalize'>{data?.name}</h3>
-        {data?.leaderid && <span className='text-[14px] font-normal'>{data?.designation}</span>}
+        <Link href={`/user/leader/about?id=${data?.leaderid}`} >
+          <h3 className='flex flex-col font-semibold text-lg capitalize'>{data?.name}</h3>
+        
+          {data?.leaderid && <span className='text-[14px] font-normal'>{data?.designation}</span>}
+        </Link>
         {data?.leaderid &&
           <p className='text-[14px] flex justify-between'>
             {data?.followers} followers
@@ -37,6 +41,6 @@ export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }
           </p>
         }
       </div>
-    </Link >
+    </div >
   )
 }
