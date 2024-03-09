@@ -21,7 +21,7 @@ interface ContributionFormProps {
   onClose: () => void;
   handleAdd: () => void;
   isEdit: boolean
-  selectedValue:any
+  selectedValue: any
 }
 
 export interface ContributionFormFields {
@@ -84,7 +84,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
 
   useEffect(() => {
     if (isEdit) {
-      setSelfContributor(selectedValue?.contributor == "Self" ?true :false)
+      setSelfContributor(selectedValue?.contributor == "Self" ? true : false)
       setValue("contributorName", selectedValue?.contributor_name)
       setValue("contributorMobileNo", selectedValue?.contributor_mobile)
       setValue("contributionType", selectedValue?.contribution_type)
@@ -100,24 +100,21 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
       } else if (selectedValue?.contribution_type == 'others') {
         setValue("others.description", selectedValue?.description)
       }
-    
+
     }
     getLeader()
-  }, [dispatch,userDetails]);
+  }, [dispatch, userDetails]);
 
   const setToFieldValue = (val: any) =>
     setValue("leaderId", val);
 
-  
-  const formSubmitHandler = async (data: ContributionFormFields) => {
-    console.log("data", data)
- 
 
+  const formSubmitHandler = async (data: ContributionFormFields) => {
     const body = {
-      id: isEdit ? selectedValue?.id :"",
+      id: isEdit ? selectedValue?.id : "",
       citizenid: userDetails?.id,
       leaderid: data?.leaderId,
-      contributor: selfContributor ? "Self" :"Others",
+      contributor: selfContributor ? "Self" : "Others",
       contribution_type: data?.contributionType,
       contributor_name: data?.contributorName,
       contributor_mobile: data?.contributorMobileNo,
@@ -129,14 +126,14 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
 
     tryCatch(
       async () => {
-      const data = await SaveContribution(body);
+        const data = await SaveContribution(body);
         if (data?.success) {
           handleAdd()
-        toast.success(data.message);
-      } else {
-        toast.error(data.message);
-      }
-    })
+          toast.success(data.message);
+        } else {
+          toast.error(data.message);
+        }
+      })
     onClose();
   };
 
@@ -165,7 +162,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
               <BiX className="text-3xl" />
             </button>
             <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-5 border-b font-semibold text-3xl">
-              {isEdit ? "Edit":"Add"} a Contribution
+              {isEdit ? "Edit" : "Add"} a Contribution
             </h3>
 
             <form
@@ -356,12 +353,12 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
                     })}
                   >
                     <option value="">select leader</option>
-                    {leaderlist.map((el:any) => (
+                    {leaderlist.map((el: any) => (
                       <option value={el.id} key={el.id}>
                         {el.username}
                       </option>
                     ))}
-                    
+
                   </select>
                   <ErrorMessage
                     name={"leader"}
@@ -370,7 +367,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
                     className="text-red-500 text-sm first-letter:capitalize lowercase"
                   />
                 </label>
-              
+
                 {watch("contributionType") === "money" && (
                   <label htmlFor="moneyMode" className={`flex flex-col gap-2`}>
                     <span className="capitalize font-[500]">

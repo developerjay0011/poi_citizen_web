@@ -32,36 +32,23 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
 
 
 
-  return (
-    <div style={{ display: stories?.length > 0 ? "flex" : "none" }}>
-      <CommonBox
-        title="My Stories"
-        cusJSX={[
-          <Link
-            key={id}
-            href={ProtectedRoutes.leader}
-            className="text-sm font-normal hover:underline text-orange-500"
-          >
-            see all
-          </Link>,
-        ]}
-      >
-        <div className="w-[660px]  ">
-          <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
-            {stories?.map((el: | { media?: any[]; index?: number, leaderid: string; image: string; name: string; } | undefined) => {
-              return (
-                <Story
-                  userImage={getImageUrl(el?.image as string)}
-                  key={el?.index}
-                  stories={el?.media as any}
-                  name={el?.name as string}
-                />
-              );
-            })}
-          </ul>
-        </div>
-      </CommonBox>
-    </div>
+  return stories?.length > 0 && (
+    <CommonBox title="Stories" cusJSX={[]}>
+      <div className="w-[660px]  ">
+        <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
+          {stories?.map((el: | { media?: any[]; index?: number, leaderid: string; image: string; name: string; } | undefined) => {
+            return (
+              <Story
+                userImage={getImageUrl(el?.image as string)}
+                key={el?.index}
+                stories={el?.media as any}
+                name={el?.name as string}
+              />
+            );
+          })}
+        </ul>
+      </div>
+    </CommonBox>
   );
 };
 
@@ -116,7 +103,7 @@ const Story: FC<StoryProps> = ({ userImage, stories, name }) => {
                 stories={stories as any}
                 storyContainerStyles={{ borderRadius: 8, overflow: "hidden" }}
                 defaultInterval={1500}
-               
+
                 width={432}
                 height={768}
                 storyStyles={storyContent}

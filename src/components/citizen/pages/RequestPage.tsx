@@ -40,7 +40,6 @@ export const RequestPage: FC = () => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {
       var storedUser = JSON.parse(storedUserString);
-
       setUserDetails(storedUser);
     } else {
       console.log("User data not found in session storage");

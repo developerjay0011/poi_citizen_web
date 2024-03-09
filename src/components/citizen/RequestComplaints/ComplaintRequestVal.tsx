@@ -11,6 +11,8 @@ import { dateConverter } from "@/utils/utility";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import moment from "moment";
+import { IoMdEye } from "react-icons/io";
+import { TicketTimeLine } from "./TicketTimeLine";
 
 interface ComplaintRequestValProps {
   subject: string;
@@ -24,6 +26,7 @@ interface ComplaintRequestValProps {
   createdDate: string;
   signature: string;
   attachments: Attachments[];
+  el: any
 }
 
 const TOClasses = [
@@ -45,9 +48,13 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   createdDate,
   signature,
   attachments,
-  requestComplaintEditFn
+  requestComplaintEditFn,
+  el
 }) => {
   const descRef = useRef<HTMLParagraphElement>(null);
+  const [showStatus, setShowStatus] = useState(false)
+  const [ticketdata, setticketdata] = useState<any>()
+  const [timeline, setTimeline] = useState<any>([])
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [showToDetails, setShowToDetails] = useState(false);
   const [showExpandBtn, setShowExpandBtn] = useState(false);
@@ -62,17 +69,20 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
     }
   }, []);
 
+
+
+
   return (
     <>
       <li className="border self-start rounded-md flex flex-col p-3 gap-3 bg-gray-50 border-gray-300">
         <div className="flex justify-between py-2 font-medium">
           {/* ID no */}
-         
-            <p className="capitalize">
-              <strong className="text-orange-500"># </strong> 
-              {ticket_code}
-            </p>
-          
+
+          <p className="capitalize">
+            <strong className="text-orange-500"># </strong>
+            {ticket_code}
+          </p>
+
 
           {/* created date */}
           <p className="flex items-center gap-2 ml-auto">
@@ -85,16 +95,14 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
 
         {/* TO Box */}
         <div className="text-sm flex items-center gap-2">
-          <p>To:</p>
+          <p>Leader Status:</p>
 
-          <section
-            className="flex flex-col"
-            onClick={() => setShowToDetails(true)}
-          >
+          <section className="flex flex-col">
             <div className="flex relative">
               {to.slice(0, 5).map((el, i) => (
                 <div
                   key={i}
+                  onClick={() => { setticketdata(el), setShowStatus(true) }}
                   className={`cursor-pointer toList w-10 aspect-square bg-red-100 object-cover object-center rounded-full border-2 border-gray-50 ${TOClasses[i]}`}
                 >
                   <CustomImage
@@ -120,9 +128,8 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
         <div className="flex flex-col gap-1">
           <p
             ref={descRef}
-            className={`text-gray-600 text-sm overflow-hidden ${
-              showFullDesc ? "" : "text_wrap"
-            }`}
+            className={`text-gray-600 text-sm overflow-hidden ${showFullDesc ? "" : "text_wrap"
+              }`}
             dangerouslySetInnerHTML={{ __html: description }}
           />
           {showExpandBtn && (
@@ -147,21 +154,21 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
             onClick={() => requestComplaintEditFn()}
             className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
           >
-            <MdEdit className="text-3xl" />
+            <MdEdit className="text-2xl" />
           </button>
           <button
             type="button"
             onClick={() => setShowConfirmBox(true)}
             className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
           >
-            <MdDelete className="text-3xl" />
+            <MdDelete className="text-2xl" />
           </button>
         </div>
       </li>
       <AnimatePresence mode="wait">
-        {showToDetails && (
+        {/* {showToDetails && (
           <ToDetailsBox onClose={() => setShowToDetails(false)} toList={to} />
-        )}
+        )} */}
       </AnimatePresence>
       <AnimatePresence mode="wait">
         {showConfirmBox && (
@@ -169,6 +176,14 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
             noAllowed={submitting}
             onCancel={() => setShowConfirmBox(false)}
             onOk={requestComplaintDeleteFn}
+          />
+        )}
+        {showStatus && (
+          <TicketTimeLine
+            timeline={ticketdata?.status}
+            onClose={() => setShowStatus(false)}
+            onAddMileStone={() => { setShowStatus(false) }}
+            ticketdata={ticketdata}
           />
         )}
       </AnimatePresence>

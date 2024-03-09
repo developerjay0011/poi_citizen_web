@@ -41,7 +41,6 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
               {userDetails?.username}
             </Link>
 
-            {/* Messages */}
             {/* <div className="flex items-center gap-1 text-[13px] font-[500]">
               <FaMessage /> <p className="capitalize">messages</p>{" "}
               <CountBubble
@@ -49,17 +48,16 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
                 textColor="text-white"
                 count={2}
               />
-            </div> */}
+            </div>
 
-            {/* Notifications */}
             <div className="flex items-center gap-1 text-[13px] font-[500]">
               <FaBell /> <p className="capitalize">notifications</p>{" "}
-              {/* <CountBubble
+              <CountBubble
                 bgColor="bg-blue-500"
                 textColor="text-white"
                 count={0}
-              /> */}
-            </div>
+              />
+            </div> */}
           </div>
         </section>
 

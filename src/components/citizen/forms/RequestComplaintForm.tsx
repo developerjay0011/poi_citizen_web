@@ -31,7 +31,7 @@ interface RequestComplaintFormProps {
   err: ErrObj;
   type: keyof typeof FORM_HEADINGS;
   isEdit: boolean,
-  selectedValue:any
+  selectedValue: any
 }
 
 export interface RequestComplaintFormFields {
@@ -106,7 +106,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
       setValue("to", selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })));
       setSignature(selectedValue?.signature)
       setAttachments(selectedValue?.attachments)
-   }
+    }
   }, []);
   const onChange = (value: string) => {
     setValue("description", value);
@@ -176,7 +176,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
               <BiX className="text-3xl" />
             </button>
             <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-5 border-b font-semibold text-3xl">
-              {isEdit ? FORM_HEADINGS[type].replace("Create", 'Edit').replace("Raise", 'Edit') : FORM_HEADINGS[type] }
+              {isEdit ? FORM_HEADINGS[type].replace("Create", 'Edit').replace("Raise", 'Edit') : FORM_HEADINGS[type]}
             </h3>
 
             <form
@@ -210,11 +210,10 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
 
                 <ImageMultiSelectIP
                   title={"to"}
-                  svalue={isEdit ? selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })):[]}
+                  svalue={isEdit ? selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })) : []}
                   placeholder="select leader"
-                  options={leaderlist.map((el:any) => el)}
-                  setValue={(value: any) => {
-                    setToFieldValue(value), console.log("value",value)}}
+                  options={leaderlist.map((el: any) => el)}
+                  setValue={(value: any) => { setToFieldValue(value) }}
                 />
 
                 <section className="col-span-2 flex flex-col gap-1 ">
@@ -275,25 +274,25 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                       accept="image/*"
                       {...register("signature", {
                         async onChange(e: ChangeEvent<HTMLInputElement>) {
-                          if (e.target.files){
+                          if (e.target.files) {
                             const file = (e.target.files as FileList)[0];
 
-                          if (!file) return;
+                            if (!file) return;
 
-                          if (!file.type.includes("image")) return;
+                            if (!file.type.includes("image")) return;
 
-                          const signatureFile = await convertFileToBase64(file);
+                            const signatureFile = await convertFileToBase64(file);
 
-                          setSignature(signatureFile);
-                          setValue("signature", signatureFile);
+                            setSignature(signatureFile);
+                            setValue("signature", signatureFile);
 
-                          setSignatureDoc(file as any);
-                        }
+                            setSignatureDoc(file as any);
+                          }
                         },
                         validate: {
-                      
+
                           notAImg(file) {
-                            if (file) { 
+                            if (file) {
                               const type = (file as FileList)[0]?.type;
 
                               if (!type) return true;
@@ -303,7 +302,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                                 "Only Image files are allowed."
                               );
                             }
-                           
+
                           },
                         },
                       })}
@@ -320,7 +319,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                   {signature && (
                     <div className="relative w-max">
                       <Image
-                        src={isEdit ? getImageUrl(signature) :signature}
+                        src={isEdit ? getImageUrl(signature) : signature}
                         alt=""
                         priority={true}
                         width={1000}

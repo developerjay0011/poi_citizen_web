@@ -20,7 +20,6 @@ export const MoreThan4ColumnImgLayout: FC<{
               <figure className="w-full relative" onClick={showFullPost}>
 
                 {(post?.media as MediaPost[]).map((el: any, index) => {
-                  console.log(getImageUrl(el?.media))
                   return index < 1 && (el?.type === "image/jpeg" ? (
                     <Image
                       key={index}

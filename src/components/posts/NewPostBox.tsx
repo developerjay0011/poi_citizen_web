@@ -1,16 +1,14 @@
 "use client";
-import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
+import { cusSelector } from "@/redux_store/cusHooks";
 // import { createNewPost } from "@/redux_store/posts/postAPI";
 import { CommonBox } from "@/utils/CommonBox";
-import { ErrObj, MediaPost, NewPostFields, PostType } from "@/utils/typesUtils";
+import { ErrObj, NewPostFields, PostType } from "@/utils/typesUtils";
 import { GenerateId, convertFileToBase64 } from "@/utils/utility";
 import Image from "next/image";
-import { FC, FormEvent, useState, ChangeEvent, useEffect } from "react";
+import { FC, FormEvent, useState, ChangeEvent } from "react";
 import { BiX } from "react-icons/bi";
 import { BsImageFill } from "react-icons/bs";
 import { FaCamera } from "react-icons/fa";
-import { fetchAddPost } from "../api/posts";
-import { RootState } from "@/redux_store";
 import { PostTypes } from "./PostTypes";
 import NoImg from "@/assets/No_image_available.png";
 import { AddPost } from "@/redux_store/post/postApi";
@@ -57,13 +55,13 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
 
     tryCatch(
       async () => {
-      const data = await AddPost(formData);
+        const data = await AddPost(formData);
 
-      if (data?.success) {
-        updatePost(data);
-        toast.success(data.message);
-      }
-    })
+        if (data?.success) {
+          updatePost(data);
+          toast.success(data.message);
+        }
+      })
 
     setMedia([]);
     setApiMedia([]);

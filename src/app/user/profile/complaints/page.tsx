@@ -7,7 +7,7 @@ const CitizenProfileComplaintsPage: FC = () => {
   return (
     <>
       <section className='flex gap-5'>
-        <div className='self-start max-[800px]:hidden'>
+        <div className='self-start max-[900px]:hidden'>
           <ShortcutsBox />
         </div>
 

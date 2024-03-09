@@ -14,7 +14,7 @@ import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
-import { fetchTrendingLeaderList, getProfile } from "@/redux_store/auth/authAPI";
+import { GetBirthdayList, fetchTrendingLeaderList, getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { getCookie } from "cookies-next";
@@ -60,9 +60,11 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         dispatch(followActions.Following(CitizenFollowingList));
         const trending = await fetchTrendingLeaderList();
         dispatch(authActions.Settrendingleader(trending));
-        const data = await getLeaderList();
-        dispatch(complaintActions.setLeader(data));
+        const LeaderList = await getLeaderList();
+        dispatch(complaintActions.setLeader(LeaderList));
 
+        const BirthdayList = await GetBirthdayList();
+        if (BirthdayList.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
 
         const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
         if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }

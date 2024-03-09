@@ -19,7 +19,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
 }) => {
   const requestComplaintJsx =
     requestOrComplaints.length > 0 ? (
-      requestOrComplaints.map((el:any) => (
+      requestOrComplaints.map((el: any) => (
         <ComplaintRequestVal
           subject={el.subject}
           to={el.to}
@@ -33,6 +33,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
           createdDate={el.createdDate}
           attachments={el.attachments}
           signature={el.signature}
+          el={el}
         />
       ))
     ) : (

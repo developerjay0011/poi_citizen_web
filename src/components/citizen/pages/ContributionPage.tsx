@@ -16,7 +16,7 @@ export const ContributionPage: FC = () => {
   const [showContributionForm, setShowContributionForm] = useState(false)
   const [isEdit, setEdit] = useState(false)
 
-  
+
   const [contributionid, setcontributionid] = useState()
 
   const { contributions } = cusSelector((st) => st.contribution);
@@ -56,7 +56,7 @@ export const ContributionPage: FC = () => {
       }
     )
   };
-  
+
   return (
     <>
       <section className='flex flex-col border rounded-md bg-white flex-grow self-start'>
@@ -114,10 +114,10 @@ export const ContributionPage: FC = () => {
                   )}
                 </label>
               </div>
-             
-           
+
+
             </section>
-            
+
           </div>
           <div className="overflow-y-scroll flex-1 main_scrollbar">
             <ul className='grid grid-cols-4 gap-5'>
@@ -142,11 +142,11 @@ export const ContributionPage: FC = () => {
                         {item?.mode ? <p className='capitalize flex items-center gap-3 text-[14px]'>
                           <span className='font-[600]'>Mode : </span>
                           <span className='text-[13px]'>{item?.mode}</span>
-                        </p>:null}
+                        </p> : null}
                         {item?.amount ? <p className='capitalize flex items-center gap-3 text-[14px]'>
                           <span className='font-[600]'>Amount : </span>
                           <span className='text-[13px]'>{item?.amount}</span>
-                        </p>:null}
+                        </p> : null}
                         {item?.quantity ? <p className='capitalize flex items-center gap-3 text-[14px]'>
                           <span className='font-[600]'>Quantity : </span>
                           <span className='text-[13px]'>{item?.quantity}</span>
@@ -158,19 +158,19 @@ export const ContributionPage: FC = () => {
                         <div className=' flex  items-right' >
                           <button
                             type="button"
-                            onClick={() => { showForm(), setEdit(true), setSelectedValue(item)}}
+                            onClick={() => { showForm(), setEdit(true), setSelectedValue(item) }}
                             className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
                           >
                             <MdEdit className="text-2xl" />
                           </button>
-                        <button
-                          type="button"
-                            onClick={() =>{ setShowConfirmBox(true), setcontributionid(item.id)}}
-                          className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
-                        >
-                          <MdDelete className="text-2xl" />
-                        </button>
-                       
+                          <button
+                            type="button"
+                            onClick={() => { setShowConfirmBox(true), setcontributionid(item.id) }}
+                            className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
+                          >
+                            <MdDelete className="text-2xl" />
+                          </button>
+
                         </div>
                       </div>
 
@@ -178,7 +178,11 @@ export const ContributionPage: FC = () => {
                   )
                 })}
             </ul>
-         
+            {contributions?.length == 0 &&
+              <h3 className="col-span-full text-center py-10 capitalize text-3xl">
+                No Contributions Found!!
+              </h3>
+            }
           </div>
         </section>
       </section>
@@ -192,7 +196,7 @@ export const ContributionPage: FC = () => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {showContributionForm && <ContributionForm isEdit={isEdit} selectedValue={selectedValue} handleAdd={()=>getContributions()} onClose={closeForm} />}
+        {showContributionForm && <ContributionForm isEdit={isEdit} selectedValue={selectedValue} handleAdd={() => getContributions()} onClose={closeForm} />}
       </AnimatePresence>
     </>
   )

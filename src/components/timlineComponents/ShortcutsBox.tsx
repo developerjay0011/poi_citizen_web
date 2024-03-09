@@ -102,7 +102,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
 
   return (
     <CommonBox title="shortcuts">
-      <div className="flex flex-col py-4 gap-5 font-normal">
+      <div className="flex flex-col py-4 gap-5 font-normal min-w-[170px]">
         {Shortcuts.map((el) => (
           <ShortcutBtn {...el} key={el.id} />
         ))}

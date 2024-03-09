@@ -79,11 +79,7 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
       async () => {
         if (userDetails?.id) {
           const data = await GetBirthdayList();
-          console.log(data)
-
-          if (data.length >= 0) {
-            dispatch(authActions.setBirthdayList(data));
-          }
+          if (data.length >= 0) { dispatch(authActions.setBirthdayList(data)); }
         }
       })
   };

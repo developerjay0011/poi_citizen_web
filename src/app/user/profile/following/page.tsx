@@ -15,7 +15,6 @@ const CitizenProfileFollowingsPage = () => {
   const { following } = cusSelector((st) => st.follow);
   const { userDetails } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
-  console.log(following)
   const getFollowingList = async () => {
     const data = await fetchCitizenFollowingList(userDetails?.id);
     dispatch(followActions.Following(data));
@@ -38,28 +37,20 @@ const CitizenProfileFollowingsPage = () => {
   };
   return (
     <>
-      <div className='flex gap-5 relative'>
-        <div className='self-start sticky top-0 left-0'>
-          <ShortcutsBox />
-        </div>
-
-        <div className='flex-grow'>
-          <PeoplesComponentWrapper
-            heading='followings'
-            searchStr={searchString}
-            setSearchStr={changeSearchString}>
-            <ul className='grid grid-cols-4 gap-5'>
-              {following?.length > 0 &&
-                following.map((el: any, index: number) => {
-                  return (
-                    <Follower key={index} handleUnfollow={handleUnFollower} data={el} displayImg={MODI} />
-                  );
-                })}
-            </ul>
-
-
-          </PeoplesComponentWrapper>
-        </div>
+      <div className='flex-grow'>
+        <PeoplesComponentWrapper
+          heading='followings'
+          searchStr={searchString}
+          setSearchStr={changeSearchString}>
+          <ul className='grid grid-cols-3 max-[1160px]:grid-cols-2 max-[670px]:grid-cols-1 gap-5'>
+            {following?.length > 0 &&
+              following.map((el: any, index: number) => {
+                return (
+                  <Follower key={index} handleUnfollow={handleUnFollower} data={el} displayImg={MODI} />
+                );
+              })}
+          </ul>
+        </PeoplesComponentWrapper>
       </div>
     </>
   )
