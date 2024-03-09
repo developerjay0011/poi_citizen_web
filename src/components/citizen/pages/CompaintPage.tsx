@@ -34,6 +34,7 @@ export const ComplaintPage: FC = () => {
       async () => {
       if (userDetails?.id) {
         const data = await GetRaisedComplaints(userDetails?.id);
+        if (data.length >= 0) {
           dispatch(complaintActions.storeComplaints(data));
       }
     })

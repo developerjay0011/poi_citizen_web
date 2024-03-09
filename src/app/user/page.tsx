@@ -23,13 +23,15 @@ const CitizenHomePage = () => {
         async () => {
         if (userDetails?.id) {
           const data = await GetRaisedComplaints(userDetails?.id);
-          dispatch(complaintActions.storeComplaints(data));
-          const dataRequest = await GetRaisedRequests(userDetails?.id);
-          dispatch(requestActions.storeRequest(dataRequest));
-          const dataSuggestions = await GetSuggestions(userDetails?.id);
-          dispatch(suggestionActions.storeSuggestions(data));
+          if (data.length > 0) { dispatch(complaintActions.storeComplaints(data)); }
+          const RaisedRequests = await GetRaisedRequests(userDetails?.id);
+          if (RaisedRequests.length > 0) { dispatch(requestActions.storeComplaints(RaisedRequests)); }
+          const Suggestions = await GetSuggestions(userDetails?.id);
+          if (Suggestions.length > 0) { dispatch(suggestionActions.storeComplaints(Suggestions)); }
         }
-      })
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [userDetails]);
 

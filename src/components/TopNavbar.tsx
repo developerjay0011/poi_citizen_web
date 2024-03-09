@@ -12,11 +12,21 @@ import { RiUserAddFill } from "react-icons/ri";
 import { AnimatePresence } from "framer-motion";
 import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
-import { ProtectedRoutes } from "@/constants/routes";
+import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
+import { getCookie } from "cookies-next";
+import { TOKEN_KEY } from "@/constants/common";
+import { complaintActions } from "@/redux_store/complaints/complaintSlice";
+import { GetRaisedComplaints } from "@/redux_store/complaints/complaintsApi";
+import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
+import { requestActions } from "@/redux_store/requests/requestSlice";
+import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
+import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";
+import { GetPostsForCitizen, GetStoriesForCitizen } from "@/redux_store/post/postApi";
+import { postActions } from "@/redux_store/post/postSlice";
 
 interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
@@ -28,6 +38,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   const [showBriefNoti, setShowBriefNoti] = useState(false);
   const [searchUserStr, setSearchUserStr] = useState("");
   const [showMobileNav, setShowMobileNav] = useState(false);
+  let token: any = getCookie(TOKEN_KEY);
   useEffect(() => {
     document.addEventListener("click", (e) => {
       if (!(e.target as HTMLElement).closest("#userDisplayPic"))
@@ -41,9 +52,26 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
       if (userDetails?.id) {
         const res = await getProfile(userDetails?.id);
         dispatch(authActions.logIn(res));
+
+        const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
+        if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }
+        const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
+        dispatch(postActions.storeStories(StoriesForCitizen as any));
+
+
+        const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
+        if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }
+        const RaisedRequests = await GetRaisedRequests(userDetails?.id);
+        if (RaisedRequests.length > 0) { dispatch(requestActions.storeComplaints(RaisedRequests)); }
+        const Suggestions = await GetSuggestions(userDetails?.id);
+        if (Suggestions.length > 0) { dispatch(suggestionActions.storeComplaints(Suggestions)); }
+      } else {
+        if (!token) {
+          router.push(AuthRoutes.login)
+        }
       }
     })();
-  }, [dispatch, userDetails?.id]);
+  }, [dispatch, userDetails?.id, token]);
   let heading = curRoute?.split("/").at(-1)?.includes("-")
     ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
     : curRoute?.split("/").at(-1);

@@ -27,7 +27,7 @@ export const ForgetUserIdField: FC<ForgetUserIdFieldProps> = ({
         if (sandOtp?.success) {
           proceedFn();
         } else {
-          toast.success(sandOtp.message);
+          toast.error(sandOtp.message);
         }
       }
     } catch (err) {

@@ -87,6 +87,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     const data = await DeactiveAccount(citizenid);
     if (data?.success) {
       setShowConfirmBox(false);
+      dispatch(authActions.logOut())
       router.push(AuthRoutes.login);
     }
   };
@@ -95,6 +96,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     const data = await CloseAccount(citizenid);
     if (data?.success) {
       setShowCloseConfirmBox(false);
+      dispatch(authActions.logOut())
       router.push(AuthRoutes.login);
     }
   };

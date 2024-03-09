@@ -313,7 +313,7 @@
   .letter_preview {
     width: 21cm;
     height: 29.7cm;
-    padding: 2.54cm;
+    /* padding: 2.54cm; */
     font-size: 12pt;
     font-family: "Merriweather", serif;
     background: white;

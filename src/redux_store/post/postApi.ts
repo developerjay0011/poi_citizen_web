@@ -4,6 +4,7 @@ import { tryCatch } from "@/config/try-catch";
 import { APIRoutes } from "@/constants/routes";
 import { postActions } from "./postSlice";
 import moment from "moment";
+import { getImageUrl } from "@/config/get-image-url";
 
 export const AddPost = async (formData: any) => {
   return tryCatch(async () => {
@@ -51,6 +52,45 @@ export const CommentPost = async (resBody: any) => {
     return res.data;
   });
 };
+
+
+
+export const GetStoriesForCitizen = async (citizenid: string) => {
+  return tryCatch(
+    async () => {
+      var setdata = []
+      const res = await Axios.get(insertVariables(APIRoutes.GetStoriesForCitizen, { citizenid }));
+      if (res?.data?.length > 0) {
+        setdata = res?.data.map((item: any, index: number) => ({
+          name: item.name,
+          leaderid: item.leaderid,
+          image: item.image,
+          index: index,
+          media: setmidea(item.posts, { heading: item.name, profileImage: getImageUrl(item.image) }),
+        }));
+      }
+      return setdata;
+    }
+  );
+};
+
+const setmidea = (posts: any[], heading: { heading: string; profileImage: string }) => {
+  const postdata = posts.flatMap((element) =>
+    element.media?.map((media: any) => ({
+      postid: element.id,
+      url: getImageUrl(media.media),
+      duration: 5000,
+      type: media.type?.includes("image") ? "image" : "video",
+      header: {
+        ...heading,
+        subheading: element.written_text,
+      },
+    }))
+  );
+
+  return postdata || [];
+};
+
 
 const ConvertCommonpost = (list = []): any => {
   var combinedData = [] as any;

@@ -36,9 +36,6 @@ export const RequestPage: FC = () => {
 
   const showForm = () => setShowRequestForm(true);
   const closeForm = () => setShowRequestForm(false);
-
-
-
   useEffect(() => {
     var storedUserString = sessionStorage.getItem("user");
     if (storedUserString !== null) {

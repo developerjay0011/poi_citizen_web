@@ -61,9 +61,7 @@ export const RegisterForm: FC = () => {
     try {
       const userData = getValues() as RegisterFormFields;
       setRegistering(true);
-
       const body = { mobile: userData.phoneNo || "" };
-
       const sandOtp = await sendOtp(body);
       if (sandOtp?.success) {
         // Starts a OTP resend Timer
@@ -81,8 +79,6 @@ export const RegisterForm: FC = () => {
       } else {
         toast.success(sandOtp.message);
       }
-
-      // await dispatch(registerUser({ data: userData }));
     } catch (err) {
       console.error(err);
       setRegistering(false);
