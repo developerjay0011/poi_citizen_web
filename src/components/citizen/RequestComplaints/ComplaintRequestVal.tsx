@@ -59,12 +59,8 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   const [showToDetails, setShowToDetails] = useState(false);
   const [showExpandBtn, setShowExpandBtn] = useState(false);
   const [showFullDesc, setShowFullDesc] = useState(false);
-
   useEffect(() => {
-    if (
-      descRef.current &&
-      Number.parseInt(getComputedStyle(descRef.current).height) === 164
-    ) {
+    if (descRef.current && Number.parseInt(getComputedStyle(descRef.current).height) === 164) {
       setShowExpandBtn(true);
     }
   }, []);
@@ -184,6 +180,8 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
             onClose={() => setShowStatus(false)}
             onAddMileStone={() => { setShowStatus(false) }}
             ticketdata={ticketdata}
+            type={type}
+            el={el}
           />
         )}
       </AnimatePresence>

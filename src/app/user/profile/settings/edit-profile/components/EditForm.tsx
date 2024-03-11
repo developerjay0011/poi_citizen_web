@@ -32,31 +32,17 @@ interface UserDetail {
 }
 
 const EditForm: FC<EditFormProps> = () => {
-  const userData: any = cusSelector(
-    (state: RootState) => state.auth.userDetails
-  );
   const { userDetails } = cusSelector((st) => st.auth);
-  const [isEditProfile, setIsEditProfile] = useState({});
   const dispatch = cusDispatch();
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-  } = useForm<UserDetails>({ mode: "onTouched" });
+  const { register, formState: { errors }, handleSubmit, setValue, } = useForm<UserDetails>({ mode: "onTouched" });
 
   const formSubmitHandler = async (data: UserDetails) => {
-    var storedUserString = sessionStorage.getItem("user");
-    var storedUser = JSON.parse(storedUserString as string);
-    const citizenid = storedUser?.id;
-
     const postBody = {
-      citizenid: citizenid,
+      citizenid: userDetails?.id,
       name: data?.username,
       email: data?.email,
       mobile: data?.mobile,
-      image: userData?.image,
+      image: userDetails?.image,
       gender: data?.gender,
       dob: data?.dob,
       blood_group: data?.blood_group,
@@ -69,18 +55,16 @@ const EditForm: FC<EditFormProps> = () => {
     };
     tryCatch(
       async () => {
-      const editData = await EditCitizenProfile(postBody);
-      if (editData?.success) {
-        toast.success(editData?.message);
-        const data = await getProfile(citizenid);
-        dispatch(authActions.logIn(data));
-        setIsEditProfile(editData);
-      } else {
-        toast.error(editData?.message);
-      }
-    })
+        const editData = await EditCitizenProfile(postBody);
+        if (editData?.success) {
+          toast.success(editData?.message);
+          const data = await getProfile(userDetails?.id);
+          dispatch(authActions.logIn(data));
+        } else {
+          toast.error(editData?.message);
+        }
+      })
   };
-
   useEffect(() => {
     setValue("username", userDetails?.username || "");
     setValue("email", userDetails?.email || "");
@@ -94,7 +78,7 @@ const EditForm: FC<EditFormProps> = () => {
     setValue("insta_link", userDetails?.insta_link || "");
     setValue("twitter_link", userDetails?.twitter_link || "");
     setValue("about_me", userDetails?.about_me || "");
-  }, [userDetails]);
+  }, [userDetails?.id]);
 
   return (
     <form

@@ -18,7 +18,7 @@ import { GetBirthdayList, fetchTrendingLeaderList, getProfile } from "@/redux_st
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { getCookie } from "cookies-next";
-import { TOKEN_KEY } from "@/constants/common";
+import { CITIZEN_TOKEN_KEY } from "@/constants/common";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { GetRaisedComplaints, getLeaderList } from "@/redux_store/complaints/complaintsApi";
 import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
@@ -40,7 +40,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   const [showBriefNoti, setShowBriefNoti] = useState(false);
   const [searchUserStr, setSearchUserStr] = useState("");
   const [showMobileNav, setShowMobileNav] = useState(false);
-  let token: any = getCookie(TOKEN_KEY);
+  let token: any = getCookie(CITIZEN_TOKEN_KEY);
   useEffect(() => {
     document.addEventListener("click", (e) => {
       if (!(e.target as HTMLElement).closest("#userDisplayPic"))

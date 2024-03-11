@@ -31,10 +31,7 @@ export const sendOtp = async (body: { mobile: any }) => {
   );
 };
 
-export const verifyOtp = async (body: {
-  mobile: string;
-  otp: string;
-}) => {
+export const verifyOtp = async (body: { mobile: string; otp: string; }) => {
   return tryCatch(
     async () => {
       const res = await Axios.post(APIRoutes.verifyOTP, body);
@@ -44,10 +41,7 @@ export const verifyOtp = async (body: {
 };
 
 
-export const CheckCitizenRegExists = async (body: {
-  email: string;
-  mobile: string
-}) => {
+export const CheckCitizenRegExists = async (body: { email: string; mobile: string }) => {
   return tryCatch(
     async () => {
       const res = await Axios.post(APIRoutes.CheckCitizenRegExists, body);
@@ -78,7 +72,7 @@ export const uploadProfileImage = async (formData: any) => {
   return tryCatch(
     async () => {
       const res = await Axios.post(APIRoutes.UploadCitizenProfileImge, formData, {
-        headers: {"Content-Type": "multipart/form-data"}
+        headers: { "Content-Type": "multipart/form-data" }
       });
       return res.data;
     }
@@ -117,7 +111,7 @@ export const getSingleLeader = async (leaderid: string) => {
 export const EditCitizenProfile = async (formData: any) => {
   return tryCatch(
     async () => {
-      const res = await Axios.post(APIRoutes.EditCitizenProfile,formData);
+      const res = await Axios.post(APIRoutes.EditCitizenProfile, formData);
       return res.data;
     }
   );

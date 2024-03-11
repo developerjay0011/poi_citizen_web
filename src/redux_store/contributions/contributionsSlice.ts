@@ -16,7 +16,6 @@ export const contributionsSlice = createSlice({
     storeContributions(state, action: PayloadAction<any[]>) {
       state.contributions = action.payload
     }
-    
   },
 })
 

@@ -4,14 +4,8 @@ import { FiSearch } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
-import { LeaderDetails, RequestComplaintData } from "@/utils/typesUtils";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import {
-  DeleteComplaint,
-  getLeaderList,
-  GetRaisedComplaints,
-  RaiseComplaint,
-} from "@/redux_store/complaints/complaintsApi";
+import { DeleteComplaint, getLeaderList, GetRaisedComplaints, RaiseComplaint, } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { tryCatch } from "@/config/try-catch";
@@ -19,13 +13,10 @@ export const ComplaintPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
   const [selectedValue, setSelectedValue] = useState<any>();
-
   const [isEdit, setIsEdit] = useState(false);
-
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
   const { userDetails } = cusSelector((st) => st.auth);
-
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
 
@@ -52,15 +43,11 @@ export const ComplaintPage: FC = () => {
   };
   const addNewComplaintHandler = async (complaint: any) => {
     const formData = new FormData();
-
     formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", complaint.subject || "");
     formData.append("description", complaint?.description || "");
     formData.append("deletedDocs", "");
-
-
-
     if (complaint.attachmentsDoc) {
       for (let i = 0; i < complaint.attachmentsDoc.length; i++) {
         const item: any = complaint.attachmentsDoc[i];
@@ -68,18 +55,19 @@ export const ComplaintPage: FC = () => {
         formData.append("attachments", item?.file);
       }
     }
-
     for (let i = 0; i < complaint.to.length; i++) {
       const item: any = complaint.to[i]?.id;
-
       formData.append("to", item);
     }
     if (complaint.signatureDoc) {
       formData.append("signature", complaint.signatureDoc);
     }
+
     tryCatch(
       async () => {
+        dispatch(complaintActions.setSubmitting(true))
         const data = await RaiseComplaint(formData);
+        dispatch(complaintActions.setSubmitting(false))
         if (data?.success) {
           toast.success(data.message);
           getComplaint()

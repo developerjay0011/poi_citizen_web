@@ -45,30 +45,14 @@ export interface ContributionFormFields {
     description: string;
   };
 }
-
-
-
 type DESC_VALS = "others" | "ration" | "clothes";
-
 const CONTRIBUTION_TYPE = ["money", "ration", "clothes", "others"];
 const MONEY_MODE = ["cash", "cheque"];
-
-
-
 export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd, isEdit, selectedValue }) => {
   const [selfContributor, setSelfContributor] = useState(true);
   const { userDetails } = cusSelector((st) => st.auth);
-
-
   const { leaderlist } = cusSelector((st) => st.complaints);
-
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<ContributionFormFields>();
+  const { handleSubmit, register, setValue, watch, formState: { errors }, } = useForm<ContributionFormFields>();
 
   const dispatch = cusDispatch();
   const getLeader = async () => {
@@ -105,8 +89,6 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
     getLeader()
   }, [dispatch, userDetails]);
 
-  const setToFieldValue = (val: any) =>
-    setValue("leaderId", val);
 
 
   const formSubmitHandler = async (data: ContributionFormFields) => {
@@ -161,8 +143,8 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
             >
               <BiX className="text-3xl" />
             </button>
-            <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-5 border-b font-semibold text-3xl">
-              {isEdit ? "Edit" : "Add"} a Contribution
+            <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-3 border-b font-semibold text-2xl">
+              {isEdit ? "Edit" : "Add"} Contribution
             </h3>
 
             <form

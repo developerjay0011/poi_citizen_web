@@ -5,12 +5,8 @@ import { BiX } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { BsFolderFill, BsX } from "react-icons/bs";
-import dynamic from "next/dynamic";
 import { PDFPreviewCP } from "@/utils/PDFPreviewCP";
 import { GenerateId, convertFileToBase64 } from "@/utils/utility";
-import RAHUL from "@/assets/politicians-images/Rahul-Gandhi.jpg";
-import MODI from "@/assets/politicians-images/narendar_modi.jpg";
-import ARVIND from "@/assets/politicians-images/ARVIND_KEJRIWAL.jpg";
 import { ImageMultiSelectIP } from "@/utils/ImageMultiSelectIP";
 import Image, { StaticImageData } from "next/image";
 import { FaSignature } from "react-icons/fa";
@@ -57,37 +53,15 @@ export interface BriefLeaderDetails {
 
 let firstTime = true;
 
-// importing CkEditor dynamically to avoid self error ocurring while building production build
-/* const CkEditor = dynamic(() => import('@/utils/CkEditorComponent'), {
-  ssr: false,
-}) */
 
-export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
-  onClose,
-  submitHandler,
-  err,
-  submitting,
-  type,
-  isEdit,
-  selectedValue
-}) => {
+export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, submitHandler, err, submitting, type, isEdit, selectedValue }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [attachments, setAttachments] = useState<Attachments[]>([]);
   const [attachmentsDoc, setAttachmentsDoc] = useState<Attachments[]>([]);
   const [signature, setSignature] = useState("");
   const [signatureDoc, setSignatureDoc] = useState("");
-
   const { leaderlist } = cusSelector((st) => st.complaints);
-
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    trigger,
-    getValues,
-    formState: { errors },
-  } = useForm<RequestComplaintFormFields>();
-
+  const { handleSubmit, register, setValue, trigger, getValues, formState: { errors }, } = useForm<RequestComplaintFormFields>();
   const formSubmitHandler = (data: any) => {
     submitHandler({ ...data, attachmentsDoc, signatureDoc });
     firstTime = false;
@@ -108,14 +82,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
       setAttachments(selectedValue?.attachments)
     }
   }, []);
-  const onChange = (value: string) => {
-    setValue("description", value);
-    trigger("description");
-  };
-
-  const setToFieldValue = (val: BriefLeaderDetails[] | "") =>
-    setValue("to", val);
-
+  const setToFieldValue = (val: BriefLeaderDetails[] | "") => setValue("to", val);
   const addAttachmentsHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
 
@@ -151,6 +118,8 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
       });
     }
   };
+
+
   return (
     <>
       <m.div
@@ -175,7 +144,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
             >
               <BiX className="text-3xl" />
             </button>
-            <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-5 border-b font-semibold text-3xl">
+            <h3 className="flex items-center after:h-1/2 after:w-[3px] after:bg-orange-600 after:absolute after:top-1/2 after:translate-y-[-50%] after:left-0 relative px-7 py-3 border-b font-semibold text-2xl">
               {isEdit ? FORM_HEADINGS[type].replace("Create", 'Edit').replace("Raise", 'Edit') : FORM_HEADINGS[type]}
             </h3>
 

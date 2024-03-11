@@ -21,37 +21,20 @@ interface UserDetails {
 }
 
 export const RequestPage: FC = () => {
+  const { userDetails } = cusSelector((st) => st.auth);
   const [searchString, setSearchString] = useState("");
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [selectedValue, setSelectedValue] = useState<any>();
   const [isEdit, setIsEdit] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
   const dispatch = cusDispatch();
   const { requests, submitting, err } = cusSelector((st) => st.requests);
-  // const { submitting, err } = cusSelector((st) => st.requests);
-
   const showForm = () => setShowRequestForm(true);
   const closeForm = () => setShowRequestForm(false);
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
-
   const getRequests = async () => {
     tryCatch(
       async () => {
         if (userDetails?.id) {
           const data = await GetRaisedRequests(userDetails?.id);
-
           if (data.length >= 0) {
             dispatch(requestActions.storeRequest(data));
           }
@@ -61,7 +44,6 @@ export const RequestPage: FC = () => {
 
   const addNewRequestHandler = async (request: any) => {
     const formData = new FormData();
-
     formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", request.subject || "");
@@ -71,19 +53,19 @@ export const RequestPage: FC = () => {
     if (request.attachmentsDoc) {
       for (let i = 0; i < request.attachmentsDoc.length; i++) {
         const item: any = request.attachmentsDoc[i];
-
         formData.append("attachments", item?.file);
       }
     }
     for (let i = 0; i < request.to.length; i++) {
       const item: any = request.to[i].id;
-
       formData.append("to", item);
     }
 
     tryCatch(
       async () => {
+        dispatch(requestActions.setSubmitting(true))
         const data = await RaiseRequest(formData);
+        dispatch(requestActions.setSubmitting(false))
         if (data?.success) {
           getRequests();
           toast.success(data.message);

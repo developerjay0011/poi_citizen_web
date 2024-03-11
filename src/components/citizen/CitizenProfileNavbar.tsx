@@ -3,8 +3,27 @@ import { ProtectedRoutes } from "@/constants/routes";
 import { CusLink } from "@/utils/CusLink";
 import { FC } from "react";
 
-interface CitizenProfileNavbarProps {}
+interface CitizenProfileNavbarProps { }
 export const CitizenProfileNavbar: FC<CitizenProfileNavbarProps> = () => {
+
+  // .active_profile_link {
+  //   @apply text-orange-500;
+
+  //   &::after {
+  //     @apply border-orange-500;
+  //     content: '';
+  //     position: absolute;
+  //     top: 110%;
+  //     left: 50%;
+  //     transform: translateX(-50%);
+  //     width: 30px;
+  //     height: 30px;
+  //     border-width: 15px;
+  //     border-left-color: transparent;
+  //     border-top-color: transparent;
+  //     border-right-color: transparent;
+  //   }
+  // }
   return (
     <>
       <nav className="flex items-center gap-8 ml-20 max-[1480px]:ml-10 max-[1200px]:ml-5 max-[450px]:gap-4 max-[1100px]:flex-wrap max-[620px]:justify-center">

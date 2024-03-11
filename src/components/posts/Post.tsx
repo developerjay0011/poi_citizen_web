@@ -50,16 +50,16 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
     };
     tryCatch(
       async () => {
-      if (!is_like) {
-        const data = await LikePost(likeBody);
-        toast.success(data.message);
-        Getpost();
-      } else {
-        const data = await UnlikePostorStory(UnlikeBody);
-        toast.success(data.message);
-        Getpost();
-      }
-    })
+        if (!is_like) {
+          const data = await LikePost(likeBody);
+          toast.success(data.message);
+          Getpost();
+        } else {
+          const data = await UnlikePostorStory(UnlikeBody);
+          toast.success(data.message);
+          Getpost();
+        }
+      })
   };
 
 
@@ -84,7 +84,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
           </h4>
           <p className="flex items-center capitalize gap-2 text-sm font-[500]">
             <span>
-              {/* Published on:{" "}{dateConverter(post?.createddate)} */}
+              Published on:{" "}{dateConverter(post?.createddate)}
             </span>
           </p>
         </div>

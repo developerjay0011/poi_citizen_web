@@ -20,7 +20,7 @@ import { AnimatePresence } from "framer-motion";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { CheckCitizenExists, fetchLogin } from "@/redux_store/auth/authAPI";
 import { setCookie } from "cookies-next";
-import { TOKEN_KEY, USER_INFO } from "@/constants/common";
+import { CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import toast from "react-hot-toast";
 
@@ -70,9 +70,9 @@ export const LoginForm: FC<LoginFormProps> = () => {
         dispatch(authActions.logIn(loginData?.data));
         sessionStorage.setItem("user", JSON.stringify(loginData?.data));
         const serializedData = JSON.stringify(loginData?.data);
-        setCookie(USER_INFO, serializedData);
+        setCookie(CITIZEN_USER_INFO, serializedData);
         setCookie("userData", serializedData);
-        setCookie(TOKEN_KEY, loginData?.token);
+        setCookie(CITIZEN_TOKEN_KEY, loginData?.token);
         toast.success(loginData.message);
       } else {
         setErr({ errTxt: loginData?.message, isErr: true });

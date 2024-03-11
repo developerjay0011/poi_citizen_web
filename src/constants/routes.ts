@@ -60,6 +60,7 @@ export const APIRoutes = {
   VoteAdd: `${API_Prefix}/Citizen/AddVoteOfPOll`,
   getLeaderList: `${API_Prefix}/Leader/GetLeaderList`,
   GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
+  ThumbsDown: `${API_Prefix}/Leader/ThumbsDown`,
 
   TrendingLeaderList: `${API_Prefix}/Leader/TrendingLeaderList`,
   FollowLeader: `${API_Prefix}/Citizen/FollowLeaderByCitizen`,

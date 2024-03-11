@@ -26,44 +26,25 @@ export const SuggestionPage: FC = () => {
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
   const [selectedValue, setSelectedValue] = useState<any>();
   const [isEdit, setIsEdit] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    token: "",
-    id: "",
-    displayPic: "",
-  });
+  const { userDetails } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-
-      setUserDetails(storedUser);
-    } else {
-      console.log("User data not found in session storage");
-    }
-  }, []);
+  const searchFilteredSuggestions = suggestions.filter((el) => searchString ? el.subject.toLowerCase().includes(searchString) : el);
 
   const getSuggestion = async () => {
     tryCatch(
       async () => {
-      if (userDetails?.id) {
-        const data = await GetSuggestions(userDetails?.id);
-
-        if (data.length >= 0) {
-          dispatch(suggestionActions.storeSuggestions(data));
+        if (userDetails?.id) {
+          const data = await GetSuggestions(userDetails?.id);
+          if (data.length >= 0) {
+            dispatch(suggestionActions.storeSuggestions(data));
+          }
         }
-      }
-    })
+      })
   };
-  useEffect(() => {
-    getSuggestion()
-  }, [dispatch, userDetails]) 
   const addNewSuggestionHandler = async (suggestion: any) => {
-
     const formData = new FormData();
     formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
@@ -74,47 +55,39 @@ export const SuggestionPage: FC = () => {
     if (suggestion?.attachmentsDoc) {
       for (let i = 0; i < suggestion.attachmentsDoc.length; i++) {
         const item: any = suggestion.attachmentsDoc[i];
-
         formData.append("attachments", item?.file);
       }
     }
     for (let i = 0; i < suggestion.to.length; i++) {
       const item: any = suggestion.to[i].id;
-
       formData.append("to", item);
     }
-
     tryCatch(
       async () => {
-      const data = await SaveSuggestion(formData);
-      if (data?.success) {
-        getSuggestion();
-        toast.success(data.message);
-      }
-    })
+        dispatch(suggestionActions.setSubmitting(true))
+        const data = await SaveSuggestion(formData);
+        dispatch(suggestionActions.setSubmitting(false))
+        if (data?.success) {
+          getSuggestion();
+          toast.success(data.message);
+        }
+      })
     closeForm();
-
-    // dispatch(addNewSuggestions(suggestion));
   };
-
-  // useEffect(() => {
-  //   dispatch(fetchAllSuggestions());
-  // }, [dispatch]);
-
-  const searchFilteredSuggestions = suggestions.filter((el) =>
-    searchString ? el.subject.toLowerCase().includes(searchString) : el
-  );
-
   const handleDetele = async (id: string) => {
     tryCatch(
       async () => {
-      const data = await DeleteSuggestion(id);
-      if (data?.success) {
-        getSuggestion();
-        toast.success(data.message);
-      }
-    })
+        const data = await DeleteSuggestion(id);
+        if (data?.success) {
+          getSuggestion();
+          toast.success(data.message);
+        }
+      })
   };
+  useEffect(() => {
+    getSuggestion()
+  }, [dispatch, userDetails?.id])
+
 
   return (
     <>

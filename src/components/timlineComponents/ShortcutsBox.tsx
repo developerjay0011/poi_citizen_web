@@ -3,7 +3,7 @@ import { CommonBox } from "@/utils/CommonBox";
 import { FC, useEffect, useState } from "react";
 import { FaBell, FaClipboard, FaPowerOff, FaUser } from "react-icons/fa";
 import { ShortcutBtn } from "@/utils/ShortcutBtn";
-import { cusDispatch } from "@/redux_store/cusHooks";
+import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { HiLightBulb } from "react-icons/hi";
 import { FaHandshakeAngle } from "react-icons/fa6";
 import { BiSolidMessageSquareError } from "react-icons/bi";
@@ -60,30 +60,13 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
   const router = useRouter();
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [showCloseConfirmBox, setShowCloseConfirmBox] = useState(false);
-
-  const [userData, setUserData] = useState<UserDetail>({
-    token: "",
-    id: "",
-  });
-
-  useEffect(() => {
-    var storedUserString = sessionStorage.getItem("user");
-    if (storedUserString !== null) {
-      var storedUser = JSON.parse(storedUserString);
-      setUserData(storedUser);
-    } else {
-    }
-  }, []);
-
+  const { userDetails } = cusSelector((st) => st.auth);
   const onClose = () => {
     setShowConfirmBox(false);
     setShowCloseConfirmBox(false);
   };
   const deactiveAccountHandler = async () => {
-    const citizenid = userData?.id;
-
-    // const data = await fetchDeactiveAccount(citizenid, token);
-    const data = await DeactiveAccount(citizenid);
+    const data = await DeactiveAccount(userDetails?.id);
     if (data?.success) {
       setShowConfirmBox(false);
       dispatch(authActions.logOut())
@@ -91,8 +74,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     }
   };
   const CloseAccountHandler = async () => {
-    const citizenid = userData?.id;
-    const data = await CloseAccount(citizenid);
+    const data = await CloseAccount(userDetails?.id);
     if (data?.success) {
       setShowCloseConfirmBox(false);
       dispatch(authActions.logOut())

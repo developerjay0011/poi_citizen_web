@@ -25,10 +25,7 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
     })();
   }, [dispatch, userDetails?.id]);
 
-  const onChangeHandler = async (
-    e: ChangeEvent<HTMLInputElement>,
-    fieldName: string
-  ) => {
+  const onChangeHandler = async (e: ChangeEvent<HTMLInputElement>, fieldName: string) => {
     const files = e.target.files as FileList;
     if (files.length > 0) {
       const formData = new FormData();

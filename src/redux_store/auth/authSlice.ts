@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { deleteCookie, getCookie } from "cookies-next";
-import { TOKEN_KEY, USER_INFO } from "@/constants/common";
+import { CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
 
 interface AuthState {
   userDetails: any;
   trendingleader: [];
   birthdaylist: any[],
-  leaderData:any
+  leaderData: any
 }
-let userDetails: any = getCookie(USER_INFO);
+let userDetails: any = getCookie(CITIZEN_USER_INFO);
 userDetails = userDetails && JSON.parse(userDetails);
 const init: AuthState = {
   userDetails: {
@@ -16,7 +16,7 @@ const init: AuthState = {
   },
   trendingleader: [],
   birthdaylist: [],
-  leaderData:[]
+  leaderData: []
 };
 
 export const authSlice = createSlice({
@@ -40,8 +40,8 @@ export const authSlice = createSlice({
     },
     logOut(state) {
       state.userDetails = null;
-      deleteCookie(TOKEN_KEY);
-      deleteCookie(USER_INFO);
+      deleteCookie(CITIZEN_TOKEN_KEY);
+      deleteCookie(CITIZEN_USER_INFO);
     },
   },
 });

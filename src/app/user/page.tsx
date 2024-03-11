@@ -27,7 +27,7 @@ const CitizenHomePage = () => {
             const RaisedRequests = await GetRaisedRequests(userDetails?.id);
             if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
             const Suggestions = await GetSuggestions(userDetails?.id);
-            if (Suggestions.length > 0) { dispatch(suggestionActions.setSubmitting(Suggestions)); }
+            if (Suggestions.length > 0) { dispatch(suggestionActions.storeSuggestions(Suggestions)); }
           }
         })
     })();

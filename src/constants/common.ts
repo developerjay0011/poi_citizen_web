@@ -1,3 +1,3 @@
-export const TOKEN_KEY = "token";
-export const USER_INFO = "USER_INFO";
-export const DEFAULT_CONTENT_TYPE = 'application/json';
+export const CITIZEN_TOKEN_KEY = "CITIZEN_TOKEN_KEY";
+export const CITIZEN_USER_INFO = "CITIZEN_USER_INFO";
+export const CITIZEN_DEFAULT_CONTENT_TYPE = 'application/json';
