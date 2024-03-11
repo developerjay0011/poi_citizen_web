@@ -22,11 +22,11 @@ export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }
         height={1000}
         className='rounded-full w-20 aspect-square object-cover object-center bg-rose-100'
       />
-     
+
       <div className='flex flex-col flex-grow'>
         <Link href={`/user/leader/about?id=${data?.leaderid}`} >
           <h3 className='flex flex-col font-semibold text-lg capitalize'>{data?.name}</h3>
-        
+
           {data?.leaderid && <span className='text-[14px] font-normal'>{data?.designation}</span>}
         </Link>
         {data?.leaderid &&
@@ -36,7 +36,7 @@ export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }
               type='button'
               onClick={() => { handleUnfollow(data?.leaderid) }}
               className='border border-orange-500 text-orange-500 font-medium text-sm bg-orange-50 px-2 py-[2px] rounded hover:bg-orange-500 hover:text-orange-50 transition-all'>
-              un Follow
+              Unfollow
             </button>
           </p>
         }

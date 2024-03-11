@@ -157,6 +157,7 @@ export const SuggestionPage: FC = () => {
             type="suggestion"
             submitting={submitting}
             editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
+            updatedata={() => getSuggestion()}
             deleteHandler={(id: string) => handleDetele(id)}
           />
         </section>

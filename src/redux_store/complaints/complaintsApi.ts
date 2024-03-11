@@ -47,7 +47,7 @@ export const DeleteComplaint = async (citizenid: string) => {
 export const ThumbsDown = async (body: any) => {
   return tryCatch(
     async () => {
-      const res = await Axios.post(APIRoutes.DeleteComplaint, body);
+      const res = await Axios.post(APIRoutes.ThumbsDown, body);
       return res.data;
     }
   );

@@ -8,6 +8,7 @@ interface RequestsAndComplaintsProps {
   deleteHandler: (id: string) => void;
   submitting: boolean;
   editHandler: (id: string) => void;
+  updatedata: () => void;
 }
 
 export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
@@ -15,7 +16,8 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
   type,
   deleteHandler,
   submitting,
-  editHandler
+  editHandler,
+  updatedata
 }) => {
   const requestComplaintJsx =
     requestOrComplaints.length > 0 ? (
@@ -34,6 +36,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
           attachments={el.attachments}
           signature={el.signature}
           el={el}
+          updatedata={updatedata}
         />
       ))
     ) : (

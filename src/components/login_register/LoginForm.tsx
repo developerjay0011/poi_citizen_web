@@ -66,13 +66,13 @@ export const LoginForm: FC<LoginFormProps> = () => {
     try {
       const loginData = await fetchLogin(resBody);
       if (loginData?.data) {
-        router.push(ProtectedRoutes.user);
-        dispatch(authActions.logIn(loginData?.data));
+        await dispatch(authActions.logIn(loginData?.data));
         sessionStorage.setItem("user", JSON.stringify(loginData?.data));
         const serializedData = JSON.stringify(loginData?.data);
-        setCookie(CITIZEN_USER_INFO, serializedData);
-        setCookie("userData", serializedData);
-        setCookie(CITIZEN_TOKEN_KEY, loginData?.token);
+        await setCookie(CITIZEN_USER_INFO, serializedData);
+        await setCookie("userData", serializedData);
+        await setCookie(CITIZEN_TOKEN_KEY, loginData?.token);
+        router.push(ProtectedRoutes.user);
         toast.success(loginData.message);
       } else {
         setErr({ errTxt: loginData?.message, isErr: true });

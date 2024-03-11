@@ -1,68 +1,29 @@
 'use client'
-import Image from 'next/image'
 import { FC, useEffect, useState } from 'react'
 import Sparkles from '@/assets/sparkles.png'
-import Trial from '@/assets/lips.png'
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
-import { GenerateId, calCurrentDate } from '@/utils/utility'
-import { cusDispatch, cusSelector } from '@/redux_store/cusHooks'
+import { calCurrentDate } from '@/utils/utility'
+import { cusSelector } from '@/redux_store/cusHooks'
 import { MdVerified } from 'react-icons/md'
-
-import { tryCatch } from '@/config/try-catch'
-import { authActions } from '@/redux_store/auth/authSlice'
-import { GetBirthdayList } from '@/redux_store/auth/authAPI'
-import { getImageUrl } from '@/config/get-image-url'
 import CustomImage from '@/utils/CustomImage'
-import moment from 'moment'
+import { getImageUrl } from '@/config/get-image-url'
 
-const birthdays = [
-  {
-    id: GenerateId(),
-    dob: '1999-08-05',
-    name: 'gabriel',
-    img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-    sendGreetings: false,
-  },
-  {
-    id: GenerateId(),
-    dob: '2003-07-20',
-    name: 'penelope',
-    img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1976&q=80',
-    sendGreetings: false,
-  },
-  {
-    id: GenerateId(),
-    dob: '2000-11-05',
-    name: 'gaurav',
-    img: 'https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-    sendGreetings: false,
-  },
-  {
-    id: GenerateId(),
-    dob: '2001-10-20',
-    name: 'tisha',
-    img: 'https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2076&q=80',
-    sendGreetings: false,
-  },
-]
+
 
 const prefixArr = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
 
 interface BirthdayNotificationsProps { }
 export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
-  const { userDetails, birthdaylist } = cusSelector((st) => st.auth)
+  const { birthdaylist } = cusSelector((state) => state.auth);
   const [index, setIndex] = useState(0)
-  const birthday = birthdays[index]
-  const dispatch = cusDispatch();
+  const birthday = birthdaylist[index]
   const [_, setGreetingsSent] = useState(birthday.sendGreetings)
 
   const age = calCurrentDate(birthday.dob)
   const agePrefix = prefixArr[+(age.toString().at(-1) as string)]
 
   const date = new Date(birthday.dob).getDate()
-  const month = new Date(birthday.dob).toLocaleDateString('en-IN', {
-    month: 'long',
-  })
+  const month = new Date(birthday.dob).toLocaleDateString('en-IN', { month: 'long', })
 
   const sendGreetingHanlder = () => {
     birthday.sendGreetings = !birthday.sendGreetings
@@ -72,70 +33,59 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
   // TEMP
   useEffect(() => {
     setGreetingsSent(birthday.sendGreetings)
-
   }, [birthday])
-  const GetBirthday = async () => {
-    tryCatch(
-      async () => {
-        if (userDetails?.id) {
-          const data = await GetBirthdayList();
-          if (data.length >= 0) { dispatch(authActions.setBirthdayList(data)); }
-        }
-      })
-  };
-  useEffect(() => {
-    GetBirthday()
-  }, [dispatch, userDetails])
 
-
-  return (
+  return birthdaylist?.length > 0 && (
     <section className='border rounded-md bg-white text-sky-950 overflow-hidden'>
       <div className='flex gap-3 bg-violet-500 px-4 py-2 items-center text-violet-50'>
         <CustomImage
-          src={getImageUrl(birthdaylist[index]?.image)}
-          alt="trending user"
+          src={getImageUrl(birthday.image)}
+          alt='display pic'
           width={1000}
           height={1000}
-          className="rounded-full w-12 aspect-square object-cover object-center"
+          className='w-[42px] aspect-square rounded-full object-cover object-center'
         />
 
-        {/* <strong>
-          {calculateAge(new Date(birthdaylist[index]?.dob))}
+        <strong>
+          {age}
           {agePrefix} birthday
-        </strong> */}
+        </strong>
 
         <p className='flex flex-col ml-auto items-center'>
-          <span className='italic text-xl'>{moment(birthdaylist[index]?.dob).format('DD')}</span>
-          <span className='text-base font-medium -mt-1'>{moment(birthdaylist[index]?.dob).format('MMMM')}</span>
+          <span className='italic text-xl'>{date}</span>
+          <span className='text-base font-medium -mt-1'>{month}</span>
         </p>
       </div>
 
       <ul className='py-4 px-10 relative'>
-
+        <CustomImage
+          src={Sparkles}
+          alt='background'
+          className='absolute top-0 left-0 object-cover object-center w-full h-full'
+        />
 
         {/* Toggle btns */}
         <button
           type='button'
           onClick={() =>
-            setIndex((lst) => (lst > 0 ? lst - 1 : birthdays.length - 1))
+            setIndex((lst) => (lst > 0 ? lst - 1 : birthdaylist.length - 1))
           }
-          className='flex items-center justify-center w-10 aspect-square text-orange-500 bg-orange-100 rounded-full absolute top-1/2 left-2 z-20 translate-y-[-50%] hover:bg-orange-500 hover:text-orange-50 transition-all'>
+          className='flex items-center justify-center w-10 aspect-square text-orange-500 bg-orange-100 rounded-full absolute top-1/2 left-2  translate-y-[-50%] hover:bg-orange-500 hover:text-orange-50 transition-all'>
           <BiSolidLeftArrow />
         </button>
         <button
           type='button'
           onClick={() =>
-            setIndex((lst) => (lst < birthdays.length - 1 ? lst + 1 : 0))
+            setIndex((lst) => (lst < birthdaylist.length - 1 ? lst + 1 : 0))
           }
-          className='flex items-center justify-center w-10 aspect-square text-orange-500 bg-orange-100 rounded-full absolute top-1/2 right-2 z-20 translate-y-[-50%] hover:bg-orange-500 hover:text-orange-50 transition-all'>
+          className='flex items-center justify-center w-10 aspect-square text-orange-500 bg-orange-100 rounded-full absolute top-1/2 right-2  translate-y-[-50%] hover:bg-orange-500 hover:text-orange-50 transition-all'>
           <BiSolidRightArrow />
         </button>
         <li
-          className={`flex flex-col items-center transition-all relative z-10`}>
+          className={`flex flex-col items-center transition-all relative `}>
           {/*  */}
 
-          <Image
-            priority={true}
+          <CustomImage
             src={'https://wpkixx.com/html/pitnik/images/resources/dob-cake.gif'}
             alt='birthday gif'
             unoptimized={true}
@@ -144,9 +94,9 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
             className='w-[85%] aspect-square object-contain'
           />
 
-          <h2 className='text-center text-xl text-slate-500 pb-4 w-max z-10'>
+          <h2 className='text-center text-xl text-slate-500 w-max  pb-3 '>
             <strong className='text-orange-500 capitalize'>
-              {birthdaylist[index]?.name}
+              {birthday.name}
             </strong>{' '}
             Birthday
           </h2>

@@ -15,9 +15,10 @@ interface TicketTimeLineProps {
   ticketdata: any
   type: any
   el: any
+  updatedata: () => void
 }
 
-export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileStone, timeline, ticketdata, type, el }) => {
+export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileStone, timeline, ticketdata, type, el, updatedata }) => {
   return (
     <>
       <m.div
@@ -59,23 +60,29 @@ export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileSton
               ))}
               {timeline?.length == 0 && <h3 className="col-span-full text-center py-5 capitalize text-2xl">Status Found!!</h3>}
 
-              {/* {timeline?.length > 0 && */}
-              <button
-                className="py-2 px-5 self-end rounded-full capitalize border border-orange-500 text-orange-50 bg-orange-500 
-                hover:bg-orange-100 hover:text-orange-500 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] disabled:border-none"
-                onClick={() => {
-                  const data: any = ThumbsDown({
-                    "id": ticketdata?.leaderid,
-                    "ticketid": el?.id,
-                    "category": type,
-                    "leaderid": ticketdata?.leaderid
-                  })
-                  toast.success(data.message);
-                }}
-              >
-                <FaThumbsDown />
-              </button>
-              {/* } */}
+              {timeline?.length > 0 &&
+                <button
+                  disabled={ticketdata?.isthumbsdown}
+                  className="py-2 px-5 self-end rounded-full capitalize border border-orange-500 text-orange-50 bg-orange-500 hover:bg-orange-100 hover:text-orange-500 
+                  disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] disabled:border-none"
+                  onClick={async () => {
+                    const data: any = await ThumbsDown({
+                      "ticketid": el?.id,
+                      "category": type,
+                      "leaderid": ticketdata?.leaderid
+                    })
+                    if (data?.success) {
+                      toast.success(data?.message)
+                      updatedata()
+                      onClose()
+                    } else {
+                      toast.error(data?.message)
+                    }
+                  }}
+                >
+                  <FaThumbsDown />
+                </button>
+              }
             </ul>
 
           </m.div>

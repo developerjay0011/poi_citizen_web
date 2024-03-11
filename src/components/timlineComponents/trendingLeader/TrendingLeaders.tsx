@@ -5,6 +5,12 @@ import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { fetchCitizenFollowingList } from "@/redux_store/follow/followAPI";
 import { followActions } from "@/redux_store/follow/followSlice";
 import { authActions } from "@/redux_store/auth/authSlice";
+import { useRouter } from "next/router";
+
+interface TrendingLeaderProps {
+  router: any
+}
+
 export const TrendingLeaders: FC = () => {
   const { userDetails, trendingleader } = cusSelector((st) => st.auth);
   const { following } = cusSelector((st) => st.follow);
@@ -38,7 +44,7 @@ export const TrendingLeaders: FC = () => {
         <div className="overflow-y-scroll flex-1 main_scrollbar">
           <ul className="flex flex-col">
             {trendingleader?.length > 0 &&
-              trendingleader.map((el: any, index) => {
+              trendingleader.map((el: any, index: any) => {
                 return (
                   <TrendingLeader
                     key={index}

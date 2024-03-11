@@ -163,6 +163,7 @@ export const ComplaintPage: FC = () => {
             type="complaint"
             submitting={submitting}
             deleteHandler={(id: string) => handleDelete(id)}
+            updatedata={() => getComplaint()}
             editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
           />
         </section>

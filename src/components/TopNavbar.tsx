@@ -28,12 +28,16 @@ import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";
 import { GetPostsForCitizen, GetStoriesForCitizen } from "@/redux_store/post/postApi";
 import { postActions } from "@/redux_store/post/postSlice";
 import { followActions } from "@/redux_store/follow/followSlice";
-import { fetchCitizenFollowingList } from "@/redux_store/follow/followAPI";
+import { fetchCitizenFollowingList, fetchFollowLeader, fetchUnFollowLeader } from "@/redux_store/follow/followAPI";
+import { tryCatch } from "@/config/try-catch";
+import toast from "react-hot-toast";
+import { FaUserTimes } from "react-icons/fa";
 
 interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
   const router = useRouter();
-  const { userDetails } = cusSelector((st) => st.auth);
+  const { userDetails, trendingleader } = cusSelector((st) => st.auth);
+  const { following } = cusSelector((st) => st.follow);
   const curRoute = usePathname();
   const dispatch = cusDispatch();
   const [showAdminMenu, setShowAdminMenu] = useState(false);
@@ -88,7 +92,20 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   let heading = curRoute?.split("/").at(-1)?.includes("-")
     ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
     : curRoute?.split("/").at(-1);
-
+  const searchFilterFunction = (text: string) => {
+    if (text) {
+      const newData = trendingleader?.filter(
+        function (item: any) {
+          const itemData = item?.["name"] ? item?.["name"].toUpperCase() : ''.toUpperCase();
+          const textData = text.toUpperCase();
+          return itemData.indexOf(textData) > -1;
+        }
+      )
+      return newData
+    } else {
+      return trendingleader
+    };
+  }
   heading = heading === "user" ? "home" : heading;
 
   return (
@@ -116,14 +133,21 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
           {/* Search box */}
           {searchUserStr.length > 0 && (
             <ul className="absolute rounded-md shadow-md border bg-white overflow-hidden top-[110%] left-0 w-full z-[100]">
-              <BriefUserInfo
-                designation="prime minister"
-                userPic={MODI}
-                name="narendar modi"
-              />
-              <p className="text-xl capitalize text-center text-sky-950 font-semibold py-3">
-                no politician found❗
-              </p>
+              {searchFilterFunction(searchUserStr)?.map((item: any) =>
+                <BriefUserInfo
+                  key={item?.id}
+                  designation={item?.username?.political_party}
+                  userPic={getImageUrl(item?.image)}
+                  name={item?.name}
+                  id={item?.id}
+                  isFollowing={following?.find((i: any) => i.leaderid == item.id) ? true : false}
+                />
+              )}
+              {searchFilterFunction(searchUserStr)?.length == 0 &&
+                <p style={{ display: searchFilterFunction(searchUserStr)?.length == 0 ? "flex" : "none" }} className="text-xl capitalize text-center text-sky-950 font-semibold py-3">
+                  no politician found❗
+                </p>
+              }
             </ul>
           )}
         </label>
@@ -201,16 +225,23 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
             priority={true}
           />
 
-          <button>
-            <CustomImage
-              src={getImageUrl(userDetails?.image)}
-              alt="user pic"
-              className="w-14 aspect-square object-cover object-center rounded-full"
-              id="userDisplayPic"
-              width={100}
-              height={100}
-            />
-          </button>
+
+          <section className="flex items-center  relative">
+            <button onClick={() => { setShowAdminMenu((lst) => !lst) }} id="userDisplayPic">
+              <CustomImage
+                src={getImageUrl(userDetails?.image)}
+                alt="user pic"
+                className="w-14 aspect-square object-cover object-center rounded-full"
+                width={100}
+                height={100}
+              />
+            </button>
+            {showAdminMenu && (
+              <div className="absolute top-[120%] right-0 w-max z-50">
+                <AdminControls />
+              </div>
+            )}
+          </section>
         </div>
         <label htmlFor="searchBox" className="relative w-full">
           <input
@@ -220,13 +251,23 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
             placeholder="search politicians"
           />
           <FaSearch className="absolute top-1/2 right-5 translate-y-[-50%] text-opacity-70 text-sky-50 text-xl" />
-
-          {/* Search box */}
           {searchUserStr.length > 0 && (
             <ul className="absolute rounded-md shadow-md border bg-white overflow-hidden top-[110%] left-0 w-full z-[100]">
-              <p className="text-xl capitalize text-center text-sky-950 font-semibold py-3">
-                no politician found❗
-              </p>
+              {searchFilterFunction(searchUserStr)?.map((item: any) =>
+                <BriefUserInfo
+                  key={item?.id}
+                  designation={item?.username?.political_party}
+                  userPic={getImageUrl(item?.image)}
+                  name={item?.name}
+                  id={item?.id}
+                  isFollowing={following?.find((i: any) => i.leaderid == item.id) ? true : false}
+                />
+              )}
+              {searchFilterFunction(searchUserStr)?.length == 0 &&
+                <p style={{ display: searchFilterFunction(searchUserStr)?.length == 0 ? "flex" : "none" }} className="text-xl capitalize text-center text-sky-950 font-semibold py-3">
+                  no politician found❗
+                </p>
+              }
             </ul>
           )}
         </label>
@@ -241,30 +282,47 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   );
 };
 
-const BriefUserInfo: FC<{
-  name: string;
-  userPic: string | StaticImageData;
-  designation: string;
-}> = ({ designation, name, userPic }) => {
+const BriefUserInfo: FC<{ name: string; userPic: string | StaticImageData; designation: string; id: string; isFollowing: boolean }> = ({ designation, name, userPic, id, isFollowing }) => {
+  const { userDetails } = cusSelector((state) => state.auth);
+  const dispatch = cusDispatch();
+  const handleClick = async (id: string, isFollowing: boolean) => {
+    const postBody = { senderid: userDetails?.id, receiverid: id, };
+    tryCatch(
+      async () => {
+        const response = await (!isFollowing ? fetchFollowLeader(postBody) : fetchUnFollowLeader(postBody));
+        if (response?.success) {
+          const res = await fetchCitizenFollowingList(userDetails?.id as string)
+          dispatch(followActions.Following(res))
+          toast.success(response.message)
+        } else {
+          toast.error(response.message)
+        }
+
+      })
+  };
+
+
+
+
   return (
     <>
       <Link href={"#"}>
         <li className="flex items-center p-4 last_noti gap-2 hover:bg-gray-100">
-          <Image
+          <CustomImage
             src={userPic}
-            priority={true}
             alt="user dp"
             width={1000}
             height={1000}
-            className="w-16 aspect-square rounded-full object-center object-cover"
+            className="w-12 aspect-square rounded-full object-center object-cover"
           />
           <p className="text-lg font-semibold text-sky-950 flex flex-col capitalize">
             {name}
             <span className="font-medium text-[14px]">{designation}</span>
           </p>
-
-          <button type="button" className="ml-auto">
-            <RiUserAddFill className="text-sky-950 text-2xl hover:text-orange-500" />
+          <button onClick={() => { handleClick(id, isFollowing) }} type="button" className="ml-auto">
+            {!isFollowing ? <RiUserAddFill className="text-sky-950 text-2xl hover:text-orange-500" /> :
+              <FaUserTimes className="text-sky-950 text-2xl hover:text-orange-500" />
+            }
           </button>
         </li>
       </Link>

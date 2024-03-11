@@ -4,7 +4,7 @@ import { CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
 
 interface AuthState {
   userDetails: any;
-  trendingleader: [];
+  trendingleader: any;
   birthdaylist: any[],
   leaderData: any
 }
@@ -29,7 +29,7 @@ export const authSlice = createSlice({
         ...action.payload,
       };
     },
-    Settrendingleader(state, action: PayloadAction<any | null>) {
+    Settrendingleader(state, action) {
       state.trendingleader = action.payload;
     },
     setBirthdayList(state, action: PayloadAction<any | null>) {

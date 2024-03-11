@@ -27,6 +27,7 @@ interface ComplaintRequestValProps {
   signature: string;
   attachments: Attachments[];
   el: any
+  updatedata: () => void;
 }
 
 const TOClasses = [
@@ -49,14 +50,14 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   signature,
   attachments,
   requestComplaintEditFn,
-  el
+  el,
+  updatedata
 }) => {
   const descRef = useRef<HTMLParagraphElement>(null);
   const [showStatus, setShowStatus] = useState(false)
   const [ticketdata, setticketdata] = useState<any>()
   const [timeline, setTimeline] = useState<any>([])
   const [showConfirmBox, setShowConfirmBox] = useState(false);
-  const [showToDetails, setShowToDetails] = useState(false);
   const [showExpandBtn, setShowExpandBtn] = useState(false);
   const [showFullDesc, setShowFullDesc] = useState(false);
   useEffect(() => {
@@ -95,7 +96,7 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
 
           <section className="flex flex-col">
             <div className="flex relative">
-              {to.slice(0, 5).map((el, i) => (
+              {to.map((el, i) => (
                 <div
                   key={i}
                   onClick={() => { setticketdata(el), setShowStatus(true) }}
@@ -115,9 +116,6 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
                 </div>
               ))}
             </div>
-            {to.length > 5 && (
-              <p className="text-[11px] font-medium">+{to.length - 5} more</p>
-            )}
           </section>
         </div>
 
@@ -178,10 +176,11 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
           <TicketTimeLine
             timeline={ticketdata?.status}
             onClose={() => setShowStatus(false)}
-            onAddMileStone={() => { setShowStatus(false) }}
+            onAddMileStone={() => { }}
             ticketdata={ticketdata}
             type={type}
             el={el}
+            updatedata={updatedata}
           />
         )}
       </AnimatePresence>

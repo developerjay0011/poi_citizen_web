@@ -1,30 +1,20 @@
 import { TrendingLeaderBriefDetails } from "@/utils/typesUtils";
-import Image from "next/image";
-import Link from "next/link";
-import { FC, useEffect, useState } from "react";
-import NoImg from "@/assets/No_image_available.png";
+import { FC } from "react";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { getImageUrl } from "@/config/get-image-url";
 import {
   fetchFollowLeader,
   fetchUnFollowLeader,
 } from "@/redux_store/follow/followAPI";
-import toast from "react-hot-toast";
 import CustomImage from "@/utils/CustomImage";
+import Link from "next/link";
 
 interface TrendingLeaderProps extends TrendingLeaderBriefDetails {
   isfollowing: boolean;
+  name: string,
 }
 
-export const TrendingLeader: FC<TrendingLeaderProps> = ({
-  image,
-  designation,
-  username,
-  id,
-  following,
-  unfollow,
-  isfollowing,
-}) => {
+export const TrendingLeader: FC<TrendingLeaderProps> = ({ image, designation, username, id, following, unfollow, isfollowing, name }) => {
   const { userDetails } = cusSelector((st) => st.auth);
   const handleFollower = async (id: string) => {
     const postBody = {
@@ -58,9 +48,9 @@ export const TrendingLeader: FC<TrendingLeaderProps> = ({
         className="rounded-full w-12 aspect-square object-cover object-center"
       />
 
-      <Link href={`user/leader/about?id=${id}`}>
+      <Link href={window.location?.origin + `/user/leader/about?id=${id}`}>
         <div className="flex flex-col">
-          <h3 className="text-[14px] font-semibold capitalize">{username}</h3>
+          <h3 className="text-[14px] font-semibold capitalize">{name}</h3>
           <p className="text-[12px] capitalize">{designation}</p>
         </div>
       </Link>

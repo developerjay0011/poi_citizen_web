@@ -97,7 +97,7 @@ const ConvertCommonpost = (list = []): any => {
     var userdetails = { ...userData, developments: [], post: [], agendas: [], polls: [], }
     userData.posts.forEach((post: any) => {
       combinedData.push({
-        post,
+        post: { ...post, createddate: moment(post?.createddate).format("YYYY-MM-DD hh:mm:ss") },
         type: "post",
         userdetails: userdetails,
       });

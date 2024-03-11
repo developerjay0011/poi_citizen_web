@@ -163,6 +163,7 @@ export const RequestPage: FC = () => {
             type="request"
             submitting={submitting}
             deleteHandler={(id: string) => handleDetele(id)}
+            updatedata={() => getRequests()}
             editHandler={(id: any) => { showForm(), setIsEdit(true), setSelectedValue(id) }}
           />
         </section>

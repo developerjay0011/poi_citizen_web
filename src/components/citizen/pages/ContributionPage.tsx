@@ -120,7 +120,7 @@ export const ContributionPage: FC = () => {
               {contributions.length > 0 &&
                 contributions.map((item: any, index: number) => {
                   return (
-                    <li key={index} className='border rounded-md overflow-hidden w-full bg-white shadow-sm py-3 px-3 flex flex-col'>
+                    <li key={index} className='border rounded-md overflow-hidden w-full bg-gray-50 shadow-sm py-3 px-3 flex flex-col'>
                       {item?.contributor && <p className='capitalize flex items-center gap-3 text-[14px]'>
                         <span className='font-[600]'>Contributor : </span>
                         <span className='text-[13px]'>{item?.contributor}</span>
