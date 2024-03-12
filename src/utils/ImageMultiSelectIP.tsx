@@ -28,8 +28,8 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
     []
   )
 
-  const filteredOptions = options.filter((el) =>
-    filterStr ? el.username.toLowerCase().includes(filterStr) : el
+  const filteredOptions = options.filter((el: any) =>
+    filterStr ? el.name.toLowerCase().includes(filterStr) : el
   )
 
   useEffect(() => {
@@ -61,11 +61,11 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
           className={`flex items-center border border-slate-300 bg-slate-100 py-[.5rem] pr-[.4rem] rounded-md gap-2 cursor-pointer relative ${selectedLeaders.length > 0 ? 'pl-3' : 'pl-4'
             }`}>
           <div className='flex flex-wrap items-center gap-1 flex-1'>
-            {selectedLeaders.map((el) => (
+            {selectedLeaders.map((el: any) => (
               <span
                 key={el.id}
                 className='flex capitalize pl-3 pr-1 w-max bg-white items-center gap-1 border border-slate-300 rounded text-[14px]'>
-                {el.username}
+                {el.name}
                 <BiX
                   className='text-lg cursor-pointer'
                   onClick={() =>
@@ -109,7 +109,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
             {showOptions && (
               <>
                 {filteredOptions.length > 0 ? (
-                  filteredOptions.map((el) => (
+                  filteredOptions.map((el: any) => (
                     <li
                       key={el.id}
                       onClick={() => {
@@ -137,7 +137,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                         className="rounded-full w-12 aspect-square object-cover object-center"
                       />
                       <div className='flex flex-col text-sm'>
-                        <h6 className='font-medium capitalize'>{el.username}</h6>
+                        <h6 className='font-medium capitalize'>{el.name}</h6>
                         <p className='text-gray-500 capitalize text-align-left'>
                           {el.designation}
                         </p>

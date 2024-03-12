@@ -190,8 +190,8 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
                     description
                     {<strong className="text-rose-500">*</strong>}
                   </span>
-                  <input
-                    type="text"
+                  <textarea
+                    rows={5}
                     {...register("description", {
                       // required: 'Description is required',
                     })}

@@ -337,7 +337,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
                     <option value="">select leader</option>
                     {leaderlist.map((el: any) => (
                       <option value={el.id} key={el.id}>
-                        {el.username}
+                        {el.name}
                       </option>
                     ))}
 
