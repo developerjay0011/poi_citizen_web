@@ -46,6 +46,8 @@ export const RequestPage: FC = () => {
     const formData = new FormData();
     formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
+    formData.append("category", request?.category_name || "");
+    formData.append("categoryid", request?.category || "");
     formData.append("subject", request.subject || "");
     formData.append("description", request?.description || "");
     formData.append("deletedDocs", "");

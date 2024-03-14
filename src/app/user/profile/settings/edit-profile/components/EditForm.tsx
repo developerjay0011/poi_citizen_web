@@ -1,9 +1,10 @@
 "use client";
 import { UserDetails } from "@/utils/typesUtils";
-import { FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
+
 import { useForm } from "react-hook-form";
 import { Input } from "./EditInput";
-import { BLOOD_GROUPS, COUNTRIES } from "@/utils/utility";
+import { BLOOD_GROUPS, COUNTRIES, convertFileToBase64 } from "@/utils/utility";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import moment from "moment";
@@ -14,6 +15,11 @@ import { RootState } from "@/redux_store";
 import { ProtectedRoutes } from "@/constants/routes";
 import { EditCitizenProfile, getProfile } from "@/redux_store/auth/authAPI";
 import { tryCatch } from "@/config/try-catch";
+import { ErrorMessage } from "@hookform/error-message";
+import { FaSignature } from "react-icons/fa";
+import { BsX } from "react-icons/bs";
+import { getImageUrl } from "@/config/get-image-url";
+import Image, { StaticImageData } from "next/image";
 interface EditFormProps { }
 
 const genders = ["male", "female", "others"];
@@ -32,30 +38,44 @@ interface UserDetail {
 }
 
 const EditForm: FC<EditFormProps> = () => {
-  const { userDetails } = cusSelector((st) => st.auth);
+  const { userDetails, dropdownOptions } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
-  const { register, formState: { errors }, handleSubmit, setValue, } = useForm<UserDetails>({ mode: "onTouched" });
-
+  const [signature, setSignature] = useState("");
+  const [signatureDoc, setSignatureDoc] = useState("");
+  const { register, formState: { errors }, handleSubmit, setValue,watch } = useForm<UserDetails>({ mode: "onTouched" });
+  const state_id = watch('stateid')
   const formSubmitHandler = async (data: UserDetails) => {
-    const postBody = {
-      citizenid: userDetails?.id,
-      name: data?.username,
-      email: data?.email,
-      mobile: data?.mobile,
-      image: userDetails?.image,
-      gender: data?.gender,
-      dob: data?.dob,
-      blood_group: data?.blood_group,
-      higher_education: data?.higher_education,
-      country: data?.country,
-      fb_link: data?.fb_link || "",
-      insta_link: data?.insta_link || "",
-      twitter_link: data?.twitter_link || "",
-      about_me: data?.about_me,
-    };
+    const formData = new FormData();
+    formData.append("citizenid", userDetails?.id || "");
+    formData.append("name", data?.username || "");
+    formData.append("email", data?.email || "");
+    formData.append("mobile", userDetails?.id || "");
+    formData.append("image", userDetails?.image || "");
+    formData.append("gender", data?.gender || "");
+    formData.append("dob", data?.dob || "");
+    formData.append("blood_group", data?.blood_group || "");
+    formData.append("higher_education", data?.higher_education || "");
+    formData.append("country", data?.country || "");
+    formData.append("fb_link", data?.fb_link || "");
+    formData.append("insta_link", data?.insta_link || "");
+    formData.append("twitter_link", data?.twitter_link || "");
+    formData.append("about_me", data?.about_me || "");
+    formData.append("stateid", data?.stateid || "");
+    formData.append("state_name", dropdownOptions?.states?.find((el) => el.id === data?.stateid)?.state || "");
+
+    formData.append("address", data?.address || "");
+    formData.append("pincode", data?.pincode || "");
+    formData.append("parliamentaryid", data?.parliamentaryid || "");
+    formData.append("assemblyid", data?.assemblyid || "");
+    formData.append("assembly_name", dropdownOptions?.assemblies?.find((el) => el.id === data?.assemblyid)?.assembly_name || "");
+    formData.append("parliamentary_name", dropdownOptions?.parliamentries?.find((el) => el.id === data?.parliamentaryid)?.parliamentary_name || "");
+    if (signatureDoc) {
+      formData.append("signature", signatureDoc);
+    }
+
     tryCatch(
       async () => {
-        const editData = await EditCitizenProfile(postBody);
+        const editData = await EditCitizenProfile(formData);
         if (editData?.success) {
           toast.success(editData?.message);
           const data = await getProfile(userDetails?.id);
@@ -78,8 +98,16 @@ const EditForm: FC<EditFormProps> = () => {
     setValue("insta_link", userDetails?.insta_link || "");
     setValue("twitter_link", userDetails?.twitter_link || "");
     setValue("about_me", userDetails?.about_me || "");
-  }, [userDetails?.id]);
+    setValue("address", userDetails?.address || "");
+    setValue("pincode", userDetails?.pincode || "");
+    setValue("stateid", userDetails?.stateid || "");
+    setSignature(userDetails?.signature)
 
+  }, [userDetails?.id]);
+  useEffect(() => {
+    setValue("parliamentaryid", userDetails?.parliamentaryid || "");
+    setValue("assemblyid", userDetails?.assemblyid || "");
+  }, [state_id]);
   return (
     <form
       onSubmit={handleSubmit(formSubmitHandler)}
@@ -185,6 +213,81 @@ const EditForm: FC<EditFormProps> = () => {
           title="Phone No"
           required
         />
+        <label
+          htmlFor={`address`}
+          className='col-span-full flex flex-col gap-2'>
+          <span>
+             Address <strong className='text-red-500'>*</strong>
+          </span>
+          <textarea
+            {...register(`address`, {
+              required: 'Address is required',
+            })}
+            placeholder=''
+            id={"address"}
+            className={`resize-none w-full h-full text-base py-2 px-3 rounded-md outline-none border bg-gray-100 focus:border-gray-300 focus:bg-gray-100 border-gray-200 text-gray-700 bg-gray-50'`}
+            rows={4}></textarea>
+        </label>
+
+        <Input
+          errors={errors}
+          register={register}
+          title='State'
+          id='stateid'
+          type='select'
+          required
+          validations={{
+            required: 'State is required',
+          }}
+          selectField={{
+            title: 'Select State',
+            options: dropdownOptions?.states?.map((el) => ({
+              id: el.id,
+              value: el.state,
+            })),
+          }}
+        />
+        <Input
+          errors={errors}
+          register={register}
+          title='Assembly Constituency'
+          id='assemblyid'
+          type='select'
+          required
+          validations={{
+            required: 'Assembly Constituency is required',
+          }}
+          selectField={{
+            title: 'Select Assembly Constituency',
+            options: dropdownOptions?.assemblies
+              .filter((el) => el.stateid === state_id)
+              .map((el) => ({ id: el.id, value: el.assembly_name })),
+          }}
+        />
+        <Input
+          errors={errors}
+          register={register}
+          title='Parliament Constituency'
+          id='parliamentaryid'
+          type='select'
+          required
+          validations={{
+            required: 'Parliament Constituency is required',
+          }}
+          selectField={{
+            title: 'Select Parliament Constituency',
+            options: dropdownOptions?.parliamentries
+              .filter((el) => el.stateid === state_id)
+              .map((el) => ({ id: el.id, value: el.parliamentary_name })),
+          }}
+        />
+        <Input
+          errors={errors}
+          register={register}
+          title='Pincode'
+          id='pincode'
+          type='text'
+        />
       </div>
 
       <h3 className="text-2xl font-bold mt-5">Social Media Links</h3>
@@ -224,7 +327,81 @@ const EditForm: FC<EditFormProps> = () => {
         title="About Me"
         required
       />
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="signature"
+          className={`flex flex-col gap-2 w-max cursor-pointer`}
+        >
+          <span className="capitalize font-[500] flex items-center gap-2">
+            Upload Signature <FaSignature
+              className="text-xl" />
+          </span>
+          <input
+            type="file"
+            id="signature"
+            className="hidden"
+            accept="image/*"
+            {...register("signature" as any, {
+              async onChange(e: ChangeEvent<HTMLInputElement>) {
+                if (e.target.files) {
+                  const file = (e.target.files as FileList)[0];
 
+                  if (!file) return;
+
+                  if (!file.type.includes("image")) return;
+
+                  const signatureFile = await convertFileToBase64(file);
+
+                  setSignature(signatureFile);
+                  setValue("signature", signatureFile);
+
+                  setSignatureDoc(file as any);
+                }
+              },
+              validate: {
+
+                notAImg(file) {
+                  if (file) {
+                    const type = (file as FileList)[0]?.type;
+
+                    if (!type) return true;
+
+                    return (
+                      type.includes("image") ||
+                      "Only Image files are allowed."
+                    );
+                  }
+
+                },
+              },
+            })}
+          />
+        </label>
+        {!signature && <span>No File selected</span>}
+        {signature && (
+          <div className="relative w-max">
+            <Image
+              src={signature?.includes('base64') ? signature: getImageUrl(signature)}
+              alt=""
+              priority={true}
+              width={1000}
+              height={1000}
+              className="w-20 aspect-square object-cover object-center bg-white"
+            />
+
+            <button
+              type="button"
+              onClick={() => {
+                setSignature("");
+                setValue("signature", "");
+              }}
+              className="absolute top-0 right-[-20%] rounded-full bg-gray-100 z-10 hover:scale-110 transition-all"
+            >
+              <BsX className="text-xl" />
+            </button>
+          </div>
+        )}
+      </div>
       <div className="flex justify-end gap-2 mt-5">
         <Link
           href={ProtectedRoutes.userProfile}

@@ -35,7 +35,7 @@ export const ComplaintPage: FC = () => {
     tryCatch(
       async () => {
         if (userDetails?.id) {
-          const data = await getLeaderList();
+          const data = await getLeaderList(userDetails?.id);
           dispatch(complaintActions.setLeader(data));
         }
       }
@@ -45,6 +45,9 @@ export const ComplaintPage: FC = () => {
     const formData = new FormData();
     formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
+    formData.append("category", complaint?.category_name || "");
+    formData.append("categoryid", complaint?.category || "");
+
     formData.append("subject", complaint.subject || "");
     formData.append("description", complaint?.description || "");
     formData.append("deletedDocs", "");
@@ -59,9 +62,7 @@ export const ComplaintPage: FC = () => {
       const item: any = complaint.to[i]?.id;
       formData.append("to", item);
     }
-    if (complaint.signatureDoc) {
-      formData.append("signature", complaint.signatureDoc);
-    }
+ 
 
     tryCatch(
       async () => {

@@ -127,3 +127,12 @@ export const GetBirthdayList = async () => {
   );
 };
 
+export const getDropdownOption = async () => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(APIRoutes.getDropdownOption);
+      return res.data;
+    }
+  );
+};
+

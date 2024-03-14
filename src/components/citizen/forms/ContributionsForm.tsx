@@ -59,7 +59,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
     tryCatch(
       async () => {
         if (userDetails?.id) {
-          const data = await getLeaderList();
+          const data = await getLeaderList(userDetails?.id);
           dispatch(complaintActions.setLeader(data));
         }
       }

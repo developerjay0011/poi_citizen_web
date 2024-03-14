@@ -63,6 +63,13 @@ export interface UserDetails {
   about_me: string
   country: string
   created_date: string
+  address:string
+  stateid: string
+  assemblyid: string
+  pincode: string
+  parliamentaryid: string
+  signature:string
+  
 }
 
 export type UserType = 'leader' | 'citizen' | 'emerging-leader' | ''

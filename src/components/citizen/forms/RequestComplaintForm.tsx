@@ -9,9 +9,9 @@ import { PDFPreviewCP } from "@/utils/PDFPreviewCP";
 import { GenerateId, convertFileToBase64 } from "@/utils/utility";
 import { ImageMultiSelectIP } from "@/utils/ImageMultiSelectIP";
 import Image, { StaticImageData } from "next/image";
-import { FaSignature } from "react-icons/fa";
 import { Attachments, ErrObj, RequestComplaintData } from "@/utils/typesUtils";
 import { cusSelector } from "@/redux_store/cusHooks";
+import { Input } from "@/app/user/profile/settings/edit-profile/components/EditInput";
 import { getImageUrl } from "@/config/get-image-url";
 
 const FORM_HEADINGS = {
@@ -42,13 +42,15 @@ export interface RequestComplaintFormFields {
 
 export interface BriefLeaderDetails {
   leaderId: string;
-  username: string;
+  name: string;
   leaderProfilePic: string | StaticImageData;
   designation: string;
   dislike: string;
   requestComplaintStatus: string;
   isSeen: string;
   requestComplaintSeenDate: string;
+  state: string
+  consituency:string
 }
 
 let firstTime = true;
@@ -58,12 +60,12 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
   const [showPreview, setShowPreview] = useState(false);
   const [attachments, setAttachments] = useState<Attachments[]>([]);
   const [attachmentsDoc, setAttachmentsDoc] = useState<Attachments[]>([]);
-  const [signature, setSignature] = useState("");
-  const [signatureDoc, setSignatureDoc] = useState("");
   const { leaderlist } = cusSelector((st) => st.complaints);
+  const { userDetails, dropdownOptions } = cusSelector((st) => st.auth);
+
   const { handleSubmit, register, setValue, trigger, getValues, formState: { errors }, } = useForm<RequestComplaintFormFields>();
   const formSubmitHandler = (data: any) => {
-    submitHandler({ ...data, attachmentsDoc, signatureDoc });
+    submitHandler({ ...data, attachmentsDoc, category_name: dropdownOptions?.categories?.find((el) => el.id === data?.category)?.category, });
     firstTime = false;
   };
 
@@ -77,12 +79,13 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
     if (isEdit) {
       setValue("subject", selectedValue?.subject);
       setValue("description", selectedValue?.description);
+      setValue("category" as any, selectedValue?.categoryid);
       setValue("to", selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })));
-      setSignature(selectedValue?.signature)
+      // setSignature(selectedValue?.signature)
       setAttachments(selectedValue?.attachments)
     }
   }, []);
-  const setToFieldValue = (val: BriefLeaderDetails[] | "") => setValue("to", val);
+  const setToFieldValue = (val:any[] | "") => setValue("to", val);
   const addAttachmentsHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
 
@@ -153,6 +156,21 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
               noValidate
               onSubmit={handleSubmit(formSubmitHandler)}
             >
+              <Input
+                errors={errors}
+                id={"category" as any}
+                selectField={{
+                  title: "Category",
+                  options: dropdownOptions?.categories?.map((el) => ({ id: el?.id, value: el.category })),
+                }}
+                register={register as any}
+                title="Category"
+                type="select"
+                required
+                validations={{
+                  required: "Category is required",
+                }}
+              />
               <section className="grid gap-5 grid-cols-2 gap-y-7 max-[650px]:grid-cols-1 max-[650px]:gap-y-4">
                 <label htmlFor="subject" className={`flex flex-col gap-2`}>
                   <span className="capitalize font-[500]">
@@ -228,87 +246,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
                   </div>
                 </label>
 
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="signature"
-                    className={`flex flex-col gap-2 w-max cursor-pointer`}
-                  >
-                    <span className="capitalize font-[500] flex items-center gap-2">
-                      Upload Signature <FaSignature className="text-xl" />
-                    </span>
-                    <input
-                      type="file"
-                      id="signature"
-                      className="hidden"
-                      accept="image/*"
-                      {...register("signature", {
-                        async onChange(e: ChangeEvent<HTMLInputElement>) {
-                          if (e.target.files) {
-                            const file = (e.target.files as FileList)[0];
-
-                            if (!file) return;
-
-                            if (!file.type.includes("image")) return;
-
-                            const signatureFile = await convertFileToBase64(file);
-
-                            setSignature(signatureFile);
-                            setValue("signature", signatureFile);
-
-                            setSignatureDoc(file as any);
-                          }
-                        },
-                        validate: {
-
-                          notAImg(file) {
-                            if (file) {
-                              const type = (file as FileList)[0]?.type;
-
-                              if (!type) return true;
-
-                              return (
-                                type.includes("image") ||
-                                "Only Image files are allowed."
-                              );
-                            }
-
-                          },
-                        },
-                      })}
-                    />
-
-                    <ErrorMessage
-                      name={"signature"}
-                      errors={errors}
-                      as={"span"}
-                      className="text-red-500 text-sm first-letter:capitalize lowercase"
-                    />
-                  </label>
-                  {!signature && <span>No File selected</span>}
-                  {signature && (
-                    <div className="relative w-max">
-                      <Image
-                        src={isEdit ? getImageUrl(signature) : signature}
-                        alt=""
-                        priority={true}
-                        width={1000}
-                        height={1000}
-                        className="w-20 aspect-square object-cover object-center bg-white"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSignature("");
-                          setValue("signature", "");
-                        }}
-                        className="absolute top-0 right-[-20%] rounded-full bg-gray-100 z-10 hover:scale-110 transition-all"
-                      >
-                        <BsX className="text-xl" />
-                      </button>
-                    </div>
-                  )}
-                </div>
+            
               </section>
 
               <div className="w-full bg-zinc-200 h-[1px] mt-3" />
@@ -348,15 +286,12 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
           <PDFPreviewCP
             onClose={() => setShowPreview(false)}
             heading={FORM_HEADINGS[type].split(" ").at(-1) as string}
-            to={
-              getValues("to")
-                ? (getValues("to")[0] as BriefLeaderDetails)
-                : null
-            }
+            to={getValues("to") as BriefLeaderDetails[]}
             description={getValues("description")}
-            signature={getValues("signature") as string}
+            signature={getImageUrl(userDetails?.signature) as string}
             subject={getValues("subject")}
             attachments={attachments.length}
+            ticket_code={selectedValue?.ticket_code}
           />
         )}
       </AnimatePresence>

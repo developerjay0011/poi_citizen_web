@@ -14,7 +14,7 @@ import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
-import { GetBirthdayList, fetchTrendingLeaderList, getProfile } from "@/redux_store/auth/authAPI";
+import { GetBirthdayList, fetchTrendingLeaderList, getDropdownOption, getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { getCookie } from "cookies-next";
@@ -64,7 +64,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         dispatch(followActions.Following(CitizenFollowingList));
         const trending = await fetchTrendingLeaderList();
         dispatch(authActions.Settrendingleader(trending));
-        const LeaderList = await getLeaderList();
+        const LeaderList = await getLeaderList(userDetails?.id);
         dispatch(complaintActions.setLeader(LeaderList));
 
         const BirthdayList = await GetBirthdayList();
@@ -75,6 +75,8 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
         dispatch(postActions.storeStories(StoriesForCitizen as any));
 
+        const dropdownOption = await getDropdownOption();
+        dispatch(authActions.setDropDownOption(dropdownOption));
 
         const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
         if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }

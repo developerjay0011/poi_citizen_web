@@ -2,7 +2,7 @@
 import { CommonBox } from "@/utils/CommonBox";
 import Link from "next/link";
 import { FC, ReactNode, useEffect, useState } from "react";
-import { FaFacebook, FaInstagram, FaRedhat, FaTwitter } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaRedhat, FaTwitter ,FaAddressCard,FaStar } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
 
@@ -33,10 +33,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
   const { userDetails } = cusSelector((st) => st.auth);
 
   const socialNetworks: (JSX.Element | string)[] = [
-    userDetails?.socialMedia?.facebook ? (
+    userDetails?.fb_link ? (
       <Link
         target="_blank"
-        href={userDetails?.socialMedia.facebook}
+        href={userDetails?.fb_link}
         className=" text-sky-950 text-[1.6rem]"
         key={Math.random()}
       >
@@ -45,10 +45,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     ) : (
       ""
     ),
-    userDetails?.socialMedia?.instagram ? (
+    userDetails?.insta_link ? (
       <Link
         target="_blank"
-        href={userDetails?.socialMedia.instagram}
+        href={userDetails?.insta_link}
         className=" text-sky-950 text-[1.6rem]"
         key={Math.random()}
       >
@@ -57,10 +57,10 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     ) : (
       ""
     ),
-    userDetails?.socialMedia?.twitter ? (
+    userDetails?.twitter_link ? (
       <Link
         target="_blank"
-        href={userDetails?.socialMedia.twitter}
+        href={userDetails?.twitter_link}
         className=" text-sky-950 text-[1.6rem]"
         key={Math.random()}
       >
@@ -77,9 +77,24 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
     <>
       <CommonBox title="More info">
         <div className="grid grid-cols-2 py-5 gap-y-5 max-[550px]:grid-cols-1">
-          <GeneralInfo Icon={FaRedhat} heading="education">
+          <GeneralInfo Icon={FaAddressCard} heading="address">
             <p className="text-[14px] pl-7 text-justify">
-              {userDetails?.higherEducation}
+              {userDetails?.address} ,Pincode : {userDetails?.pincode}
+            </p>
+          </GeneralInfo>
+          <GeneralInfo Icon={FaStar} heading="state">
+            <p className="text-[14px] pl-7 text-justify">
+              {userDetails?.state_name}
+            </p>
+          </GeneralInfo>
+          <GeneralInfo Icon={FaStar} heading="Assembly Constituency">
+            <p className="text-[14px] pl-7 text-justify">
+              {userDetails?.assembly_name}
+            </p>
+          </GeneralInfo>
+          <GeneralInfo Icon={FaStar} heading="Parliament House">
+            <p className="text-[14px] pl-7 text-justify">
+              {userDetails?.parliamentary_name}
             </p>
           </GeneralInfo>
 

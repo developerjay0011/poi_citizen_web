@@ -58,7 +58,7 @@ export const APIRoutes = {
   UnLikeComment: `${API_Prefix}/Post/UnLikeComment`,
   ReplyToComment: `${API_Prefix}/Post/ReplyToComment`,
   VoteAdd: `${API_Prefix}/Citizen/AddVoteOfPOll`,
-  getLeaderList: `${API_Prefix}/Leader/GetLeaderList`,
+  getLeaderList: `${API_Prefix}/Citizen/LeaderListForCitizen/{{citizenid}}`,
   GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
   ThumbsDown: `${API_Prefix}/Leader/ThumbsDown`,
 
@@ -88,5 +88,7 @@ export const APIRoutes = {
   DeleteContribution: `${API_Prefix}/Citizen/DeleteContribution/{{contributionid}}`,
 
   getSingleLeader: `${API_Prefix}/Leader/getLeaderProfileAllInfo/{{leaderid}}`,
+
+  getDropdownOption: `${API_Prefix}/common/getAddLeadersDropdown`,
 
 }       

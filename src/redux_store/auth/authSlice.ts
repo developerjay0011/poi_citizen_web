@@ -6,8 +6,19 @@ interface AuthState {
   userDetails: any;
   trendingleader: any;
   birthdaylist: any[],
-  leaderData: any
+  leaderData: any,
+  dropdownOptions: {
+    assemblies: any[];
+    designations: any[];
+    districts: any[];
+    ministries: any[];
+    parliamentries: any[];
+    politicalparty: any[];
+    states: any[];
+    categories: any[];
+  }
 }
+
 let userDetails: any = getCookie(CITIZEN_USER_INFO);
 userDetails = userDetails && JSON.parse(userDetails);
 const init: AuthState = {
@@ -16,7 +27,17 @@ const init: AuthState = {
   },
   trendingleader: [],
   birthdaylist: [],
-  leaderData: []
+  leaderData: [],
+  dropdownOptions: {
+    assemblies: [],
+    designations: [],
+    districts: [],
+    ministries: [],
+    parliamentries: [],
+    politicalparty: [],
+    states: [],
+    categories:[]
+  }
 };
 
 export const authSlice = createSlice({
@@ -37,6 +58,9 @@ export const authSlice = createSlice({
     },
     setLeaderData(state, action: PayloadAction<any | null>) {
       state.leaderData = action.payload;
+    },
+    setDropDownOption(state, action: PayloadAction<any | null>) {
+      state.dropdownOptions = action.payload;
     },
     logOut(state) {
       state.userDetails = null;

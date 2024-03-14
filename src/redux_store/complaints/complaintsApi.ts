@@ -11,10 +11,10 @@ export const GetRaisedComplaints = async (citizenid: string) => {
     }
   );
 };
-export const getLeaderList = async () => {
+export const getLeaderList = async (citizenid: string) => {
   return tryCatch(
     async () => {
-      const res = await Axios.get(APIRoutes.getLeaderList);
+      const res = await Axios.get(insertVariables(APIRoutes.getLeaderList, { citizenid }));
       return res.data;
     }
   );

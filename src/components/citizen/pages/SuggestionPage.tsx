@@ -49,6 +49,8 @@ export const SuggestionPage: FC = () => {
     formData.append("id", isEdit ? selectedValue?.id : "");
     formData.append("citizenid", userDetails?.id || "");
     formData.append("subject", suggestion.subject || "");
+    formData.append("category", suggestion?.category_name || "");
+    formData.append("categoryid", suggestion?.category || "");
     formData.append("description", suggestion?.description || "");
     formData.append("deletedDocs", "");
     formData.append("signature", suggestion.signatureDoc || "");

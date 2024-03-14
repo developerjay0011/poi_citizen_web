@@ -19,6 +19,7 @@ interface TicketTimeLineProps {
 }
 
 export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileStone, timeline, ticketdata, type, el, updatedata }) => {
+  console.log(timeline)
   return (
     <>
       <m.div
@@ -48,6 +49,7 @@ export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileSton
                   id={el.id}
                   key={el.milestone}
                   status={el?.status}
+                  created_by_name={el?.created_by_name}
                   details={el?.description}
                   title={el?.milestone}
                   created_date={el?.created_date}
@@ -104,6 +106,7 @@ interface TimeLineDataProps {
   edithandler: () => void
   timeline: any
   index: number
+  created_by_name:string
 }
 
 const colors = {
@@ -118,7 +121,7 @@ const colors = {
   },
 }
 
-const TimeLineData: FC<TimeLineDataProps> = ({ timeline, details, title, index, status, created_date, attachments, id, ticketdata, edithandler }) => {
+const TimeLineData: FC<TimeLineDataProps> = ({ timeline, details, title, index, status, created_date, attachments, id, created_by_name, ticketdata, edithandler }) => {
   return (
     <>
       <li className={`${timeline?.length - 1 > index && colors[status == "completed" ? 1 : 0].line} ${timeline?.length - 1 > index ? 'last_timeline' : 'last_timeline border-white'}`}>
@@ -128,7 +131,7 @@ const TimeLineData: FC<TimeLineDataProps> = ({ timeline, details, title, index, 
             <a key={el} href={getImageUrl(el)} target="_blank" rel="noopener noreferrer" download><FaFileAlt /></a>
           ))}
           <div className='flex flex-col w-full'>
-            <h4 className='font-medium capitalize'>{status}</h4>
+            <h4 className='font-medium capitalize'>{status} by { created_by_name}</h4>
             <p className='text-[15px] text-gray-600'>{moment(created_date).format('DD MMM, yyyy hh:mm:ss a')}</p>
             <p className='text-[15px] text-gray-600'>{details}</p>
           </div>

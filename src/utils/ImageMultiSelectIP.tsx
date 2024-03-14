@@ -6,6 +6,7 @@ import { BiX } from 'react-icons/bi'
 import { MdArrowDropDown } from 'react-icons/md'
 import { LeaderDetails } from './typesUtils'
 import CustomImage from './CustomImage'
+import toast from 'react-hot-toast'
 
 interface ImageMultiSelectIPProps {
   options: LeaderDetails[]
@@ -113,20 +114,26 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                     <li
                       key={el.id}
                       onClick={() => {
-                        setSelectedLeaders((lst) => {
-                          const leaders = [...lst]
+                        if (selectedLeaders?.length > 3) {
+                          toast.error("you can only select 3 leader")
+                        } else {
+                          setSelectedLeaders((lst) => {
+                            const leaders = [...lst]
 
-                          const index = leaders.findIndex(
-                            (leader) => leader.id === el.id
-                          )
+                            const index = leaders.findIndex(
+                              (leader) => leader.id === el.id
+                            )
 
-                          if (index === -1) leaders.push({ ...el })
+                            if (index === -1) leaders.push({ ...el })
 
-                          return leaders
-                        })
+                            return leaders
+                          })
+                          setShowOptions(false)
+                          setFilterStr('')
+                        }
+                       
 
-                        setShowOptions(false)
-                        setFilterStr('')
+                        
                       }}
                       className='flex items-center hover:bg-slate-100 p-3 gap-3 last_noti border-slate-200'>
                       <CustomImage
@@ -139,7 +146,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                       <div className='flex flex-col text-sm'>
                         <h6 className='font-medium capitalize'>{el.name}</h6>
                         <p className='text-gray-500 capitalize text-align-left'>
-                          {el.designation}
+                          {el.designation}{el.state ? `(${el.state})` : ''}{el.consituency ? `(${el.consituency})` :''}({el.political_party})
                         </p>
                       </div>
                     </li>
