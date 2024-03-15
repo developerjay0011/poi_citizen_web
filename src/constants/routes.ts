@@ -57,7 +57,7 @@ export const APIRoutes = {
   LikeComment: `${API_Prefix}/Post/LikeComment`,
   UnLikeComment: `${API_Prefix}/Post/UnLikeComment`,
   ReplyToComment: `${API_Prefix}/Post/ReplyToComment`,
-  VoteAdd: `${API_Prefix}/Citizen/AddVoteOfPOll`,
+  AddVoteOfPOll: `${API_Prefix}/Citizen/AddVoteOfPOll`,
   getLeaderList: `${API_Prefix}/Citizen/LeaderListForCitizen/{{citizenid}}`,
   GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
   ThumbsDown: `${API_Prefix}/Leader/ThumbsDown`,

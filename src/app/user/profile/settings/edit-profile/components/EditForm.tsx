@@ -42,7 +42,7 @@ const EditForm: FC<EditFormProps> = () => {
   const dispatch = cusDispatch();
   const [signature, setSignature] = useState("");
   const [signatureDoc, setSignatureDoc] = useState("");
-  const { register, formState: { errors }, handleSubmit, setValue,watch } = useForm<UserDetails>({ mode: "onTouched" });
+  const { register, formState: { errors }, handleSubmit, setValue, watch } = useForm<UserDetails>({ mode: "onTouched" });
   const state_id = watch('stateid')
   const formSubmitHandler = async (data: UserDetails) => {
     const formData = new FormData();
@@ -102,8 +102,7 @@ const EditForm: FC<EditFormProps> = () => {
     setValue("pincode", userDetails?.pincode || "");
     setValue("stateid", userDetails?.stateid || "");
     setSignature(userDetails?.signature)
-
-  }, [userDetails?.id]);
+  }, [userDetails?.username]);
   useEffect(() => {
     setValue("parliamentaryid", userDetails?.parliamentaryid || "");
     setValue("assemblyid", userDetails?.assemblyid || "");
@@ -217,7 +216,7 @@ const EditForm: FC<EditFormProps> = () => {
           htmlFor={`address`}
           className='col-span-full flex flex-col gap-2'>
           <span>
-             Address <strong className='text-red-500'>*</strong>
+            Address <strong className='text-red-500'>*</strong>
           </span>
           <textarea
             {...register(`address`, {
@@ -381,7 +380,7 @@ const EditForm: FC<EditFormProps> = () => {
         {signature && (
           <div className="relative w-max">
             <Image
-              src={signature?.includes('base64') ? signature: getImageUrl(signature)}
+              src={signature?.includes('base64') ? signature : getImageUrl(signature)}
               alt=""
               priority={true}
               width={1000}

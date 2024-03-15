@@ -71,6 +71,11 @@ export const TimeLinePage: FC<TimeLinePageProps> = () => {
           </div>
         ) : null
       })}
+      {postData?.length == 0 &&
+        <h3 className="col-span-full text-center py-10 capitalize text-3xl">
+          No posts Found!!
+        </h3>
+      }
     </div>
   );
 };
