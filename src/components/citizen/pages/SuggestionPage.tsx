@@ -26,12 +26,13 @@ export const SuggestionPage: FC = () => {
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
   const [selectedValue, setSelectedValue] = useState<any>();
   const [isEdit, setIsEdit] = useState(false);
+  const [sort, setSort] = useState<any>(5);
   const { userDetails } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
   const { err, submitting, suggestions } = cusSelector((st) => st.suggestions);
   const showForm = () => setShowSuggestionForm(true);
   const closeForm = () => setShowSuggestionForm(false);
-  const searchFilteredSuggestions = suggestions.filter((el) => searchString ? el.subject.toLowerCase().includes(searchString) : el);
+  const searchFilteredSuggestions = suggestions.filter((el) => searchString ? el.subject.toLowerCase().includes(searchString) : el).slice(0, sort == "All" ? suggestions?.length : sort);
 
   const getSuggestion = async () => {
     tryCatch(
@@ -108,11 +109,16 @@ export const SuggestionPage: FC = () => {
                   <span>Sort by</span>
                   <select
                     id="filter"
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(e.target.value)
+                    }
                     className="py-1 px-3 text-md border border-gray-300 text-gray-900 bg-white rounded-md cursor-pointer"
                   >
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="25">25</option>
+                    <option value="All">All</option>
                   </select>
                 </label>
               </div>

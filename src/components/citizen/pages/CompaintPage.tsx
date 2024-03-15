@@ -9,10 +9,14 @@ import { DeleteComplaint, getLeaderList, GetRaisedComplaints, RaiseComplaint, } 
 import toast from "react-hot-toast";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { tryCatch } from "@/config/try-catch";
+
 export const ComplaintPage: FC = () => {
+
   const [searchString, setSearchString] = useState("");
   const [showComplaintForm, setShowComplaintForm] = useState(false);
   const [selectedValue, setSelectedValue] = useState<any>();
+  const [sort, setSort] = useState<any>(5);
+
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = cusDispatch();
   const { complaints, submitting, err } = cusSelector((st) => st.complaints);
@@ -79,7 +83,7 @@ export const ComplaintPage: FC = () => {
 
   const searchFilteredComplaints = complaints.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
-  );
+  ).slice(0, sort == "All" ? complaints?.length :sort);
 
   const handleDelete = async (id: string) => {
     tryCatch(
@@ -114,11 +118,16 @@ export const ComplaintPage: FC = () => {
                   <span>Sort by</span>
                   <select
                     id="filter"
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(e.target.value)
+                    }
                     className="py-1 px-3 text-md border border-gray-300 text-gray-900 bg-white rounded-md cursor-pointer"
                   >
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="25">25</option>
+                    <option value="All">All</option>
                   </select>
                 </label>
               </div>

@@ -25,6 +25,8 @@ export const RequestPage: FC = () => {
   const [searchString, setSearchString] = useState("");
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [selectedValue, setSelectedValue] = useState<any>();
+  const [sort, setSort] = useState<any>(5);
+
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = cusDispatch();
   const { requests, submitting, err } = cusSelector((st) => st.requests);
@@ -83,7 +85,7 @@ export const RequestPage: FC = () => {
 
   const searchFilteredRequests = requests.filter((el) =>
     searchString ? el.subject.toLowerCase().includes(searchString) : el
-  );
+  ).slice(0, sort == "All" ? requests?.length : sort);
 
   const handleDetele = async (id: string) => {
     tryCatch(
@@ -115,11 +117,16 @@ export const RequestPage: FC = () => {
                   <span>Sort by</span>
                   <select
                     id="filter"
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(e.target.value)
+                    }
                     className="py-1 px-3 text-md border border-gray-300 text-gray-900 bg-white rounded-md cursor-pointer"
                   >
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="25">25</option>
+                    <option value="All">All</option>
                   </select>
                 </label>
               </div>

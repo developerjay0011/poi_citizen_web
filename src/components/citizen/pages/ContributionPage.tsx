@@ -16,6 +16,7 @@ export const ContributionPage: FC = () => {
   const [showContributionForm, setShowContributionForm] = useState(false)
   const [isEdit, setEdit] = useState(false)
   const [contributionid, setcontributionid] = useState()
+  const [sort, setSort] = useState<any>(5);
   const { contributions } = cusSelector((st) => st.contribution);
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
@@ -23,7 +24,9 @@ export const ContributionPage: FC = () => {
   const closeForm = () => setShowContributionForm(false)
   const dispatch = cusDispatch();
   const { userDetails } = cusSelector((st) => st.auth);
-
+  const searchFilteredRequests = contributions.filter((el) =>
+    searchString ? el.id.toLowerCase().includes(searchString) : el
+  ).slice(0, sort == "All" ? contributions?.length : sort);
   const getContributions = async () => {
     tryCatch(
       async () => {
@@ -70,10 +73,15 @@ export const ContributionPage: FC = () => {
                   <span>Sort by</span>
                   <select
                     id='filter'
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(e.target.value)
+                    }
                     className='py-1 px-3 text-md border border-gray-300 text-gray-900 bg-white rounded-md cursor-pointer'>
                     <option value='5'>5</option>
                     <option value='10'>10</option>
                     <option value='25'>25</option>
+                     <option value="All">All</option>
                   </select>
                 </label>
               </div>
@@ -117,10 +125,14 @@ export const ContributionPage: FC = () => {
           </div>
           <div className="overflow-y-scroll flex-1 main_scrollbar">
             <ul className='grid grid-cols-3 max-[1160px]:grid-cols-2 max-[670px]:grid-cols-1 gap-5'>
-              {contributions.length > 0 &&
-                contributions.map((item: any, index: number) => {
+              {searchFilteredRequests.length > 0 &&
+                searchFilteredRequests.map((item: any, index: number) => {
                   return (
                     <li key={index} className='border rounded-md overflow-hidden w-full bg-gray-50 shadow-sm py-3 px-3 flex flex-col'>
+                      <p className='capitalize flex items-center gap-3 text-[14px]'>
+                        <span className='font-[600]'>ID : </span>
+                        <span className='text-[13px]'>{item?.id}</span>
+                      </p>
                       {item?.contributor && <p className='capitalize flex items-center gap-3 text-[14px]'>
                         <span className='font-[600]'>Contributor : </span>
                         <span className='text-[13px]'>{item?.contributor}</span>

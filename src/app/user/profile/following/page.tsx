@@ -39,7 +39,7 @@ const CitizenProfileFollowingsPage = () => {
     <>
       <div className='flex-grow'>
         <PeoplesComponentWrapper
-          heading='followings'
+          heading={`followings(${following.length})`}
           searchStr={searchString}
           setSearchStr={changeSearchString}>
           <ul className='grid grid-cols-3 max-[1160px]:grid-cols-2 max-[670px]:grid-cols-1 gap-5'>

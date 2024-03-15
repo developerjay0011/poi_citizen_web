@@ -2,9 +2,12 @@
 import { CommonBox } from "@/utils/CommonBox";
 import Link from "next/link";
 import { FC, ReactNode, useEffect, useState } from "react";
-import { FaFacebook, FaInstagram, FaRedhat, FaTwitter ,FaAddressCard,FaStar } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaRedhat, FaTwitter ,FaAddressCard,FaStar, FaSign } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
+import { FaSignature } from "react-icons/fa6";
+import Image from "next/image";
+import { getImageUrl } from "@/config/get-image-url";
 
 interface CitizenMoreInfoProps { }
 interface UserDetail {
@@ -97,6 +100,16 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
               {userDetails?.parliamentary_name}
             </p>
           </GeneralInfo>
+          {userDetails?.signature && <GeneralInfo Icon={FaSignature} heading="Signature">
+            <Image
+              src={getImageUrl(userDetails?.signature)}
+              alt=""
+              priority={true}
+              width={1000}
+              height={1000}
+              className="w-20 aspect-square object-cover object-center bg-white"
+            />
+          </GeneralInfo>}
 
           {hasSocialLinks && (
             <GeneralInfo Icon={IoMdShare} heading="social networks">
