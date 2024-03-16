@@ -62,7 +62,7 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
         </section>
 
         {/* Interactions */}
-        <div className="py-4 my-5">
+        {/* <div className="py-4 my-5">
           <div className="flex items-center gap-1">
             <button
               type="button"
@@ -97,7 +97,7 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
               0 new {showLikes ? "likes" : "comments"} this week
             </p>
           </div>
-        </div>
+        </div> */}
       </CommonBox>
     </>
   );

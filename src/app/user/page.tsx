@@ -41,7 +41,6 @@ const CitizenHomePage = () => {
         <div className="flex flex-col gap-5 self-start max-[1200px]:hidden w-[23%]">
           {birthdaylist?.length > 0 && <BirthdayNotifications />}
           <TrendingLeaders />
-          <ShortcutsBox />
         </div>
 
         {/* <CitizenFeed /> */}
@@ -50,6 +49,7 @@ const CitizenHomePage = () => {
         {/* RIGHT FEED */}
         <div className="flex flex-col self-start gap-5 max-[1200px]:hidden">
           <BriefProfileInfoBox />
+          <ShortcutsBox />
         </div>
       </div>
     </section>
