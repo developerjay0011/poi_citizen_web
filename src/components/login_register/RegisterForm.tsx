@@ -244,7 +244,7 @@ export const RegisterForm: FC = () => {
               errors={errors}
               id="phoneNo"
               title="(+91) phone number"
-              type="number"
+              type="tel"
               validations={{
                 required: "Field is required",
                 validate: {

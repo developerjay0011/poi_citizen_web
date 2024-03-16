@@ -38,6 +38,7 @@ export interface RequestComplaintFormFields {
   signatureDoc: string | FileList;
   attachments: Attachments[];
   attachmentsDoc: Attachments[];
+  category: any
 }
 
 export interface BriefLeaderDetails {
@@ -50,7 +51,7 @@ export interface BriefLeaderDetails {
   isSeen: string;
   requestComplaintSeenDate: string;
   state: string
-  consituency:string
+  consituency: string
 }
 
 let firstTime = true;
@@ -85,7 +86,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
       setAttachments(selectedValue?.attachments)
     }
   }, []);
-  const setToFieldValue = (val:any[] | "") => setValue("to", val);
+  const setToFieldValue = (val: any[] | "") => setValue("to", val);
   const addAttachmentsHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
 
@@ -152,11 +153,47 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
             </h3>
 
             <form
-              className="flex flex-col px-7 py-5 mt-5 gap-5 max-[550px]:px-4"
+              className="flex flex-col px-7 py-5 gap-5 max-[550px]:px-4"
               noValidate
               onSubmit={handleSubmit(formSubmitHandler)}
             >
-              <Input
+
+              <section className="grid gap-5 col-span-2 max-[650px]:gap-y-4">
+                <label htmlFor="category" className={`flex flex-col gap-2`}>
+                  <span className="capitalize font-[500]">
+                    Category
+                    {<strong className="text-rose-500">*</strong>}
+                  </span>
+                  <select
+                    id="category"
+                    autoComplete="off"
+                    placeholder="category"
+                    className="border border-slate-300 bg-slate-100 py-[.7rem] px-2 outline-none w-full rounded-md text-base transition-all focus:bg-slate-200 focus:border-slate-400 placeholder:capitalize"
+                    {...register("category", {
+                      required: "category is required",
+                    })}
+                  >
+                    <option value=''>
+                      {dropdownOptions?.categories.length > 0
+                        ? "Select Category"
+                        : `No Category Found !!`}
+                    </option>
+                    {dropdownOptions?.categories?.map((el) => ({ id: el?.id, value: el.category })).map((el) => (
+                      <option value={el.id} key={el.id}>
+                        {el.value}
+                      </option>
+                    ))}
+                  </select>
+                  <ErrorMessage
+                    name={"category"}
+                    errors={errors}
+                    as={"span"}
+                    className="text-red-500 text-sm first-letter:capitalize lowercase"
+                  />
+                </label>
+              </section>
+
+              {/* <Input
                 errors={errors}
                 id={"category" as any}
                 selectField={{
@@ -170,7 +207,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
                 validations={{
                   required: "Category is required",
                 }}
-              />
+              /> */}
               <section className="grid gap-5 grid-cols-2 gap-y-7 max-[650px]:grid-cols-1 max-[650px]:gap-y-4">
                 <label htmlFor="subject" className={`flex flex-col gap-2`}>
                   <span className="capitalize font-[500]">
@@ -246,7 +283,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
                   </div>
                 </label>
 
-            
+
               </section>
 
               <div className="w-full bg-zinc-200 h-[1px] mt-3" />

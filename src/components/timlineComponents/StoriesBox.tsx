@@ -34,20 +34,18 @@ export const StoriesBox: FC<StoriesBoxProps> = () => {
 
   return stories?.length > 0 && (
     <CommonBox title="Stories" cusJSX={[]}>
-      <div className="w-[660px]  ">
-        <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
-          {stories?.map((el: | { media?: any[]; index?: number, leaderid: string; image: string; name: string; } | undefined) => {
-            return (
-              <Story
-                userImage={getImageUrl(el?.image as string)}
-                key={el?.index}
-                stories={el?.media as any}
-                name={el?.name as string}
-              />
-            );
-          })}
-        </ul>
-      </div>
+      <ul className="flex gap-2 py-5  w-full overflow-x-auto ">
+        {stories?.map((el: | { media?: any[]; index?: number, leaderid: string; image: string; name: string; } | undefined) => {
+          return (
+            <Story
+              userImage={getImageUrl(el?.image as string)}
+              key={el?.index}
+              stories={el?.media as any}
+              name={el?.name as string}
+            />
+          );
+        })}
+      </ul>
     </CommonBox>
   );
 };

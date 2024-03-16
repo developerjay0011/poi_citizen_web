@@ -24,8 +24,6 @@ export const PollPost: FC<PollPostProps> = ({ userdetails, post, Getpost }) => {
     const percentage = (votes / totalVotes) * 100;
     return percentage.toFixed(0);
   };
-
-
   return (
     <>
       <section className="border shadow-sm rounded-md px-5 py-2 bg-white">
@@ -50,33 +48,36 @@ export const PollPost: FC<PollPostProps> = ({ userdetails, post, Getpost }) => {
         <div className="flex flex-col gap-5 my-5">
           <p className="text-[16px]">{post?.title}</p>
           <section className="w-full flex flex-col gap-3">
-            {post?.poll_options.map((el: any, i: any) => (
-              <PollOption
-                id={el.id}
-                isUserExist={isUserExist}
-                key={i}
-                index={i + 1}
-                pollText={el.text}
-                pollImg={post?.polltype !== "text" ? el.image : ""}
-                alldata={el}
-                isselected={post?.votes_by?.filter((item2: any) => item2?.userid == userDetails?.id && el?.id == item2?.optionid)?.length > 0}
-                Onvote={async () => {
-                  const vote = await VoteAdd({
-                    "pollid": post?.id,
-                    "leaderid": post?.leaderid || "",
-                    "userid": userDetails?.id,
-                    "usertype": "citizen",
-                    "optionid": el?.id,
-                    "type": userdetails?.leaderid == "admin" ? "admin" : "leader"
-                  })
-                  if (vote?.success) {
-                    Getpost()
-                  }
-                }}
-                isshow={post?.view_access == "public" && isUserExist}
-                calculatePercentage={() => post?.view_access == "public" && isUserExist ? calculatePercentage(el?.votes, post?.poll_options?.reduce((acc: any, cur: any) => acc + cur.votes, 0)) : null}
-              />
-            ))}
+            {post?.poll_options.map((el: any, i: any) => {
+              return (
+                <PollOption
+                  id={el.id}
+                  isUserExist={isUserExist}
+                  key={i}
+                  index={i + 1}
+                  isadmin={userdetails?.leaderid == "admin"}
+                  pollText={el.text}
+                  pollImg={post?.polltype !== "text" ? el.image : ""}
+                  alldata={el}
+                  isselected={post?.votes_by?.filter((item2: any) => item2?.userid == userDetails?.id && el?.id == item2?.optionid)?.length > 0}
+                  Onvote={async () => {
+                    const vote = await VoteAdd({
+                      "pollid": post?.id,
+                      "leaderid": post?.leaderid || "",
+                      "userid": userDetails?.id,
+                      "usertype": "citizen",
+                      "optionid": el?.id,
+                      "type": userdetails?.leaderid == "admin" ? "admin" : "leader"
+                    })
+                    if (vote?.success) {
+                      Getpost()
+                    }
+                  }}
+                  isshow={post?.view_access == "public" && isUserExist}
+                  calculatePercentage={() => (post?.view_access == "public" && isUserExist) ? calculatePercentage(el?.votes ? el?.votes : 0, post?.poll_options?.reduce((acc: any, cur: any) => acc + cur.votes, 0)) : null}
+                />
+              )
+            })}
           </section>
           <p className="font-medium text-zinc-600" style={{ textAlign: "right" }}>{post?.votes_by?.length} votes</p>
         </div>

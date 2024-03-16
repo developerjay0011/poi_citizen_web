@@ -49,7 +49,7 @@ const EditForm: FC<EditFormProps> = () => {
     formData.append("citizenid", userDetails?.id || "");
     formData.append("name", data?.username || "");
     formData.append("email", data?.email || "");
-    formData.append("mobile", userDetails?.id || "");
+    formData.append("mobile", data?.mobile || "");
     formData.append("image", userDetails?.image || "");
     formData.append("gender", data?.gender || "");
     formData.append("dob", data?.dob || "");
@@ -62,7 +62,6 @@ const EditForm: FC<EditFormProps> = () => {
     formData.append("about_me", data?.about_me || "");
     formData.append("stateid", data?.stateid || "");
     formData.append("state_name", dropdownOptions?.states?.find((el) => el.id === data?.stateid)?.state || "");
-
     formData.append("address", data?.address || "");
     formData.append("pincode", data?.pincode || "");
     formData.append("parliamentaryid", data?.parliamentaryid || "");
@@ -86,6 +85,7 @@ const EditForm: FC<EditFormProps> = () => {
       })
   };
   useEffect(() => {
+    setSignature(userDetails?.signature)
     setValue("username", userDetails?.username || "");
     setValue("email", userDetails?.email || "");
     setValue("mobile", userDetails?.mobile || "");
@@ -101,12 +101,14 @@ const EditForm: FC<EditFormProps> = () => {
     setValue("address", userDetails?.address || "");
     setValue("pincode", userDetails?.pincode || "");
     setValue("stateid", userDetails?.stateid || "");
-    setSignature(userDetails?.signature)
-  }, [userDetails?.username]);
+    setValue("parliamentaryid", userDetails?.parliamentaryid || "");
+    setValue("assemblyid", userDetails?.assemblyid || "");
+  }, [userDetails?.username, dropdownOptions?.states]);
   useEffect(() => {
     setValue("parliamentaryid", userDetails?.parliamentaryid || "");
     setValue("assemblyid", userDetails?.assemblyid || "");
   }, [state_id]);
+
   return (
     <form
       onSubmit={handleSubmit(formSubmitHandler)}
