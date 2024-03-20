@@ -70,6 +70,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     if (data?.success) {
       setShowConfirmBox(false);
       dispatch(authActions.logOut())
+      window.location.href = '/'
       router.push(AuthRoutes.login);
     }
   };
@@ -78,6 +79,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     if (data?.success) {
       setShowCloseConfirmBox(false);
       dispatch(authActions.logOut())
+      window.location.href = '/'
       router.push(AuthRoutes.login);
     }
   };
@@ -88,7 +90,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
         {Shortcuts.map((el) => (
           <ShortcutBtn {...el} key={el.id} />
         ))}
-        <button onClick={() => dispatch(authActions.logOut())}>
+        <button onClick={() => { dispatch(authActions.logOut()), window.location.href = '/' }}>
           <ShortcutBtn Icon={FaPowerOff} title="logout" route="/" />
         </button>
         <button

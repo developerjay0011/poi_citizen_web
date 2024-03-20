@@ -31,10 +31,10 @@ export const AdminControls: FC<AdminControlsProps> = () => {
           route={ProtectedRoutes.edit_profile}
         />
 
-        <button onClick={() => dispatch(authActions.logOut())}>
+        <button onClick={() => { dispatch(authActions.logOut()); window.location.href = '/' }}>
           <ShortcutBtn Icon={FaPowerOff} title="log out" route="/" />
         </button>
-      </aside>
+      </aside >
 
     </>
   );

@@ -3,8 +3,6 @@ import Axios from '@/config/axios';
 import { insertVariables } from '@/config/insert-variables';
 import { tryCatch } from '@/config/try-catch';
 import { APIRoutes } from '@/constants/routes';
-import { AppDispatch } from '@/redux_store'
-import { ConnectToAPI } from '@/utils/utility'
 
 export const GetContributions = async (citizenid: string) => {
   return tryCatch(
