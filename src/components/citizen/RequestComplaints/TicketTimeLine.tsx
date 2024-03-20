@@ -19,7 +19,6 @@ interface TicketTimeLineProps {
 }
 
 export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileStone, timeline, ticketdata, type, el, updatedata }) => {
-  console.log(timeline)
   return (
     <>
       <m.div
@@ -106,7 +105,7 @@ interface TimeLineDataProps {
   edithandler: () => void
   timeline: any
   index: number
-  created_by_name:string
+  created_by_name: string
 }
 
 const colors = {
@@ -131,7 +130,7 @@ const TimeLineData: FC<TimeLineDataProps> = ({ timeline, details, title, index, 
             <a key={el} href={getImageUrl(el)} target="_blank" rel="noopener noreferrer" download><FaFileAlt /></a>
           ))}
           <div className='flex flex-col w-full'>
-            <h4 className='font-medium capitalize'>{status} by { created_by_name}</h4>
+            <h4 className='font-medium capitalize'>{status} by {created_by_name}</h4>
             <p className='text-[15px] text-gray-600'>{moment(created_date).format('DD MMM, yyyy hh:mm:ss a')}</p>
             <p className='text-[15px] text-gray-600'>{details}</p>
           </div>

@@ -51,13 +51,18 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
 
         <div className="bg-white py-5 px-14 flex items-center max-[1428px]:px-5 max-[1302px]:flex-wrap max-[950px]:gap-5 max-[450px]:flex-nowrap max-[450px]:flex-col">
           {/* <Link href={ProtectedRoutes.userProfile}> */}
-          <h5 className="flex flex-col items-center text-xl font-[600] capitalize">
-            {leaderData?.personal_info?.last_name && leaderData?.personal_info?.first_name ? leaderData?.personal_info?.first_name + " " + leaderData?.personal_info?.last_name : leaderData?.personal_info?.first_name}
-          </h5>
+          <div>
+            <h5 className="flex flex-col items-center text-xl font-[600] capitalize">
+              {leaderData?.personal_info?.last_name && leaderData?.personal_info?.first_name ? leaderData?.personal_info?.first_name + " " + leaderData?.personal_info?.last_name : leaderData?.personal_info?.first_name}
+            </h5>
+            <span className='text-[14px] font-normal'>
+              {leaderData?.political_info?.political_party && leaderData?.political_info?.political_party + " ( " + (leaderData?.political_info?.designation || leaderData?.political_info?.post_in_party) + " )"}
+            </span>
+          </div>
           {/* </Link> */}
 
           {/* Leader Nav */}
-          <LeaderProfileNavbar />
+          {/* <LeaderProfileNavbar /> */}
         </div>
       </section>
 

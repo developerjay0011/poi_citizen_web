@@ -16,13 +16,13 @@ export const LeaderTimeLinePage: FC<LeaderTimeLinePageProps> = () => {
   const { userDetails, leaderData } = cusSelector((st) => st.auth);
 
   const dispatch = cusDispatch();
-  
+
   const Getpost = async () => {
     const res = await getSingleLeader(leaderData?.id);
-      dispatch(authActions.setLeaderData(res));
+    dispatch(authActions.setLeaderData(res));
   };
 
-  
+
   useEffect(() => {
     (async () => {
       await Getpost();
