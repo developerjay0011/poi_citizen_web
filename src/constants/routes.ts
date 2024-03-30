@@ -62,6 +62,7 @@ export const APIRoutes = {
   GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
   ThumbsDown: `${API_Prefix}/Leader/ThumbsDown`,
 
+  GetLeaderList: `${API_Prefix}/Leader/GetLeaderList`,
   TrendingLeaderList: `${API_Prefix}/Leader/TrendingLeaderList`,
   FollowLeader: `${API_Prefix}/Citizen/FollowLeaderByCitizen`,
   UnFollowLeader: `${API_Prefix}/Citizen/UnFollowLeaderByCitizen`,

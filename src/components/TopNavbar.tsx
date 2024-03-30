@@ -14,7 +14,7 @@ import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
-import { GetBirthdayList, fetchTrendingLeaderList, getDropdownOption, getProfile } from "@/redux_store/auth/authAPI";
+import { GetAllLeaderList, GetBirthdayList, fetchTrendingLeaderList, getDropdownOption, getProfile } from "@/redux_store/auth/authAPI";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { getCookie } from "cookies-next";
@@ -36,7 +36,7 @@ import { FaUserTimes } from "react-icons/fa";
 interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
   const router = useRouter();
-  const { userDetails, trendingleader } = cusSelector((st) => st.auth);
+  const { userDetails, leaderlist } = cusSelector((st) => st.auth);
   const { following } = cusSelector((st) => st.follow);
   const curRoute = usePathname();
   const dispatch = cusDispatch();
@@ -59,6 +59,9 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         const res = await getProfile(userDetails?.id);
         dispatch(authActions.logIn(res));
 
+
+        const AllLeaderList = await GetAllLeaderList();
+        dispatch(authActions.setLeaderlist(AllLeaderList));
 
         const CitizenFollowingList = await fetchCitizenFollowingList(userDetails?.id);
         dispatch(followActions.Following(CitizenFollowingList));
@@ -96,7 +99,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     : curRoute?.split("/").at(-1);
   const searchFilterFunction = (text: string) => {
     if (text) {
-      const newData = trendingleader?.filter(
+      const newData = leaderlist?.filter(
         function (item: any) {
           const itemData = item?.["name"] ? item?.["name"].toUpperCase() : ''.toUpperCase();
           const textData = text.toUpperCase();
@@ -105,7 +108,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
       )
       return newData
     } else {
-      return trendingleader
+      return leaderlist
     };
   }
   heading = heading === "user" ? "home" : heading;

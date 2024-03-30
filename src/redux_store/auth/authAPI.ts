@@ -136,3 +136,12 @@ export const getDropdownOption = async () => {
   );
 };
 
+
+export const GetAllLeaderList = async () => {
+  return tryCatch(
+    async () => {
+      const res = await Axios.get(APIRoutes.GetLeaderList);
+      return Array.isArray(res.data) ? res.data : []
+    }
+  );
+};

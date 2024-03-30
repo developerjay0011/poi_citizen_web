@@ -7,6 +7,7 @@ interface AuthState {
   trendingleader: any;
   birthdaylist: any[],
   leaderData: any,
+  leaderlist: any[],
   dropdownOptions: {
     assemblies: any[];
     designations: any[];
@@ -28,6 +29,7 @@ const init: AuthState = {
   trendingleader: [],
   birthdaylist: [],
   leaderData: [],
+  leaderlist: [],
   dropdownOptions: {
     assemblies: [],
     designations: [],
@@ -36,7 +38,7 @@ const init: AuthState = {
     parliamentries: [],
     politicalparty: [],
     states: [],
-    categories:[]
+    categories: []
   }
 };
 
@@ -58,6 +60,9 @@ export const authSlice = createSlice({
     },
     setLeaderData(state, action: PayloadAction<any | null>) {
       state.leaderData = action.payload;
+    },
+    setLeaderlist(state, action: PayloadAction<any | null>) {
+      state.leaderlist = action.payload;
     },
     setDropDownOption(state, action: PayloadAction<any | null>) {
       state.dropdownOptions = action.payload;
