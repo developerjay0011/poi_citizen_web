@@ -143,13 +143,13 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
           {/* <button type="button" className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500">
             <MdDownload className="text-3xl" />
           </button> */}
-          <button
+          {/* <button
             type="button"
             onClick={() => requestComplaintEditFn()}
             className="outline-none hover:scale-110 active:scale-100 hover:text-orange-500"
           >
             <MdEdit className="text-2xl" />
-          </button>
+          </button> */}
           <button
             type="button"
             onClick={() => setShowConfirmBox(true)}
