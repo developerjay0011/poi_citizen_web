@@ -13,11 +13,11 @@ import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
 import { requestActions } from "@/redux_store/requests/requestSlice";
 import { tryCatch } from "@/config/try-catch";
 import { BirthdayNotifications } from "@/components/timlineComponents/BirthdayNotifications";
-import { useRouter } from "next/router";
 
 const CitizenHomePage = () => {
   const dispatch = cusDispatch();
   const { userDetails, birthdaylist } = cusSelector((st) => st.auth);
+
   useEffect(() => {
     (async () => {
       tryCatch(

@@ -19,8 +19,8 @@ import { ForgetPassword } from "../common-forms/ForgetPasswordForm";
 import { AnimatePresence } from "framer-motion";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { CheckCitizenExists, fetchLogin } from "@/redux_store/auth/authAPI";
-import { setCookie } from "cookies-next";
-import { CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
+import { setCookie, getCookie } from "cookies-next";
+import { CITIZEN_FCM_TOKEN_KEY, CITIZEN_IP, CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import toast from "react-hot-toast";
 
@@ -50,15 +50,15 @@ export const LoginForm: FC<LoginFormProps> = () => {
     mode: "onTouched",
   });
 
-  const formSubmitHandler = async (
-    data: LoginFormFields | RegisterFormFields
-  ) => {
+  const formSubmitHandler = async (data: LoginFormFields | RegisterFormFields) => {
+    var fcm = getCookie(CITIZEN_FCM_TOKEN_KEY) || ""
+    var ip = getCookie(CITIZEN_IP) || ""
     const resBody = {
       email: data?.userId,
       password: data?.password,
       fcm_token: {
-        deviceid: "123",
-        token: "",
+        deviceid: ip,
+        token: fcm ? JSON.parse(fcm) : "",
       },
     };
 

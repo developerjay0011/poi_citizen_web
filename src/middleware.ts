@@ -1,11 +1,10 @@
-import { CITIZEN_TOKEN_KEY } from '@/constants/common';
+import { CITIZEN_IP, CITIZEN_TOKEN_KEY } from '@/constants/common';
 import { NextRequest, NextResponse } from 'next/server';
 import { AuthRoutes, ProtectedRoutes } from './constants/routes';
 
 export function middleware(request: NextRequest) {
   let token = request.cookies.get(CITIZEN_TOKEN_KEY)?.value || '';
   let pathname = request.nextUrl.pathname;
-
   const routeList = Object.values(ProtectedRoutes);
   const authRouteList = Object.values(AuthRoutes);
 

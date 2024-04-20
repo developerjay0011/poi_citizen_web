@@ -5,8 +5,11 @@ import moment from 'moment'
 import { FaFileAlt } from "react-icons/fa";
 import { getImageUrl } from '@/config/get-image-url';
 import { FaThumbsDown } from "react-icons/fa";
-import { ThumbsDown } from '@/redux_store/complaints/complaintsApi';
+import { ReminderStatus, ThumbsDown } from '@/redux_store/complaints/complaintsApi';
+import { FaThumbsUp } from "react-icons/fa";
+
 import toast from 'react-hot-toast';
+import { cusSelector } from '@/redux_store/cusHooks';
 
 interface TicketTimeLineProps {
   onClose: () => void
@@ -19,6 +22,14 @@ interface TicketTimeLineProps {
 }
 
 export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileStone, timeline, ticketdata, type, el, updatedata }) => {
+  const letterreminder = timeline?.filter((item: any) => item?.status == "Reminder")?.length > 0
+  const { userDetails } = cusSelector((st) => st.auth);
+  var day15 = moment(ticketdata?.created_date).add(15, "days")
+  var day30 = moment(ticketdata?.created_date).add(30, "days")
+  var current = moment()
+
+
+
   return (
     <>
       <m.div
@@ -60,17 +71,18 @@ export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileSton
                 />
               ))}
               {timeline?.length == 0 && <h3 className="col-span-full text-center py-5 capitalize text-2xl">Status Found!!</h3>}
-
-              {timeline?.length > 0 &&
+              {(letterreminder == false && moment(current).isAfter(day15) && timeline?.length == 0 && (!moment(current).isAfter(day30))) &&
                 <button
                   disabled={ticketdata?.isthumbsdown}
                   className="py-2 px-5 self-end rounded-full capitalize border border-orange-500 text-orange-50 bg-orange-500 hover:bg-orange-100 hover:text-orange-500 
-                  disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] disabled:border-none"
+               disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500 font-[500] disabled:border-none"
                   onClick={async () => {
-                    const data: any = await ThumbsDown({
+                    const data: any = await ReminderStatus({
                       "ticketid": el?.id,
                       "category": type,
-                      "leaderid": ticketdata?.leaderid
+                      "leaderid": ticketdata?.leaderid,
+                      "citizenid": userDetails?.id,
+                      "description": ""
                     })
                     if (data?.success) {
                       toast.success(data?.message)
@@ -81,7 +93,55 @@ export const TicketTimeLine: FC<TicketTimeLineProps> = ({ onClose, onAddMileSton
                     }
                   }}
                 >
+                  Remind leader About Letter
+                </button>
+              }
+              {(moment(current).isAfter(day30) && timeline?.length == 0) &&
+                <button
+                  disabled={ticketdata?.isthumbsdown}
+                  className="py-2 px-5 self-end rounded-full capitalize border border-orange-500 hover:bg-orange-100 hover:text-orange-500 bg-gray-200
+                  disabled:cursor-not-allowed hover:text-orange-500 bg-orange-100 disabled:text-orange-50 bg-orange-500 disabled:text-gray-500 font-[500] disabled:border-none"
+                  onClick={async () => {
+                    const data: any = await ThumbsDown({
+                      "ticketid": el?.id,
+                      "category": type,
+                      "leaderid": ticketdata?.leaderid
+                    }, false)
+                    if (data?.success) {
+                      toast.success(data?.message)
+                      updatedata()
+                      onClose()
+                    } else {
+                      toast.error(data?.message)
+                    }
+                  }}
+                >
                   <FaThumbsDown />
+                </button>
+              }
+
+
+              {(timeline?.length > 0 && timeline?.map((item: any) => item?.status)?.includes("closed")) &&
+                <button
+                  disabled={ticketdata?.isthumbsup}
+                  className="py-2 px-5 self-end rounded-full capitalize border border-orange-500 hover:bg-orange-100 hover:text-orange-500 bg-gray-200
+                  disabled:cursor-not-allowed hover:text-orange-500 bg-orange-100 disabled:text-orange-50 bg-orange-500 disabled:text-gray-500 font-[500] disabled:border-none"
+                  onClick={async () => {
+                    const data: any = await ThumbsDown({
+                      "ticketid": el?.id,
+                      "category": type,
+                      "leaderid": ticketdata?.leaderid
+                    }, true)
+                    if (data?.success) {
+                      toast.success(data?.message)
+                      updatedata()
+                      onClose()
+                    } else {
+                      toast.error(data?.message)
+                    }
+                  }}
+                >
+                  <FaThumbsUp />
                 </button>
               }
             </ul>

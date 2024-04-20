@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   AGENDA_STATUS,
   AGENDA_VAL,
@@ -12,6 +12,9 @@ import { DevelopmentAgendaTimeLine } from "./DevelopmentAgendaTimeLine";
 import { AnimatePresence } from "framer-motion";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { ProtectedRoutes } from "@/constants/routes";
+import Link from "next/link";
 
 interface AgendaPostProps {
   userdetails: any;
@@ -21,9 +24,21 @@ interface AgendaPostProps {
 }
 
 export const AgendaPost: FC<AgendaPostProps> = ({ userdetails, post, type, index }) => {
-  const [showTimeline, setShowTimeline] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const types = searchParams.get('type');
+  const referenceid = searchParams.get('referenceid');
   var status = post?.status === 'not started yet' ? '2' : post?.status === 'in progress' ? '1' : '0'
   var title = type == "developments" ? post?.development_title : post?.title
+  const [showTimeline, setShowTimeline] = useState(types == "post_timeline" && referenceid == post?.id ? true : false);
+
+
+  useEffect(() => {
+    if (types == "post_timeline" && referenceid == post?.id && referenceid && showTimeline == false) {
+      router.replace(ProtectedRoutes.user);
+    }
+  }, [types == "post_timeline" && referenceid == post?.id, showTimeline])
+
 
   return (
     <>
@@ -47,17 +62,18 @@ export const AgendaPost: FC<AgendaPostProps> = ({ userdetails, post, type, index
             />
 
             {/* Info and date of publish */}
-            <div>
-              <h4 className="font-[600] text-lg text-orange-500">
-                {userdetails?.name}
-              </h4>
-              <p className="flex items-center capitalize gap-2 text-sm font-[500]">
-                <span>
-                  Published on:{" "}{dateConverter(post?.createddate)}
-                </span>
-              </p>
-            </div>
-
+            <Link href={window.location?.origin + `/user/leader/about?id=${post?.leaderid}`}>
+              <div>
+                <h4 className="font-[600] text-lg text-orange-500">
+                  {userdetails?.name}
+                </h4>
+                <p className="flex items-center capitalize gap-2 text-sm font-[500]">
+                  <span>
+                    Published on:{" "}{dateConverter(post?.createddate)}
+                  </span>
+                </p>
+              </div>
+            </Link>
             {/* Actions */}
             <div className="flex items-center ml-auto gap-5 max-[700px]:flex-col-reverse max-[700px]:items-end">
               <label className={`ml-auto border text-[13px] rounded-full px-5 py-[2px] uppercase ${AGENDA_STATUS[status as AGENDA_VAL].classes}`}>

@@ -4,6 +4,7 @@ import { tryCatch } from "@/config/try-catch";
 import { APIRoutes } from "@/constants/routes";
 import moment from "moment";
 import { getImageUrl } from "@/config/get-image-url";
+import { Sendnoti } from "../notification/notification";
 
 export const AddPost = async (formData: any) => {
   return tryCatch(async () => {
@@ -34,6 +35,18 @@ export const DeletePost = async (resBody: any) => {
 export const LikePost = async (likeBody: any) => {
   return tryCatch(async () => {
     const res = await Axios.post(APIRoutes.LikePost, likeBody);
+    if (res?.data.success) {
+      Sendnoti({
+        tokens: res.data?.data?.tokens,
+        description: res.data?.data?.notification?.description,
+        date: res.data?.data?.notification?.createddate,
+        title: res.data?.data?.notification?.title,
+        userimg: res.data?.data?.notification?.userimg,
+        referenceid: res.data?.data?.notification?.referenceid,
+        notificationid: res?.data?.data?.notification?.id,
+        type: "like_post"
+      })
+    }
     return res.data;
   });
 };
@@ -48,6 +61,18 @@ export const UnlikePostorStory = async (UnlikeBody: any) => {
 export const CommentPost = async (resBody: any) => {
   return tryCatch(async () => {
     const res = await Axios.post(APIRoutes.CommentPost, resBody);
+    if (res?.data.success) {
+      Sendnoti({
+        tokens: res.data?.data?.tokens,
+        description: res.data?.data?.notification?.description,
+        date: res.data?.data?.notification?.createddate,
+        title: res.data?.data?.notification?.title,
+        userimg: res.data?.data?.notification?.userimg,
+        referenceid: res.data?.data?.notification?.referenceid,
+        notificationid: res?.data?.data?.notification?.id,
+        type: "comment_post"
+      })
+    }
     return res.data;
   });
 };

@@ -61,6 +61,8 @@ export const APIRoutes = {
   getLeaderList: `${API_Prefix}/Citizen/LeaderListForCitizen/{{citizenid}}`,
   GetBirthdayList: `${API_Prefix}/Leader/GetBirthdayList`,
   ThumbsDown: `${API_Prefix}/Leader/ThumbsDown`,
+  ThumbsUp: `${API_Prefix}/Leader/ThumbsUp`,
+  ReminderStatus: `${API_Prefix}/Leader/ReminderStatus`,
 
   GetLeaderList: `${API_Prefix}/Leader/GetLeaderList`,
   TrendingLeaderList: `${API_Prefix}/Leader/TrendingLeaderList`,

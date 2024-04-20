@@ -26,6 +26,7 @@ export const RequestsAndComplaints: FC<RequestsAndComplaintsProps> = ({
           subject={el.subject}
           to={el.to}
           key={el.id}
+          id={el.id}
           description={el.description}
           ticket_code={el.ticket_code}
           type={type}

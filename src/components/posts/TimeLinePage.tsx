@@ -8,6 +8,7 @@ import { GetPostsForCitizen } from "@/redux_store/post/postApi";
 import { postActions } from "@/redux_store/post/postSlice";
 import { AgendaPost } from "./AgendaPost";
 import { PollPost } from "./polls/PollPost";
+import { useRouter } from "next/navigation";
 interface TimeLinePageProps { }
 
 export const TimeLinePage: FC<TimeLinePageProps> = () => {

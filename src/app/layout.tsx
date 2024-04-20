@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 // import { Open_Sans } from 'next/font/google'
 import { CusProvider } from '@/redux_store/CusProvider' // Provider for Managing state using REDUX
 import { FC, ReactNode } from 'react'
+import Notificationpage from '@/utils/firebase/notification'
 
 // const font = Open_Sans({
 //   subsets: ['latin'],
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 }
 
 const RootLayout: FC<{ children: ReactNode }> = ({ children }) => {
+
   return (
     <html lang='en'>
       {/* <body className={font.className + ' font-normal '}> */}

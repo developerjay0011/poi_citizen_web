@@ -13,6 +13,8 @@ import CustomImage from "@/utils/CustomImage";
 import moment from "moment";
 import { IoMdEye } from "react-icons/io";
 import { TicketTimeLine } from "./TicketTimeLine";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ProtectedRoutes } from "@/constants/routes";
 
 interface ComplaintRequestValProps {
   subject: string;
@@ -28,6 +30,7 @@ interface ComplaintRequestValProps {
   attachments: Attachments[];
   el: any
   updatedata: () => void;
+  id: any
 }
 
 const TOClasses = [
@@ -51,24 +54,43 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   attachments,
   requestComplaintEditFn,
   el,
-  updatedata
+  updatedata,
+  id
 }) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const types = searchParams.get('type');
+  const referenceid = searchParams.get('referenceid');
+  const leaderid = searchParams.get('leaderid');
+
   const descRef = useRef<HTMLParagraphElement>(null);
-  const [showStatus, setShowStatus] = useState(false)
-  const [ticketdata, setticketdata] = useState<any>()
-  const [timeline, setTimeline] = useState<any>([])
+  const [showStatus, setShowStatus] = useState((types == "complaint_status" || types == "suggestion_status" || types == "request_status") && referenceid == id ? true : false)
+  const [ticketdata, setticketdata] = useState<any>((to?.find((item: any) => item?.leaderid === leaderid) as any)?.leaderid ? to?.find((item: any) => item?.leaderid === leaderid) : null)
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [showExpandBtn, setShowExpandBtn] = useState(false);
   const [showFullDesc, setShowFullDesc] = useState(false);
+
+  useEffect(() => {
+    if ((types == "complaint_status" || types == "suggestion_status" || types == "request_status") && referenceid == id) {
+      if (referenceid == id && referenceid && showStatus == false) {
+        if (type == "complaint") {
+          router.replace(ProtectedRoutes.complaints);
+        }
+        if (type == "request") {
+          router.replace(ProtectedRoutes.requests);
+        }
+        if (type == "suggestion") {
+          router.replace(ProtectedRoutes.suggestions);
+        }
+        setticketdata({})
+      }
+    }
+  }, [(types == "complaint_status" || types == "suggestion_status" || types == "request_status") && referenceid == id, showStatus, leaderid])
   useEffect(() => {
     if (descRef.current && Number.parseInt(getComputedStyle(descRef.current).height) === 164) {
       setShowExpandBtn(true);
     }
   }, []);
-
-
-
-
   return (
     <>
       <li className="border self-start rounded-md flex flex-col p-3 gap-3 bg-gray-50 border-gray-300">

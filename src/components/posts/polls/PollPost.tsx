@@ -8,6 +8,7 @@ import { RootState } from "@/redux_store";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { VoteAdd } from "@/redux_store/post/postApi";
+import Link from "next/link";
 
 interface PollPostProps extends PollDetails {
   Getpost: any,
@@ -37,12 +38,14 @@ export const PollPost: FC<PollPostProps> = ({ userdetails, post, Getpost }) => {
           />
 
           {/* Info and date of publish */}
-          <div>
-            <h4 className="font-[600] text-lg text-orange-500">{userdetails?.name}</h4>
-            <p className="flex items-center capitalize gap-2 text-sm font-[500]">
-              <span>created a poll at {dateConverter(post?.createddate)}</span>
-            </p>
-          </div>
+          <Link href={window.location?.origin + `/user/leader/about?id=${post?.leaderid}`}>
+            <div>
+              <h4 className="font-[600] text-lg text-orange-500">{userdetails?.name}</h4>
+              <p className="flex items-center capitalize gap-2 text-sm font-[500]">
+                <span>created a poll at {dateConverter(post?.createddate)}</span>
+              </p>
+            </div>
+          </Link>
         </div>
 
         <div className="flex flex-col gap-5 my-5">

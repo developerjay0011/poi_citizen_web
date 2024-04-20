@@ -16,6 +16,7 @@ import CustomImage from "@/utils/CustomImage";
 import PostGrid from "../PostGrid";
 import { Shortlistbytime, islike } from "./utils";
 import { tryCatch } from "@/config/try-catch";
+import Link from "next/link";
 
 
 interface PostProps extends PostDetails {
@@ -76,16 +77,18 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
           width={100}
           height={100}
         />
-        <div>
-          <h4 className="font-[600] text-lg text-orange-500">
-            {userdetails?.name}
-          </h4>
-          <p className="flex items-center capitalize gap-2 text-sm font-[500]">
-            <span>
-              Published on:{" "}{dateConverter(post?.createddate)}
-            </span>
-          </p>
-        </div>
+        <Link href={window.location?.origin + `/user/leader/about?id=${post?.leaderid}`}>
+          <div>
+            <h4 className="font-[600] text-lg text-orange-500">
+              {userdetails?.name}
+            </h4>
+            <p className="flex items-center capitalize gap-2 text-sm font-[500]">
+              <span>
+                Published on:{" "}{dateConverter(post?.createddate)}
+              </span>
+            </p>
+          </div>
+        </Link>
         {/* <div className="ml-auto relative" id="moreOptions">
           <button onClick={() => { }}>
             <BsThreeDots className="text-2xl" />
