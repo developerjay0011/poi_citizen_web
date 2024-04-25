@@ -7,6 +7,7 @@ import { MdArrowDropDown } from 'react-icons/md'
 import { LeaderDetails } from './typesUtils'
 import CustomImage from './CustomImage'
 import toast from 'react-hot-toast'
+import { Shortarray } from '@/app/user/profile/settings/edit-profile/components/EditInput'
 
 interface ImageMultiSelectIPProps {
   options: LeaderDetails[]
@@ -32,6 +33,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
   const filteredOptions = options.filter((el: any) =>
     filterStr ? el.name.toLowerCase().includes(filterStr) : el
   )
+  const listdata = Shortarray(filteredOptions, "name")
 
   useEffect(() => {
     const showOptionsEventListener = (e: MouseEvent) => {
@@ -109,8 +111,8 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
             className={`absolute top-full z-[100] bg-white left-0 w-full border-gray-600 shadow-md rounded overflow-hidden flex flex-col`}>
             {showOptions && (
               <>
-                {filteredOptions.length > 0 ? (
-                  filteredOptions.map((el: any) => (
+                {listdata?.length > 0 ? (
+                  listdata?.map((el: any) => (
                     <li
                       key={el.id}
                       onClick={() => {
@@ -131,9 +133,9 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                           setShowOptions(false)
                           setFilterStr('')
                         }
-                       
 
-                        
+
+
                       }}
                       className='flex items-center hover:bg-slate-100 p-3 gap-3 last_noti border-slate-200'>
                       <CustomImage
@@ -146,7 +148,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                       <div className='flex flex-col text-sm'>
                         <h6 className='font-medium capitalize'>{el.name}</h6>
                         <p className='text-gray-500 capitalize text-align-left'>
-                          {el.designation}{el.state ? `(${el.state})` : ''}{el.consituency ? `(${el.consituency})` :''}({el.political_party})
+                          {el.designation}{el.state ? `(${el.state})` : ''}{el.consituency ? `(${el.consituency})` : ''}({el.political_party})
                         </p>
                       </div>
                     </li>

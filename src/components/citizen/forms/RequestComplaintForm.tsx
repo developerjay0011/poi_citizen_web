@@ -11,7 +11,7 @@ import { ImageMultiSelectIP } from "@/utils/ImageMultiSelectIP";
 import Image, { StaticImageData } from "next/image";
 import { Attachments, ErrObj, RequestComplaintData } from "@/utils/typesUtils";
 import { cusSelector } from "@/redux_store/cusHooks";
-import { Input } from "@/app/user/profile/settings/edit-profile/components/EditInput";
+import { Input, Shortarray } from "@/app/user/profile/settings/edit-profile/components/EditInput";
 import { getImageUrl } from "@/config/get-image-url";
 
 const FORM_HEADINGS = {
@@ -178,7 +178,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
                         ? "Select Category"
                         : `No Category Found !!`}
                     </option>
-                    {dropdownOptions?.categories?.map((el) => ({ id: el?.id, value: el.category })).map((el) => (
+                    {Shortarray(dropdownOptions?.categories, "category")?.map((el) => ({ id: el?.id, value: el.category })).map((el) => (
                       <option value={el.id} key={el.id}>
                         {el.value}
                       </option>

@@ -39,16 +39,16 @@ export const CreateNewPasswordForm: FC<CreateNewPasswordFormProps> = ({
 
   const newPasswordSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    setRegistering(true);
     const body = {
       email: number,
       password: pass1,
     };
     if (pass1 != pass2) {
-      toast.success("Please check both password");
+      toast.error("Please check both password");
       return;
     }
     if (Password()) {
+      setRegistering(true);
       const sandOtp = await fetchForgotPassword(body);
       setRegistering(false);
       if (sandOtp?.success) {

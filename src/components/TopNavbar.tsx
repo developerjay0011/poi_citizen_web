@@ -311,7 +311,7 @@ const BriefUserInfo: FC<{ name: string; userPic: string | StaticImageData; desig
 
   return (
     <>
-      <Link href={"#"}>
+      <Link href={window.location?.origin + `/user/leader/about?id=${id}`} >
         <li className="flex items-center p-4 last_noti gap-2 hover:bg-gray-100">
           <CustomImage
             src={userPic}

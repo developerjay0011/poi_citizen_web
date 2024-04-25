@@ -1,4 +1,5 @@
 'use client'
+import { Shortarray } from '@/app/user/profile/settings/edit-profile/components/EditInput'
 import Image, { StaticImageData } from 'next/image'
 import { FC, useState, useRef } from 'react'
 import { BiSolidDownArrow, BiX } from 'react-icons/bi'
@@ -31,6 +32,7 @@ export const MultiSelectInput: FC<MultiSelectInputProps> = ({
   const filteredOptions = options.filter((el) =>
     el.value.toLowerCase().includes(multiSelectSearchStr)
   )
+  const listdata = Shortarray(filteredOptions)
 
   return (
     <>
@@ -40,11 +42,10 @@ export const MultiSelectInput: FC<MultiSelectInputProps> = ({
           {required && <strong className='text-rose-500'>*</strong>}
         </span>
         <div
-          className={`relative w-full border py-[.7rem] outline-none rounded-md text-base transition-all border-slate-300 bg-slate-100 flex items-center flex-wrap ${
-            selectedFields.length > 0
-              ? 'bg-white pr-4 pl-2'
-              : 'bg-slate-100 px-4'
-          }`}>
+          className={`relative w-full border py-[.7rem] outline-none rounded-md text-base transition-all border-slate-300 bg-slate-100 flex items-center flex-wrap ${selectedFields.length > 0
+            ? 'bg-white pr-4 pl-2'
+            : 'bg-slate-100 px-4'
+            }`}>
           {/* Displaying Selected values */}
           {selectedFields.length > 0 && (
             <div className='flex items-center gap-2 mr-1 flex-wrap'>
@@ -138,8 +139,8 @@ export const MultiSelectInput: FC<MultiSelectInputProps> = ({
               }
             }}
             className='absolute top-full left-0 w-full outline-none rounded-md shadow-md border z-[100]'>
-            {filteredOptions.length > 0 &&
-              filteredOptions.map((el) => (
+            {listdata?.length > 0 &&
+              listdata?.map((el) => (
                 <option
                   value={el.value}
                   className='py-1 px-3 hover:bg-zinc-300'

@@ -8,22 +8,21 @@ import { authActions } from "@/redux_store/auth/authSlice";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { useSearchParams } from 'next/navigation'
-import { LeaderProfileNavbar } from "@/components/leader/LeaderProfileNavbar";
 
 const LeaderProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
-  const { userDetails, leaderData } = cusSelector((st) => st.auth);
+  const { leaderData } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
   const searchParams = useSearchParams()
+  const id = searchParams.get('id')
 
   useEffect(() => {
     (async () => {
-      const id = searchParams.get('id')
       if (id) {
         const res = await getSingleLeader(id);
         dispatch(authActions.setLeaderData(res));
       }
     })();
-  }, [dispatch, userDetails?.id]);
+  }, [dispatch, id]);
 
 
   return (

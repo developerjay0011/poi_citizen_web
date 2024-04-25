@@ -156,6 +156,7 @@ const EditForm: FC<EditFormProps> = () => {
           type="date"
           title="Date of Birth"
           required
+          max={moment().format("YYYY-MM-DD")}
         />
 
         <Input
@@ -213,6 +214,17 @@ const EditForm: FC<EditFormProps> = () => {
           type="number"
           title="Phone No"
           required
+          validations={{
+            required: 'phone number is required',
+            validate: {
+              notAValidNo(val) {
+                return (
+                  val.toString().length === 10 ||
+                  "please enter a valid phone no"
+                );
+              },
+            },
+          }}
         />
         <label
           htmlFor={`address`}
@@ -287,7 +299,18 @@ const EditForm: FC<EditFormProps> = () => {
           register={register}
           title='Pincode'
           id='pincode'
-          type='text'
+          type='number'
+          required
+          validations={{
+            validate: {
+              notAValidNo(val) {
+                return (
+                  val.toString().length == 6 ||
+                  "please enter a valid pincode"
+                );
+              },
+            },
+          }}
         />
       </div>
 

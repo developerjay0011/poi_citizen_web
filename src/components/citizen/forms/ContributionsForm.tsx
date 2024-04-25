@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { tryCatch } from "@/config/try-catch";
 import { getLeaderList } from "@/redux_store/complaints/complaintsApi";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
+import { Shortarray } from "@/app/user/profile/settings/edit-profile/components/EditInput";
 
 interface ContributionFormProps {
   onClose: () => void;
@@ -335,7 +336,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
                     })}
                   >
                     <option value="">select leader</option>
-                    {leaderlist.map((el: any) => (
+                    {Shortarray(leaderlist, "name").map((el: any) => (
                       <option value={el.id} key={el.id}>
                         {el.name}
                       </option>

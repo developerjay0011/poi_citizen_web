@@ -20,16 +20,16 @@ export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
   const [registering, setRegistering] = useState(false);
   const verifyOTP = async (otp: string) => {
     try {
-        setRegistering(true);
-        const body = {
-          mobile: number,
-          otp: otp,
-        };
-        const sandOtp = await verifyOtp(body);
+      setRegistering(true);
+      const body = {
+        mobile: number,
+        otp: otp,
+      };
+      const sandOtp = await verifyOtp(body);
       setRegistering(false);
       if (sandOtp?.success) {
-    proceedFn()
-  } else {
+        proceedFn()
+      } else {
         toast.error(sandOtp.message);
       }
     } catch (err) {
@@ -105,7 +105,7 @@ export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
           type='submit'
           disabled={registering}
           className='bg-sky-800 text-sky-50 py-2 px-5 rounded-full'>
-          {registering?'Verify....':"Verify"}
+          {registering ? 'Verify....' : "Verify"}
         </button>
       </div>
     </m.form>
