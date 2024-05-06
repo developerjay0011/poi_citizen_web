@@ -27,7 +27,7 @@
     "crypto-js": "^4.1.1",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
-    "firebase": "^10.11.0",
+    "firebase": "^10.11.1",
     "framer-motion": "^10.12.20",
     "html-to-jsx-transform": "^1.1.0",
     "html2canvas": "^1.4.1",

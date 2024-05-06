@@ -5,7 +5,7 @@ import { RightNavbar } from '@/components/RightNavbar'
 import { TopNavbar } from '@/components/TopNavbar'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
-// import Notificationpage from '@/utils/firebase/notification'
+import Notificationpage from '@/utils/firebase/notification'
 
 const CitizenLayout: FC<{ children: ReactNode }> = ({ children }) => {
 
@@ -37,7 +37,7 @@ const CitizenLayout: FC<{ children: ReactNode }> = ({ children }) => {
           </section>
           <RightNavbar />
         </div>
-        {/* <Notificationpage /> */}
+        <Notificationpage />
       </main>
     </>
   )
