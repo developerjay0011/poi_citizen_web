@@ -3,6 +3,7 @@ import { insertVariables } from "@/config/insert-variables";
 import { tryCatch } from "@/config/try-catch";
 import { APIRoutes } from "@/constants/routes";
 import { ForgotPassword, LoginData, RegisterData } from "@/utils/typesUtils";
+import { authActions } from "./authSlice";
 
 // user Login Api
 export const fetchLogin = async (resBody: LoginData) => {
@@ -90,10 +91,13 @@ export const fetchTrendingLeaderList = async () => {
 
 
 
-export const getProfile = async (citizenid: string) => {
+export const getProfile = async (citizenid: string, dispatch: any) => {
   return tryCatch(
     async () => {
       const res = await Axios.get(insertVariables(APIRoutes.getSingleCitizen, { citizenid }));
+      if (res?.data) { } else {
+        dispatch(authActions.logOut())
+      }
       return res.data;
     }
   );

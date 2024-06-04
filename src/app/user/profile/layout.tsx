@@ -19,7 +19,7 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     (async () => {
       if (userDetails?.id) {
-        const res = await getProfile(userDetails?.id);
+        const res = await getProfile(userDetails?.id, dispatch);
         dispatch(authActions.logIn(res));
       }
     })();
@@ -33,7 +33,7 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
       formData.append(fieldName, files[0] || "");
       const profileRes = await uploadProfileImage(formData);
       if (profileRes?.success) {
-        const res = await getProfile(userDetails?.id);
+        const res = await getProfile(userDetails?.id, dispatch);
         dispatch(authActions.logIn(res));
       } else {
         toast.error(profileRes?.message);

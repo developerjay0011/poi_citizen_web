@@ -77,7 +77,7 @@ const EditForm: FC<EditFormProps> = () => {
         const editData = await EditCitizenProfile(formData);
         if (editData?.success) {
           toast.success(editData?.message);
-          const data = await getProfile(userDetails?.id);
+          const data = await getProfile(userDetails?.id, dispatch);
           dispatch(authActions.logIn(data));
         } else {
           toast.error(editData?.message);
@@ -266,7 +266,8 @@ const EditForm: FC<EditFormProps> = () => {
           title='Assembly Constituency'
           id='assemblyid'
           type='select'
-          required
+          required={dropdownOptions?.assemblies
+            .filter((el) => el.stateid === state_id)?.length > 0 ? true : false}
           validations={{
             required: 'Assembly Constituency is required',
           }}
@@ -283,7 +284,8 @@ const EditForm: FC<EditFormProps> = () => {
           title='Parliament Constituency'
           id='parliamentaryid'
           type='select'
-          required
+          required={dropdownOptions?.parliamentries
+            .filter((el) => el.stateid === state_id)?.length > 0 ? true : false}
           validations={{
             required: 'Parliament Constituency is required',
           }}

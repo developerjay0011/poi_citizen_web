@@ -56,7 +56,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   useEffect(() => {
     (async () => {
       if (userDetails?.id) {
-        const res = await getProfile(userDetails?.id);
+        const res = await getProfile(userDetails?.id, dispatch);
         dispatch(authActions.logIn(res));
 
 
@@ -71,7 +71,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         dispatch(complaintActions.setLeader(LeaderList));
 
         const BirthdayList = await GetBirthdayList();
-        if (BirthdayList.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
+        if (BirthdayList?.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
 
         const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
         if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }

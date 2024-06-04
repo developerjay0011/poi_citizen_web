@@ -20,7 +20,7 @@ interface PDFPreviewCPProps {
   description: string
   signature: string
   attachments: number
-  ticket_code:string
+  ticket_code: string
 }
 
 export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
@@ -61,12 +61,12 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
     <p dir="ltr" style="line-height:1.7999999999999998;text-align: justify;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 3pt 0pt;"><br></p>
     <p style="text-align: right;"><br></p>
     <p dir="ltr" style="line-height:1.7999999999999998;text-align: right;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 3pt 0pt;"><strong style="font-weight:normal;" id="docs-internal-guid-bb773bb7-7fff-688e-1d9a-986638bf1984"><span style="font-family: Merriweather, serif; color: rgb(0, 0, 0); background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap; font-size: 12pt;">Your Sincerely,</span></strong></p>
-    <p><img src="signature (2).png" alt="" width="300"></p>
-    <p dir="ltr" style="line-height: 1.8; background-color: rgb(255, 255, 255); margin-top: 0pt; margin-bottom: 0pt; padding: 0pt 0pt 3pt; text-align: right;"><strong style="font-weight:normal;" id="docs-internal-guid-bb773bb7-7fff-688e-1d9a-986638bf1984"><img src="${getImageUrl(userDetails?.signature)}" alt="" width="138" style="float: right;" height="92"></strong></p>
-    <p><br></p>
 
-    <p dir="ltr" style="line-height:1.7999999999999998;text-align: right;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 3pt 0pt;"><strong style="font-weight:normal;" id="docs-internal-guid-bb773bb7-7fff-688e-1d9a-986638bf1984"><span style="font-family: Merriweather, serif; color: rgb(0, 0, 0); background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap; font-size: 12pt;"><br></span></strong></p>
-    <p dir="ltr" style="line-height:1.7999999999999998;text-align: right;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 3pt 0pt;"><strong style="font-weight:normal;" id="docs-internal-guid-bb773bb7-7fff-688e-1d9a-986638bf1984"><span style="font-family: Merriweather, serif; color: rgb(0, 0, 0); background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap; font-size: 12pt;"><br></span></strong></p>
+    <p><img src="signature (2).png" alt="" width="300"></p>
+    ${userDetails?.signature ? `<div dir="ltr" style="background-color: #ffffff; margin-top: 0pt; margin-bottom: 0pt; text-align: right;display:flex;align-self:flex-end">
+    <img src="${getImageUrl(userDetails?.signature)}" alt="" width="138" style="margin-left: auto; margin-right: 0; display:flex;align-self:flex-end">
+</div>` : ""} 
+
     <p dir="ltr" style="line-height:1.7999999999999998;text-align: right;background-color:#ffffff;margin-top:0pt;margin-bottom:0pt;padding:0pt 0pt 3pt 0pt;"><strong style="font-weight:normal;" id="docs-internal-guid-bb773bb7-7fff-688e-1d9a-986638bf1984"><span style="font-family: Merriweather, serif; color: rgb(0, 0, 0); background-color: transparent; font-weight: 400; font-style: normal; font-variant: normal; text-decoration: none; vertical-align: baseline; white-space: pre-wrap; font-size: 12pt;">${userDetails?.username}&nbsp;</span></strong></p>
     <p style="text-align: right;">${userDetails?.address}&nbsp;</p>
     <p style="text-align: right;">${userDetails?.state_name}(${userDetails?.pincode})&nbsp;</p>
