@@ -6,6 +6,7 @@ import {
   PRIORITIES,
   PRIORITY,
   dateConverter,
+  dateConverter2,
 } from "@/utils/utility";
 import Image from "next/image";
 import { DevelopmentAgendaTimeLine } from "./DevelopmentAgendaTimeLine";
@@ -69,7 +70,7 @@ export const AgendaPost: FC<AgendaPostProps> = ({ userdetails, post, type, index
                 </h4>
                 <p className="flex items-center capitalize gap-2 text-sm font-[500]">
                   <span>
-                    Published on:{" "}{dateConverter(post?.createddate)}
+                    Published on:{" "}{dateConverter2(post?.createddate)}
                   </span>
                 </p>
               </div>

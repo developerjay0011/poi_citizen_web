@@ -5,12 +5,14 @@ interface CommonBoxProps {
   children: ReactNode
   width?: string
   cusJSX?: JSX.Element[]
+  className?: any
 }
 export const CommonBox: FC<CommonBoxProps> = ({
   title,
   children,
   width,
   cusJSX,
+  className = ''
 }) => {
   return (
     <>
@@ -21,7 +23,7 @@ export const CommonBox: FC<CommonBoxProps> = ({
           <span className='block ml-auto'>{cusJSX}</span>
         </h2>
 
-        <div className='px-6 w-full overflow-auto'>{children}</div>
+        <div className={`px-5 w-full overflow-auto main_scrollbar ${className}`}>{children}</div>
       </section>
     </>
   )

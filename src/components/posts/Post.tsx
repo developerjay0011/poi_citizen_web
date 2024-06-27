@@ -1,6 +1,6 @@
 "use client";
 import { Comment, Like, PostDetails } from "@/utils/typesUtils";
-import { dateConverter } from "@/utils/utility";
+import { dateConverter, dateConverter2 } from "@/utils/utility";
 import { FC, useState } from "react";
 import { BiShareAlt, BiSolidMessageAltDetail } from "react-icons/bi";
 import { BsFillHeartFill, BsHeart, BsThreeDots } from "react-icons/bs";
@@ -84,7 +84,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
             </h4>
             <p className="flex items-center capitalize gap-2 text-sm font-[500]">
               <span>
-                Published on:{" "}{dateConverter(post?.createddate)}
+                Published on:{" "}{dateConverter2(post?.createddate)}
               </span>
             </p>
           </div>

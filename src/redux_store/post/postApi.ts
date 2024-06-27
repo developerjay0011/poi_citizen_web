@@ -179,7 +179,7 @@ const ConvertCommonpost = (list = []): any => {
       return dateB.getTime() - dateA.getTime();
     });
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
   return Array.isArray(combinedData) && combinedData;
 };

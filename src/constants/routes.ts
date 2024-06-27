@@ -94,4 +94,8 @@ export const APIRoutes = {
 
   getDropdownOption: `${API_Prefix}/common/getAddLeadersDropdown`,
 
+  getFollowers: `${API_Prefix}/leader/followerList/{{leaderId}}`,
+  getFollowering: `${API_Prefix}/leader/followingList/{{leaderId}}`,
+  getLeaderAddedStories: `${API_Prefix}/post/getLeaderAddedStories/{{leaderId}}`,
+  GetLeaderAddedPosts: `${API_Prefix}/post/GetLeaderAddedPosts/{{leaderId}}`,
 }       

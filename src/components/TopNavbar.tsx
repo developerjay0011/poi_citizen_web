@@ -41,7 +41,6 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
   const curRoute = usePathname();
   const dispatch = cusDispatch();
   const [showAdminMenu, setShowAdminMenu] = useState(false);
-  const [showBriefNoti, setShowBriefNoti] = useState(false);
   const [searchUserStr, setSearchUserStr] = useState("");
   const [showMobileNav, setShowMobileNav] = useState(false);
   let token: any = getCookie(CITIZEN_TOKEN_KEY);
@@ -49,8 +48,9 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     document.addEventListener("click", (e) => {
       if (!(e.target as HTMLElement).closest("#userDisplayPic"))
         setShowAdminMenu(false);
-      if (!(e.target as HTMLElement).closest("#briefNotiBox"))
-        setShowBriefNoti(false);
+
+      if (!(e.target as HTMLElement).closest("#searchBox"))
+        setSearchUserStr('');
     });
   }, [dispatch]);
   useEffect(() => {
@@ -132,6 +132,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
             type="search"
             className="rounded-full bg-sky-50 bg-opacity-20 py-3 px-5 text-md text-sky-50 outline-none w-full capitalize placeholder:text-sky-50 placeholder:text-opacity-70"
             placeholder="search politicians"
+            id="searchBox"
           />
           <FaSearch className="absolute top-1/2 right-5 translate-y-[-50%] text-opacity-70 text-sky-50 text-xl" />
 
@@ -254,7 +255,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
             type="search"
             className="rounded-full bg-sky-50 bg-opacity-20 py-3 px-5 text-md text-sky-50 outline-none w-full capitalize placeholder:text-sky-50 placeholder:text-opacity-70"
             placeholder="search politicians"
-          />
+            id="searchBox" />
           <FaSearch className="absolute top-1/2 right-5 translate-y-[-50%] text-opacity-70 text-sky-50 text-xl" />
           {searchUserStr.length > 0 && (
             <ul className="absolute rounded-md shadow-md border bg-white overflow-hidden top-[110%] left-0 w-full z-[100]">

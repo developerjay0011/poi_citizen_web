@@ -4,7 +4,6 @@ import { LeftNavbar } from '@/components/LeftNavbar'
 import { RightNavbar } from '@/components/RightNavbar'
 import { TopNavbar } from '@/components/TopNavbar'
 import toast from 'react-hot-toast'
-import { useRouter } from 'next/router'
 import Notificationpage from '@/utils/firebase/notification'
 
 const CitizenLayout: FC<{ children: ReactNode }> = ({ children }) => {

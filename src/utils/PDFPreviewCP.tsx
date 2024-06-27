@@ -78,7 +78,6 @@ export const PDFPreviewCP: FC<PDFPreviewCPProps> = ({
 
     var preview = "";
     for (var i = 0; i < (to?.length || 0); i++) {
-      console.log(to)
       var tempval = temp.replaceAll("{$TO}", to ? to[i]?.name : "").replaceAll("{$CONSITUENCY}", to ? to[i]?.consituency || "" : "").replaceAll("{$DESIGNATION}", to ? `${to[i]?.designation}${to[i]?.state ? `(${to[i]?.state})` : ""}` : "")
       preview = preview + tempval
     }

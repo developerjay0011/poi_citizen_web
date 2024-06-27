@@ -299,7 +299,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
 
                 <button
                   onClick={() => setShowPreview(true)}
-                  className="py-2 px-5 bg-orange-200 text-orange-500 rounded-full capitalize hover:bg-orange-500 hover:text-orange-50"
+                  className="py-2 px-5 bg-orange-200 text-orange-500 rounded-full capitalize"
                   type="button"
                 >
                   preview

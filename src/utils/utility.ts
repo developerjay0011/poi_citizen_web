@@ -1,14 +1,6 @@
 import { v4 } from 'uuid'
-import { store } from '@/redux_store'
 import { AES, mode, pad, enc } from 'crypto-js'
-import ARVIND from '@/assets/politicians-images/ARVIND_KEJRIWAL.jpg'
-import MODI from '@/assets/politicians-images/narendar_modi.jpg'
-import RAHUL from '@/assets/politicians-images/Rahul-Gandhi.jpg'
-import SUNNY from '@/assets/politicians-images/sunny_deol.jpg'
-import AMIT from '@/assets/politicians-images/amit_shah.jpg'
-import MAHUA from '@/assets/politicians-images/mahua_moitra.jpg'
-import { TrendingLeaderBriefDetails } from './typesUtils'
-import { authActions } from '@/redux_store/auth/authSlice'
+export const dateConverter2 = (date: string) => date ? new Intl.DateTimeFormat('en-IN', { month: 'short', day: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit" }).format(new Date(date)) : ""
 
 // Function to convert date in easy to read format
 export const dateConverter = (date: string) =>

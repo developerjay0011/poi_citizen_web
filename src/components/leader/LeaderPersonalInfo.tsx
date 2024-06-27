@@ -14,17 +14,15 @@ import {
 import { MdBloodtype } from "react-icons/md";
 import { RootState } from "@/redux_store";
 import moment from "moment";
-interface LeaderPersonalInfoProps {}
+interface LeaderPersonalInfoProps { }
 
 
 
 export const LeaderPersonalInfo: FC<LeaderPersonalInfoProps> = () => {
-  const leaderData: any = cusSelector(
-    (state: RootState) => state.auth.leaderData
-  );
+  const leaderData: any = cusSelector((state: RootState) => state.auth.leaderData);
   return (
     <>
-      <CommonBox title="Personal info">
+      <CommonBox title="Personal info" className="overflow-hidden" >
         <section className="py-6">
           {/* ABOUT */}
           <PersonalBriefInfo
@@ -95,9 +93,8 @@ const PersonalBriefInfo: FC<{
           <span className="font-[500] capitalize text-[15px]">{heading}</span>
         </p>
         <p
-          className={`text-[14px] pl-7 ${
-            heading.toLowerCase().includes("about") && "text-justify"
-          }`}
+          className={`text-[14px] pl-7 ${heading.toLowerCase().includes("about") && "text-justify"
+            }`}
         >
           {data}
         </p>

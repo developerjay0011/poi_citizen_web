@@ -8,10 +8,13 @@ import { BsThreeDots } from 'react-icons/bs'
 interface FollowerProps {
   displayImg: string | StaticImageData
   data: any,
+  item?: any
   handleUnfollow: (id: string) => void
+  name?: any
+  other?: boolean
 }
 
-export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }) => {
+export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow, other }) => {
   return (
     <div className='border rounded-md bg-white p-4 flex gap-2 items-center relative'>
       <CustomImage
@@ -29,7 +32,7 @@ export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow }
 
           {data?.leaderid && <span className='text-[14px] font-normal'>{data?.designation}</span>}
         </Link>
-        {data?.leaderid &&
+        {(data?.leaderid && other == false) &&
           <p className='text-[14px] flex justify-between'>
             {data?.followers} followers
             <button

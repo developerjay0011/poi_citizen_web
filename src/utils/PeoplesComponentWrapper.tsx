@@ -7,6 +7,7 @@ interface PeoplesComponentWrapperProps {
   searchStr: string
   setSearchStr: (val: string) => void
   heading: string
+  rightButton?: any
 }
 
 export const PeoplesComponentWrapper: FC<PeoplesComponentWrapperProps> = ({

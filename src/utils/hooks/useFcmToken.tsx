@@ -33,12 +33,9 @@ const useFcmToken = () => {
                         });
                         if (currentToken) {
                             setToken(currentToken);
-                            console.log(currentToken)
                             setCookie(CITIZEN_FCM_TOKEN_KEY, JSON.stringify(currentToken))
                         } else {
-                            console.log(
-                                'No registration token available. Request permission to generate one.'
-                            );
+                            console.log('No registration token available. Request permission to generate one.');
                         }
                     }
                 }

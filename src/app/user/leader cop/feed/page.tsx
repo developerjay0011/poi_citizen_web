@@ -1,5 +1,6 @@
 'use client'
-import { LeaderTimeLinePage } from '@/components/otherleader/TimeLinePage'
+import { LeaderTimeLinePage } from '@/components/leader/TimeLinePage'
+import { TimeLinePage } from '@/components/posts/TimeLinePage'
 import { ShortcutsBox } from '@/components/timlineComponents/ShortcutsBox'
 import { FC } from 'react'
 
@@ -11,7 +12,11 @@ const CitizenProfileFeedPage: FC = () => {
         <div className='flex flex-col gap-5 self-start max-[1200px]:hidden w-[23%]'>
           <ShortcutsBox />
         </div>
-        <LeaderTimeLinePage />
+
+        {/* LeaderFeed  */}
+
+        <LeaderTimeLinePage/>
+      
       </div>
     </section>
   )
