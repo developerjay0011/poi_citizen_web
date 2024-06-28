@@ -9,8 +9,8 @@ import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { useSearchParams } from 'next/navigation'
 import { LeaderNavbar } from "@/components/leader/LeaderNavbar";
-import LeaderProfilePage from "./about/page";
 import { getFollowering, getFollowers, getLeaderAddedStories, GetLeaderAddedPosts } from "@/redux_store/leader/leaderAPI";
+import { Leaderdata } from "./Leaderdata";
 
 const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
   const { leaderData } = cusSelector((st) => st.auth);
@@ -77,8 +77,8 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
           {/* Leader Nav */}
           <LeaderNavbar type={type} setType={(i: any) => setType(i)} />
           <div className='ml-auto flex items-center gap-8 max-[450px]:ml-0 max-[450px]:gap-4'>
-            {/* <div onClick={() => setType("feed")} className={`flex flex-col items-center font-[500] capitalize cursor-pointer ${type == "feed" && " text-orange-500 "}`}>
-              posts
+            {/* <div onClick={() => setType("about")} className={`flex flex-col items-center font-[500] capitalize cursor-pointer ${type == "feed" && " text-orange-500 "}`}>
+            about
               <span className='text-orange-500 text-2xl font-normal'>
                 {leaderData?.posts?.length}
               </span>
@@ -98,16 +98,17 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
           </div>
         </div>
       </section>
+      <section>
+        {<Leaderdata
+          type={type}
+          leader_id={id}
+          following={following}
+          followers={followers}
+          stories={stories}
+          posts={posts}
+        />}
+      </section>
 
-      {/* Data will get rendered acc. to route clicked */}
-      <section className="w-full">{<LeaderProfilePage
-        type={type}
-        leader_id={id}
-        following={following}
-        followers={followers}
-        stories={stories}
-        posts={posts}
-      />}</section>
     </div>
   );
 };
