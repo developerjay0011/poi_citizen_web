@@ -63,13 +63,13 @@ export interface UserDetails {
   about_me: string
   country: string
   created_date: string
-  address:string
+  address: string
   stateid: string
   assemblyid: string
   pincode: string
   parliamentaryid: string
-  signature:string
-  
+  signature: string
+
 }
 
 export type UserType = 'leader' | 'citizen' | 'emerging-leader' | ''
@@ -108,9 +108,9 @@ export interface Comment {
   commentText: string
   createdDate: string
   comments: NestedComment[]
-  comment_text : string;
-  created_date : string;
-  userimg? : string | null;
+  comment_text: string;
+  created_date: string;
+  userimg?: string | null;
 }
 
 export interface NestedComment {
@@ -139,9 +139,9 @@ export interface PostDetails {
   leaderid: string;
   updatePost: any;
   types: string
-  name:string
-  userimages:any
-  allData:any
+  name: string
+  userimages: any
+  allData: any
 }
 
 export interface NewPostFields {
@@ -184,7 +184,7 @@ export interface Attachments {
 }
 
 export interface RequestComplaintData extends RequestComplaintFormFields {
-  id:string
+  id: string
   attachments: Attachments[];
 }
 
@@ -225,6 +225,15 @@ export interface TrendingLeaderBriefDetails {
   designation: string
   username: string
   id: string
-  following:any
-  unfollow:boolean
+  following: any
+  unfollow: boolean
+}
+export const LEADER_IDS = {
+  // mpID: '649ebf20c47c520495a02cbd',
+  mpID: '65b252f4af64d588b642fb98',
+  leaderID: '6486e2530b653899171a9bdb',
+  emergingLeaderID: '649e8aedd33f7f84f03820f2',
+  mlaID: '65b252ebaf64d588b642fb97',
+  lokSabhaID: 'lok sabha',
+  rajyaSabhaID: 'rajya sabha',
 }

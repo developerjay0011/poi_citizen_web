@@ -11,6 +11,7 @@ import { useSearchParams } from 'next/navigation'
 import { LeaderNavbar } from "@/components/leader/LeaderNavbar";
 import { getFollowering, getFollowers, getLeaderAddedStories, GetLeaderAddedPosts } from "@/redux_store/leader/leaderAPI";
 import { Leaderdata } from "./Leaderdata";
+import { LEADER_IDS } from "@/utils/typesUtils";
 
 const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
   const { leaderData } = cusSelector((st) => st.auth);
@@ -40,7 +41,6 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
     })();
   }, [dispatch, id]);
 
-
   return (
     <div className="flex flex-col gap-5">
       <section className="flex flex-col text-sky-950 border-b border-l border-r w-full">
@@ -69,9 +69,17 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
             <h5 className="flex flex-col items-left text-xl font-[600] capitalize">
               {leaderData?.personal_info?.last_name && leaderData?.personal_info?.first_name ? leaderData?.personal_info?.first_name + " " + leaderData?.personal_info?.last_name : leaderData?.personal_info?.first_name}
             </h5>
-            <span className='text-[14px] font-normal'>
-              {leaderData?.political_info?.political_party && leaderData?.political_info?.political_party + " ( " + (leaderData?.political_info?.designation || leaderData?.political_info?.post_in_party) + " )"}
-            </span>
+            <h5 className='text-[14px] font-normal'>
+              {leaderData?.political_info?.political_party}
+            </h5>
+            <h5 className='text-[14px] font-normal'>
+              {leaderData?.political_info?.designation || leaderData?.political_info?.post_in_party || " "}
+            </h5>
+            {leaderData?.political_info?.parliament_house &&
+              <h5 className='text-[14px] font-normal capitalize'>
+                {leaderData?.political_info?.parliament_house}{" - "}
+              </h5>
+            }
           </div>
 
           {/* Leader Nav */}
