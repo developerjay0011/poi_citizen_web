@@ -26,20 +26,21 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
   useEffect(() => {
     (async () => {
       if (id) {
+        alert()
         setType('about')
         const res = await getSingleLeader(id);
         dispatch(authActions.setLeaderData(res));
-        const leaderpost = await GetLeaderAddedPosts(id) as any
-        setPost(leaderpost)
         const followingRes = await getFollowers(id as string);
         setFollowers(followingRes as [])
         const followering = await getFollowering(id as string)
         setFollowing(followering as [])
-        const storiesForLeader = await getLeaderAddedStories(id as string, { userImage: leaderData?.image, image: leaderData?.image, name: leaderData?.personal_info?.last_name && leaderData?.personal_info?.first_name ? leaderData?.personal_info?.first_name + " " + leaderData?.personal_info?.last_name : leaderData?.personal_info?.first_name, leaderid: id }) as any
-        setStories(storiesForLeader)
+        // const storiesForLeader = await getLeaderAddedStories(id as string, { userImage: leaderData?.image, image: leaderData?.image, name: leaderData?.personal_info?.last_name && leaderData?.personal_info?.first_name ? leaderData?.personal_info?.first_name + " " + leaderData?.personal_info?.last_name : leaderData?.personal_info?.first_name, leaderid: id }) as any
+        // setStories(storiesForLeader)
+        // const leaderpost = await GetLeaderAddedPosts(id) as any
+        // setPost(leaderpost)
       }
     })();
-  }, [dispatch, id]);
+  }, [id]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -77,7 +78,7 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
             </h5>
             {leaderData?.political_info?.parliament_house &&
               <h5 className='text-[14px] font-normal capitalize'>
-                {leaderData?.political_info?.parliament_house}{" - "}
+                {leaderData?.political_info?.parliament_house}
               </h5>
             }
           </div>
