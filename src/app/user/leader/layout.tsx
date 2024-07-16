@@ -26,7 +26,6 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
   useEffect(() => {
     (async () => {
       if (id) {
-        alert()
         setType('about')
         const res = await getSingleLeader(id);
         dispatch(authActions.setLeaderData(res));
