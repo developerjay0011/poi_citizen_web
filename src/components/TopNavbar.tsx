@@ -1,7 +1,6 @@
 "use client";
 import { FC, useEffect, useState } from "react";
 import POILogo from "@/assets/poi_logo_1.png";
-import MODI from "@/assets/politicians-images/narendar_modi.jpg";
 import Image, { StaticImageData } from "next/image";
 import { FaSearch, FaHamburger } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
@@ -53,50 +52,59 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
         setSearchUserStr('');
     });
   }, [dispatch]);
+
   useEffect(() => {
     (async () => {
-      if (userDetails?.id) {
-        const res = await getProfile(userDetails?.id, dispatch);
-        dispatch(authActions.logIn(res));
+      try {
+        if (userDetails?.id) {
+          const res = await getProfile(userDetails?.id, dispatch);
+          dispatch(authActions.logIn(res));
 
+          const AllLeaderList = await GetAllLeaderList();
+          dispatch(authActions.setLeaderlist(AllLeaderList));
 
-        const AllLeaderList = await GetAllLeaderList();
-        dispatch(authActions.setLeaderlist(AllLeaderList));
+          const CitizenFollowingList = await fetchCitizenFollowingList(userDetails?.id);
+          dispatch(followActions.Following(CitizenFollowingList));
+          const trending = await fetchTrendingLeaderList();
+          dispatch(authActions.Settrendingleader(trending));
+          const LeaderList = await getLeaderList(userDetails?.id);
+          dispatch(complaintActions.setLeader(LeaderList));
 
-        const CitizenFollowingList = await fetchCitizenFollowingList(userDetails?.id);
-        dispatch(followActions.Following(CitizenFollowingList));
-        const trending = await fetchTrendingLeaderList();
-        dispatch(authActions.Settrendingleader(trending));
-        const LeaderList = await getLeaderList(userDetails?.id);
-        dispatch(complaintActions.setLeader(LeaderList));
+          const BirthdayList = await GetBirthdayList();
+          if (BirthdayList?.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
 
-        const BirthdayList = await GetBirthdayList();
-        if (BirthdayList?.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
+          const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
+          if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }
+          const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
+          dispatch(postActions.storeStories(StoriesForCitizen as any));
 
-        const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
-        if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }
-        const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
-        dispatch(postActions.storeStories(StoriesForCitizen as any));
+          const dropdownOption = await getDropdownOption();
+          dispatch(authActions.setDropDownOption(dropdownOption));
 
-        const dropdownOption = await getDropdownOption();
-        dispatch(authActions.setDropDownOption(dropdownOption));
-
-        const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
-        if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }
-        const RaisedRequests = await GetRaisedRequests(userDetails?.id);
-        if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
-        const Suggestions = await GetSuggestions(userDetails?.id);
-        if (Suggestions.length > 0) { dispatch(suggestionActions.storeSuggestions(Suggestions)); }
-      } else {
-        if (!token) {
-          router.push(AuthRoutes.login)
+          const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
+          if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }
+          const RaisedRequests = await GetRaisedRequests(userDetails?.id);
+          if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
+          const Suggestions = await GetSuggestions(userDetails?.id);
+          if (Suggestions.length > 0) { dispatch(suggestionActions.storeSuggestions(Suggestions)); }
+        } else {
+          if (!token) {
+            router.push(AuthRoutes.login)
+          }
         }
+      } catch (error) {
+        console.error(error)
       }
     })();
   }, [dispatch, userDetails?.id, token]);
+
+
+
   let heading = curRoute?.split("/").at(-1)?.includes("-")
     ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
     : curRoute?.split("/").at(-1);
+
+
   const searchFilterFunction = (text: string) => {
     if (text) {
       const newData = leaderlist?.filter(
@@ -111,6 +119,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
       return leaderlist
     };
   }
+
   heading = heading === "user" ? "home" : heading;
 
   return (

@@ -18,7 +18,7 @@ import { cusDispatch } from "@/redux_store/cusHooks";
 import { ForgetPassword } from "../common-forms/ForgetPasswordForm";
 import { AnimatePresence } from "framer-motion";
 import { authActions } from "@/redux_store/auth/authSlice";
-import { CheckCitizenExists, fetchLogin } from "@/redux_store/auth/authAPI";
+import { fetchLogin } from "@/redux_store/auth/authAPI";
 import { setCookie, getCookie } from "cookies-next";
 import { CITIZEN_FCM_TOKEN_KEY, CITIZEN_IP, CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
@@ -68,7 +68,7 @@ export const LoginForm: FC<LoginFormProps> = () => {
       if (loginData?.data) {
         await dispatch(authActions.logIn(loginData?.data));
         sessionStorage.setItem("user", JSON.stringify(loginData?.data));
-        const serializedData = JSON.stringify(loginData?.data);
+        const serializedData = JSON.stringify({ ...loginData?.data, fcm_tokens: "" })
         await setCookie(CITIZEN_USER_INFO, serializedData);
         await setCookie("userData", serializedData);
         await setCookie(CITIZEN_TOKEN_KEY, loginData?.token);

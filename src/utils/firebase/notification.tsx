@@ -11,14 +11,13 @@ import { requestActions } from '@/redux_store/requests/requestSlice';
 import { complaintActions } from '@/redux_store/complaints/complaintSlice';
 import { GetSuggestions } from '@/redux_store/suggestions/suggestionAPI';
 import { suggestionActions } from '@/redux_store/suggestions/suggestionSlice';
-import { cusDispatch, cusSelector } from '@/redux_store/cusHooks';
+import { cusDispatch } from '@/redux_store/cusHooks';
 import { GetPostsForCitizen } from '@/redux_store/post/postApi';
 import { postActions } from '@/redux_store/post/postSlice';
 import { getCookie } from 'cookies-next';
 import { CITIZEN_USER_INFO } from '@/constants/common';
 
 export default function Notificationpage() {
-    const { fcmToken, notificationPermissionStatus } = useFcmToken();
     const router = useRouter();
     const dispatch = cusDispatch();
     let userDetails: any = getCookie(CITIZEN_USER_INFO);
