@@ -6,6 +6,7 @@ import { authSlice } from './auth/authSlice'
 import { postSlice } from './post/postSlice'
 import { followSlice } from './follow/followSlice'
 import { contributionsSlice } from './contributions/contributionsSlice'
+import { commonSlice } from './common/commonSlice'
 
 
 
@@ -17,7 +18,8 @@ export const store = configureStore({
     auth: authSlice.reducer,
     post: postSlice.reducer,
     follow: followSlice.reducer,
-    contribution: contributionsSlice.reducer
+    contribution: contributionsSlice.reducer,
+    common: commonSlice.reducer
   },
 })
 

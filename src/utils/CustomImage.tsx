@@ -1,32 +1,28 @@
 'use client'
-import React, { useEffect } from 'react';
-import { useState } from "react";
+import React, { useState } from 'react';
 import Image, { ImageProps } from 'next/image';
-import NoImg from '@/assets/No_image_available.png'
+import NoImg from '@/assets/No_image_available.png';
 
 interface CustomImageProps extends ImageProps {
   alt: string;
+  className?: string;
 }
 
-const CustomImage: React.FC<CustomImageProps> = ({ src, alt, ...props }) => {
-  const [imageError, setImageError] = useState(!src ? true : false);
-
-  useEffect(() => {
-    setImageError(!src ? true : false)
-  }, [src]);
-
-  // Customize the image wrapper here if needed
+const CustomImage: React.FC<CustomImageProps> = ({ src, alt, className, ...props }) => {
+  const [imageError, setImageError] = useState(false);
+  const imageSrc = !src ? NoImg : imageError ? NoImg : src;
   return (
     <Image
       {...props}
-      src={imageError ? NoImg : src}
+      src={imageSrc}
       alt={alt}
-      priority={true}
       onLoadingComplete={(result) => {
-        if (result.naturalWidth === 0) setImageError(true)
+        if (result.naturalWidth === 0) setImageError(true);
       }}
-      onError={(event) => setImageError(true)}
-      onEmptied={() => setImageError(true)}
+      onError={() => setImageError(true)}
+      loading="lazy"
+      className={className}
+      placeholder="empty"
     />
   );
 };

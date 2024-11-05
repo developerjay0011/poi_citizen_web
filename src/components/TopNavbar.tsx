@@ -31,6 +31,8 @@ import { fetchCitizenFollowingList, fetchFollowLeader, fetchUnFollowLeader } fro
 import { tryCatch } from "@/config/try-catch";
 import toast from "react-hot-toast";
 import { FaUserTimes } from "react-icons/fa";
+import { getLeadersOptions } from "@/redux_store/common/commonAPI";
+import { commonActions } from "@/redux_store/common/commonSlice";
 
 interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
@@ -53,51 +55,125 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     });
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       if (userDetails?.id) {
+  //         const res = await getProfile(userDetails?.id, dispatch);
+  //         dispatch(authActions.logIn(res));
+
+  //         const LeadersDropdown = await getLeadersOptions();
+  //         dispatch(commonActions.setLeaderOptions(LeadersDropdown));
+
+  //         const AllLeaderList = await GetAllLeaderList();
+  //         dispatch(authActions.setLeaderlist(AllLeaderList));
+
+  //         const CitizenFollowingList = await fetchCitizenFollowingList(userDetails?.id);
+  //         dispatch(followActions.Following(CitizenFollowingList));
+  //         const trending = await fetchTrendingLeaderList();
+  //         dispatch(authActions.Settrendingleader(trending));
+  //         const LeaderList = await getLeaderList(userDetails?.id);
+  //         dispatch(complaintActions.setLeader(LeaderList));
+
+  //         const BirthdayList = await GetBirthdayList();
+  //         if (BirthdayList?.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
+
+  //         const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
+  //         if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }
+  //         const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
+  //         dispatch(postActions.storeStories(StoriesForCitizen as any));
+
+  //         const dropdownOption = await getDropdownOption();
+  //         dispatch(authActions.setDropDownOption(dropdownOption));
+
+  //         const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
+  //         if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }
+  //         const RaisedRequests = await GetRaisedRequests(userDetails?.id);
+  //         if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
+  //         const Suggestions = await GetSuggestions(userDetails?.id);
+  //         if (Suggestions.length > 0) { dispatch(suggestionActions.storeSuggestions(Suggestions)); }
+  //       } else {
+  //         if (!token) {
+  //           router.push(AuthRoutes.login)
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   })();
+  // }, [dispatch, userDetails?.id, token]);
+
   useEffect(() => {
     (async () => {
       try {
         if (userDetails?.id) {
-          const res = await getProfile(userDetails?.id, dispatch);
-          dispatch(authActions.logIn(res));
+          const [
+            profileRes,
+            leadersDropdown,
+            allLeaderList,
+            citizenFollowingList,
+            trendingLeaders,
+            leaderList,
+            birthdayList,
+            postsForCitizen,
+            storiesForCitizen,
+            dropdownOption,
+            raisedComplaints,
+            raisedRequests,
+            suggestions,
+          ] = await Promise.all([
+            getProfile(userDetails?.id, dispatch),
+            getLeadersOptions(),
+            GetAllLeaderList(),
+            fetchCitizenFollowingList(userDetails?.id),
+            fetchTrendingLeaderList(),
+            getLeaderList(userDetails?.id),
+            GetBirthdayList(),
+            GetPostsForCitizen(userDetails?.id),
+            GetStoriesForCitizen(userDetails?.id),
+            getDropdownOption(),
+            GetRaisedComplaints(userDetails?.id),
+            GetRaisedRequests(userDetails?.id),
+            GetSuggestions(userDetails?.id),
+          ]);
 
-          const AllLeaderList = await GetAllLeaderList();
-          dispatch(authActions.setLeaderlist(AllLeaderList));
+          dispatch(authActions.logIn(profileRes));
+          dispatch(commonActions.setLeaderOptions(leadersDropdown));
+          dispatch(authActions.setLeaderlist(allLeaderList));
+          dispatch(followActions.Following(citizenFollowingList));
+          dispatch(authActions.Settrendingleader(trendingLeaders));
+          dispatch(complaintActions.setLeader(leaderList));
 
-          const CitizenFollowingList = await fetchCitizenFollowingList(userDetails?.id);
-          dispatch(followActions.Following(CitizenFollowingList));
-          const trending = await fetchTrendingLeaderList();
-          dispatch(authActions.Settrendingleader(trending));
-          const LeaderList = await getLeaderList(userDetails?.id);
-          dispatch(complaintActions.setLeader(LeaderList));
+          if (birthdayList?.length >= 0) {
+            dispatch(authActions.setBirthdayList(birthdayList));
+          }
 
-          const BirthdayList = await GetBirthdayList();
-          if (BirthdayList?.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
+          if (postsForCitizen?.length > 0) {
+            dispatch(postActions.setPost(postsForCitizen));
+          }
 
-          const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
-          if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }
-          const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
-          dispatch(postActions.storeStories(StoriesForCitizen as any));
-
-          const dropdownOption = await getDropdownOption();
+          dispatch(postActions.storeStories(storiesForCitizen as any));
           dispatch(authActions.setDropDownOption(dropdownOption));
 
-          const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
-          if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }
-          const RaisedRequests = await GetRaisedRequests(userDetails?.id);
-          if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
-          const Suggestions = await GetSuggestions(userDetails?.id);
-          if (Suggestions.length > 0) { dispatch(suggestionActions.storeSuggestions(Suggestions)); }
-        } else {
-          if (!token) {
-            router.push(AuthRoutes.login)
+          if (raisedComplaints?.length > 0) {
+            dispatch(complaintActions.storeComplaints(raisedComplaints));
           }
+
+          if (raisedRequests?.length > 0) {
+            dispatch(requestActions.storeRequest(raisedRequests));
+          }
+
+          if (suggestions?.length > 0) {
+            dispatch(suggestionActions.storeSuggestions(suggestions));
+          }
+        } else if (!token) {
+          router.push(AuthRoutes.login);
         }
       } catch (error) {
-        console.error(error)
+        console.error("Error in useEffect:", error);
       }
     })();
   }, [dispatch, userDetails?.id, token]);
-
 
 
   let heading = curRoute?.split("/").at(-1)?.includes("-")
@@ -147,7 +223,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
 
           {/* Search box */}
           {searchUserStr.length > 0 && (
-            <ul className="absolute rounded-md shadow-md border bg-white overflow-hidden top-[110%] left-0 w-full z-[100]">
+            <ul className="absolute rounded-md shadow-md border bg-white overflow-x-hidden overflow-y-auto main_scrollbar max-h-[80vh] top-[110%] left-0 w-full z-[100]">
               {searchFilterFunction(searchUserStr)?.map((item: any) =>
                 <BriefUserInfo
                   key={item?.id}
@@ -267,7 +343,7 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
             id="searchBox" />
           <FaSearch className="absolute top-1/2 right-5 translate-y-[-50%] text-opacity-70 text-sky-50 text-xl" />
           {searchUserStr.length > 0 && (
-            <ul className="absolute rounded-md shadow-md border bg-white overflow-hidden top-[110%] left-0 w-full z-[100]">
+            <ul className="absolute rounded-md shadow-md border bg-white overflow-x-hidden overflow-y-auto main_scrollbar max-h-[80vh] top-[110%] left-0 w-full z-[100]">
               {searchFilterFunction(searchUserStr)?.map((item: any) =>
                 <BriefUserInfo
                   key={item?.id}

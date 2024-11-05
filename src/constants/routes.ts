@@ -34,7 +34,8 @@ export const APIRoutes = {
   // Common ENdpoints
   sendOTP: `${API_Prefix}/Common/SendOtp`,
   verifyOTP: `${API_Prefix}/Common/VerifyOtp`,
-  /* getLeadersForDropdown: `${API_Prefix}/Common/GetAddLeadersDropdown`, */
+  getLeadersForDropdown: `${API_Prefix}/common/getAddLeadersDropdown`,
+
 
   // Leader Endpoints
   login: `${API_Prefix}/Citizen/Login`,
