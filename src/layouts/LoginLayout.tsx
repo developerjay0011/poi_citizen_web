@@ -1,5 +1,6 @@
+'use client'
 import Image from "next/image";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import BackgroundImg from "@/assets/background.jpg";
 import Logo from "@/assets/favicon.png";
 import { WebsiteInfoBox } from "@/components/login_register/WebsiteInfoBox";
@@ -9,12 +10,23 @@ import { BsAndroid2, BsApple } from "react-icons/bs";
 import QRCode from "react-qr-code";
 import Link from "next/link";
 import { AuthRoutes } from "@/constants/routes";
+import { fetchAppinfo } from "@/redux_store/auth/authAPI";
 
 interface LoginPageProps {
   children: ReactNode;
 }
 
 export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
+  const [appData, setAppData] = useState<any>({});
+
+  useEffect(() => {
+    (async () => {
+      const loginData = await fetchAppinfo();
+      setAppData(loginData)
+    })()
+  }, [])
+
+
   return (
     <>
       <section className="min-h-[100dvh] w-full flex  items-center justify-center relative">
@@ -54,18 +66,18 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
             {/* Website stats */}
             <div className="flex items-center justify-between mt-10 w-[80%] max-[1300px]:w-full">
               <WebsiteInfoBox
-                dataCount={0}
+                dataCount={appData?.totalCitizens || 0}
                 title="registered peoples"
                 icon={<FaPeopleGroup className="text-4xl" />}
               />
               <WebsiteInfoBox
-                dataCount={0}
+                dataCount={appData?.totalPosts || 0}
                 title="posts published"
                 icon={<MdDynamicFeed className="text-4xl" />}
               />
               <WebsiteInfoBox
-                dataCount={0}
-                title="active users"
+                dataCount={appData?.totalLeaders || 0}
+                title="active leader"
                 icon={<FaUser className="text-4xl" />}
               />
             </div>
@@ -85,10 +97,10 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
                 <p>Download Mobile App and Scan QR Code to login</p>
 
                 <div className="flex items-center gap-10">
-                  <p className="flex items-center gap-3">
+                  <p className="flex items-center gap-3" style={{ cursor: "pointer" }} onClick={() => { window.open("https://play.google.com/store/apps/details?id=com.poi.citizen", '_blank', 'noopener,noreferrer') }} >
                     <BsAndroid2 className="text-3xl" /> <span>Android</span>
                   </p>
-                  <p className="flex items-center gap-3">
+                  <p className="flex items-center gap-3 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => { window.open("https://apps.apple.com/app/", '_blank', 'noopener,noreferrer') }} >
                     <BsApple className="text-3xl" /> <span>IOS</span>
                   </p>
                 </div>
@@ -102,18 +114,18 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
           {/* FOR Screens less than 1090px */}
           <div className="hidden px-5 items-center justify-between w-full max-lg:flex max-[500px]:hidden">
             <WebsiteInfoBox
-              dataCount={0}
+              dataCount={appData?.totalCitizens || 0}
               title="registered peoples"
               icon={<FaPeopleGroup className="text-4xl" />}
             />
             <WebsiteInfoBox
-              dataCount={0}
+              dataCount={appData?.totalPosts || 0}
               title="posts published"
               icon={<MdDynamicFeed className="text-4xl" />}
             />
             <WebsiteInfoBox
-              dataCount={0}
-              title="active users"
+              dataCount={appData?.totalLeaders || 0}
+              title="active leader"
               icon={<FaUser className="text-4xl" />}
             />
           </div>
@@ -123,7 +135,7 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
             {/* QR */}
             <figure className="w-[7.5rem] aspect-square p-2 bg-white">
               <QRCode
-                value="https://www.youtube.com/@politiciansindia"
+                value="https://www.facebook.com/PoliticiansOfIndia"
                 className="w-full h-full object-contain object-center"
               />
             </figure>
@@ -133,10 +145,10 @@ export const LoginLayout: FC<LoginPageProps> = ({ children }) => {
               <p>Download Mobile App and Scan QR Code to login</p>
 
               <div className="flex items-center gap-10">
-                <p className="flex items-center gap-3">
+                <p className="flex items-center gap-3" style={{ cursor: "pointer" }} onClick={() => { window.open("https://play.google.com/store/apps/details?id=com.poi.citizen", '_blank', 'noopener,noreferrer') }} >
                   <BsAndroid2 className="text-3xl" /> <span>Android</span>
                 </p>
-                <p className="flex items-center gap-3">
+                <p className="flex items-center gap-3" style={{ cursor: "pointer" }} onClick={() => { window.open("https://apps.apple.com/app/", '_blank', 'noopener,noreferrer') }} >
                   <BsApple className="text-3xl" /> <span>IOS</span>
                 </p>
               </div>

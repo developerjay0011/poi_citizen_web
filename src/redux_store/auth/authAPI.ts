@@ -149,3 +149,11 @@ export const GetAllLeaderList = async () => {
     }
   );
 };
+
+
+export const fetchAppinfo = async () => {
+  return tryCatch(async () => {
+    const res = await Axios.get(APIRoutes.GetLoginScreenCount)
+    return res.data;
+  });
+};

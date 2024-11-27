@@ -39,6 +39,7 @@ export const APIRoutes = {
 
   // Leader Endpoints
   login: `${API_Prefix}/Citizen/Login`,
+  GetLoginScreenCount: `${API_Prefix}/Leader/GetLoginScreenCount`,
   register: `${API_Prefix}/Citizen/Registration`,
   ForgotPassword: `${API_Prefix}/Citizen/ForgotPassword`,
   getSingleCitizen: `${API_Prefix}/Citizen/getSingleCitizen/{{citizenid}}`,

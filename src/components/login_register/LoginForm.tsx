@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { BiUser } from "react-icons/bi";
 import { LuLock } from "react-icons/lu";
 import { AiOutlineKey } from "react-icons/ai";
@@ -18,7 +18,7 @@ import { cusDispatch } from "@/redux_store/cusHooks";
 import { ForgetPassword } from "../common-forms/ForgetPasswordForm";
 import { AnimatePresence } from "framer-motion";
 import { authActions } from "@/redux_store/auth/authSlice";
-import { fetchLogin } from "@/redux_store/auth/authAPI";
+import { fetchAppinfo, fetchLogin } from "@/redux_store/auth/authAPI";
 import { setCookie, getCookie } from "cookies-next";
 import { CITIZEN_FCM_TOKEN_KEY, CITIZEN_IP, CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
@@ -83,6 +83,8 @@ export const LoginForm: FC<LoginFormProps> = () => {
       setLoggingIn(false);
     }
   };
+
+
 
   return (
     <>
