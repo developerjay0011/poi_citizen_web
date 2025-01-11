@@ -2,7 +2,7 @@
 import { CommonBox } from "@/utils/CommonBox";
 import Link from "next/link";
 import { FC, ReactNode, useEffect, useState } from "react";
-import { FaFacebook, FaInstagram, FaRedhat, FaTwitter ,FaAddressCard,FaStar, FaSign } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaRedhat, FaTwitter, FaAddressCard, FaStar, FaSign } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { FaSignature } from "react-icons/fa6";
@@ -82,7 +82,7 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
         <div className="grid grid-cols-2 py-5 gap-y-5 max-[550px]:grid-cols-1">
           <GeneralInfo Icon={FaAddressCard} heading="address">
             <p className="text-[14px] pl-7 text-justify">
-              {userDetails?.address} ,Pincode : {userDetails?.pincode}
+              {userDetails?.address}, Pincode : {userDetails?.pincode}
             </p>
           </GeneralInfo>
           <GeneralInfo Icon={FaStar} heading="state">
@@ -90,12 +90,17 @@ export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
               {userDetails?.state_name}
             </p>
           </GeneralInfo>
+          <GeneralInfo Icon={FaStar} heading="Pincode">
+            <p className="text-[14px] pl-7 text-justify">
+              {userDetails?.pincode}
+            </p>
+          </GeneralInfo>
           <GeneralInfo Icon={FaStar} heading="Assembly Constituency">
             <p className="text-[14px] pl-7 text-justify">
               {userDetails?.assembly_name}
             </p>
           </GeneralInfo>
-          <GeneralInfo Icon={FaStar} heading="Parliament House">
+          <GeneralInfo Icon={FaStar} heading="Parliament Constituency">
             <p className="text-[14px] pl-7 text-justify">
               {userDetails?.parliamentary_name}
             </p>

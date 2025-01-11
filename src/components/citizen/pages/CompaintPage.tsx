@@ -1,11 +1,11 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
 import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaints";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import { DeleteComplaint, getLeaderList, GetRaisedComplaints, RaiseComplaint, } from "@/redux_store/complaints/complaintsApi";
+import { DeleteComplaint, GetRaisedComplaints, RaiseComplaint, } from "@/redux_store/complaints/complaintsApi";
 import toast from "react-hot-toast";
 import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { tryCatch } from "@/config/try-catch";
@@ -23,6 +23,7 @@ export const ComplaintPage: FC = () => {
   const { userDetails } = cusSelector((st) => st.auth);
   const showForm = () => setShowComplaintForm(true);
   const closeForm = () => setShowComplaintForm(false);
+  const searchFilteredComplaints = complaints?.filter((el) => searchString ? el.subject.toLowerCase().includes(searchString) : el).slice(0, sort == "All" ? complaints?.length : sort);
 
   const getComplaint = async () => {
     tryCatch(
@@ -35,16 +36,7 @@ export const ComplaintPage: FC = () => {
         }
       })
   };
-  const getLeader = async () => {
-    tryCatch(
-      async () => {
-        if (userDetails?.id) {
-          const data = await getLeaderList(userDetails?.id);
-          dispatch(complaintActions.setLeader(data));
-        }
-      }
-    )
-  };
+
   const addNewComplaintHandler = async (complaint: any) => {
     const formData = new FormData();
     formData.append("id", isEdit ? selectedValue?.id : "");
@@ -66,7 +58,7 @@ export const ComplaintPage: FC = () => {
       const item: any = complaint.to[i]?.id;
       formData.append("to", item);
     }
- 
+
 
     tryCatch(
       async () => {
@@ -81,10 +73,6 @@ export const ComplaintPage: FC = () => {
     closeForm();
   };
 
-  const searchFilteredComplaints = complaints.filter((el) =>
-    searchString ? el.subject.toLowerCase().includes(searchString) : el
-  ).slice(0, sort == "All" ? complaints?.length :sort);
-
   const handleDelete = async (id: string) => {
     tryCatch(
       async () => {
@@ -95,11 +83,6 @@ export const ComplaintPage: FC = () => {
         }
       })
   };
-
-  useEffect(() => {
-    getComplaint()
-    getLeader();
-  }, []);
 
   return (
     <>

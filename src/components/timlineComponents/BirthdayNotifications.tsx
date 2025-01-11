@@ -9,8 +9,6 @@ import CustomImage from '@/utils/CustomImage'
 import { getImageUrl } from '@/config/get-image-url'
 import dob from "@/assets/dob-cake.gif"
 
-
-
 const prefixArr = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th']
 
 interface BirthdayNotificationsProps { }
@@ -26,12 +24,6 @@ export const BirthdayNotifications: FC<BirthdayNotificationsProps> = () => {
   const date = new Date(birthday.dob).getDate()
   const month = new Date(birthday.dob).toLocaleDateString('en-IN', { month: 'long', })
 
-  const sendGreetingHanlder = () => {
-    birthday.sendGreetings = !birthday.sendGreetings
-    setGreetingsSent((lst) => !lst) // temp
-  }
-
-  // TEMP
   useEffect(() => {
     setGreetingsSent(birthday.sendGreetings)
   }, [birthday])

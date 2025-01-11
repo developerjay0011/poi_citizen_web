@@ -14,7 +14,7 @@ export const contributionsSlice = createSlice({
   initialState: init,
   reducers: {
     storeContributions(state, action: PayloadAction<any[]>) {
-      state.contributions = action.payload
+      state.contributions = Array.isArray(action.payload) ? action.payload : []
     }
   },
 })

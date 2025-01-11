@@ -16,10 +16,10 @@ export const postSlice = createSlice({
   initialState: init,
   reducers: {
     setPost(state, action: any) {
-      state.allPosts = action.payload;
+      state.allPosts = Array.isArray(action.payload) ? action.payload : []
     },
     storeStories(state, action: any) {
-      state.stories = action.payload
+      state.stories = Array.isArray(action.payload) ? action.payload : []
     },
   },
 });

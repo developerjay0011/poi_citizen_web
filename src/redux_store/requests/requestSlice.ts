@@ -18,7 +18,7 @@ export const requestSlice = createSlice({
   initialState: init,
   reducers: {
     storeRequest(state, action: PayloadAction<RequestComplaintDetails[]>) {
-      state.requests = action.payload
+      state.requests = Array.isArray(action.payload) ? action.payload : []
     },
     setSubmitting(state, action: PayloadAction<boolean>) {
       state.submitting = action.payload

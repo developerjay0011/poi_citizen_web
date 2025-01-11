@@ -1,15 +1,10 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { TrendingLeader } from "./TrendingLeader";
 import { fetchTrendingLeaderList } from "@/redux_store/auth/authAPI";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { fetchCitizenFollowingList } from "@/redux_store/follow/followAPI";
 import { followActions } from "@/redux_store/follow/followSlice";
 import { authActions } from "@/redux_store/auth/authSlice";
-import { useRouter } from "next/router";
-
-interface TrendingLeaderProps {
-  router: any
-}
 
 export const TrendingLeaders: FC = () => {
   const { userDetails, trendingleader } = cusSelector((st) => st.auth);
@@ -23,9 +18,6 @@ export const TrendingLeaders: FC = () => {
       dispatch(authActions.Settrendingleader(trending));
     }
   };
-  useEffect(() => {
-    Gelfollowinglist();
-  }, [userDetails]);
 
   const isFollow = (id: string) => {
     if (Array.isArray(following)) {
@@ -33,6 +25,7 @@ export const TrendingLeaders: FC = () => {
       return follows?.leaderid ? true : false;
     } else false;
   };
+
   return (
     <>
       <section

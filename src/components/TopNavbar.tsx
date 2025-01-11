@@ -12,39 +12,31 @@ import { AnimatePresence } from "framer-motion";
 import { MobileLeftNavbar } from "./MobileLeftNavBar";
 import { AdminControls } from "./AdminControls";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
-import { authActions } from "@/redux_store/auth/authSlice";
-import { GetAllLeaderList, GetBirthdayList, fetchTrendingLeaderList, getDropdownOption, getProfile } from "@/redux_store/auth/authAPI";
-import { getImageUrl } from "@/config/get-image-url";
-import CustomImage from "@/utils/CustomImage";
-import { getCookie } from "cookies-next";
-import { CITIZEN_TOKEN_KEY } from "@/constants/common";
-import { complaintActions } from "@/redux_store/complaints/complaintSlice";
-import { GetRaisedComplaints, getLeaderList } from "@/redux_store/complaints/complaintsApi";
-import { GetRaisedRequests } from "@/redux_store/requests/requestAPI";
-import { requestActions } from "@/redux_store/requests/requestSlice";
-import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
-import { GetSuggestions } from "@/redux_store/suggestions/suggestionAPI";
-import { GetPostsForCitizen, GetStoriesForCitizen } from "@/redux_store/post/postApi";
-import { postActions } from "@/redux_store/post/postSlice";
+
 import { followActions } from "@/redux_store/follow/followSlice";
 import { fetchCitizenFollowingList, fetchFollowLeader, fetchUnFollowLeader } from "@/redux_store/follow/followAPI";
 import { tryCatch } from "@/config/try-catch";
 import toast from "react-hot-toast";
+
 import { FaUserTimes } from "react-icons/fa";
-import { getLeadersOptions } from "@/redux_store/common/commonAPI";
-import { commonActions } from "@/redux_store/common/commonSlice";
+import { getImageUrl } from "@/config/get-image-url";
+import CustomImage from "@/utils/CustomImage";
+import { getCookie } from "cookies-next";
+import { CITIZEN_TOKEN_KEY } from "@/constants/common";
 
 interface TopNavbarProps { }
 export const TopNavbar: FC<TopNavbarProps> = () => {
+  const curRoute = usePathname();
+  const dispatch = cusDispatch();
   const router = useRouter();
   const { userDetails, leaderlist } = cusSelector((st) => st.auth);
   const { following } = cusSelector((st) => st.follow);
-  const curRoute = usePathname();
-  const dispatch = cusDispatch();
+  let heading = curRoute?.split("/").at(-1)?.includes("-") ? curRoute?.split("/").at(-1)?.replaceAll("-", " ") : curRoute?.split("/").at(-1);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
   const [searchUserStr, setSearchUserStr] = useState("");
   const [showMobileNav, setShowMobileNav] = useState(false);
   let token: any = getCookie(CITIZEN_TOKEN_KEY);
+
   useEffect(() => {
     document.addEventListener("click", (e) => {
       if (!(e.target as HTMLElement).closest("#userDisplayPic"))
@@ -55,130 +47,10 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     });
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       if (userDetails?.id) {
-  //         const res = await getProfile(userDetails?.id, dispatch);
-  //         dispatch(authActions.logIn(res));
-
-  //         const LeadersDropdown = await getLeadersOptions();
-  //         dispatch(commonActions.setLeaderOptions(LeadersDropdown));
-
-  //         const AllLeaderList = await GetAllLeaderList();
-  //         dispatch(authActions.setLeaderlist(AllLeaderList));
-
-  //         const CitizenFollowingList = await fetchCitizenFollowingList(userDetails?.id);
-  //         dispatch(followActions.Following(CitizenFollowingList));
-  //         const trending = await fetchTrendingLeaderList();
-  //         dispatch(authActions.Settrendingleader(trending));
-  //         const LeaderList = await getLeaderList(userDetails?.id);
-  //         dispatch(complaintActions.setLeader(LeaderList));
-
-  //         const BirthdayList = await GetBirthdayList();
-  //         if (BirthdayList?.length >= 0) { dispatch(authActions.setBirthdayList(BirthdayList)); }
-
-  //         const PostsForCitizen = await GetPostsForCitizen(userDetails?.id);
-  //         if (PostsForCitizen?.length > 0) { dispatch(postActions.setPost(PostsForCitizen)); }
-  //         const StoriesForCitizen = await GetStoriesForCitizen(userDetails?.id);
-  //         dispatch(postActions.storeStories(StoriesForCitizen as any));
-
-  //         const dropdownOption = await getDropdownOption();
-  //         dispatch(authActions.setDropDownOption(dropdownOption));
-
-  //         const RaisedComplaints = await GetRaisedComplaints(userDetails?.id);
-  //         if (RaisedComplaints.length > 0) { dispatch(complaintActions.storeComplaints(RaisedComplaints)); }
-  //         const RaisedRequests = await GetRaisedRequests(userDetails?.id);
-  //         if (RaisedRequests.length > 0) { dispatch(requestActions.storeRequest(RaisedRequests)); }
-  //         const Suggestions = await GetSuggestions(userDetails?.id);
-  //         if (Suggestions.length > 0) { dispatch(suggestionActions.storeSuggestions(Suggestions)); }
-  //       } else {
-  //         if (!token) {
-  //           router.push(AuthRoutes.login)
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error(error)
-  //     }
-  //   })();
-  // }, [dispatch, userDetails?.id, token]);
-
   useEffect(() => {
-    (async () => {
-      try {
-        if (userDetails?.id) {
-          const [
-            profileRes,
-            leadersDropdown,
-            allLeaderList,
-            citizenFollowingList,
-            trendingLeaders,
-            leaderList,
-            birthdayList,
-            postsForCitizen,
-            storiesForCitizen,
-            dropdownOption,
-            raisedComplaints,
-            raisedRequests,
-            suggestions,
-          ] = await Promise.all([
-            getProfile(userDetails?.id, dispatch),
-            getLeadersOptions(),
-            GetAllLeaderList(),
-            fetchCitizenFollowingList(userDetails?.id),
-            fetchTrendingLeaderList(),
-            getLeaderList(userDetails?.id),
-            GetBirthdayList(),
-            GetPostsForCitizen(userDetails?.id),
-            GetStoriesForCitizen(userDetails?.id),
-            getDropdownOption(),
-            GetRaisedComplaints(userDetails?.id),
-            GetRaisedRequests(userDetails?.id),
-            GetSuggestions(userDetails?.id),
-          ]);
-
-          dispatch(authActions.logIn(profileRes));
-          dispatch(commonActions.setLeaderOptions(leadersDropdown));
-          dispatch(authActions.setLeaderlist(allLeaderList));
-          dispatch(followActions.Following(citizenFollowingList));
-          dispatch(authActions.Settrendingleader(trendingLeaders));
-          dispatch(complaintActions.setLeader(leaderList));
-
-          if (birthdayList?.length >= 0) {
-            dispatch(authActions.setBirthdayList(birthdayList));
-          }
-
-          if (postsForCitizen?.length > 0) {
-            dispatch(postActions.setPost(postsForCitizen));
-          }
-
-          dispatch(postActions.storeStories(storiesForCitizen as any));
-          dispatch(authActions.setDropDownOption(dropdownOption));
-
-          if (raisedComplaints?.length > 0) {
-            dispatch(complaintActions.storeComplaints(raisedComplaints));
-          }
-
-          if (raisedRequests?.length > 0) {
-            dispatch(requestActions.storeRequest(raisedRequests));
-          }
-
-          if (suggestions?.length > 0) {
-            dispatch(suggestionActions.storeSuggestions(suggestions));
-          }
-        } else if (!token) {
-          router.push(AuthRoutes.login);
-        }
-      } catch (error) {
-        console.error("Error in useEffect:", error);
-      }
-    })();
+    if (!token) { router.push(AuthRoutes.login) }
   }, [dispatch, userDetails?.id, token]);
 
-
-  let heading = curRoute?.split("/").at(-1)?.includes("-")
-    ? curRoute?.split("/").at(-1)?.replaceAll("-", " ")
-    : curRoute?.split("/").at(-1);
 
 
   const searchFilterFunction = (text: string) => {

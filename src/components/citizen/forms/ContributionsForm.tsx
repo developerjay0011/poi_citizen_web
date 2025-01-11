@@ -14,8 +14,6 @@ import {
 } from "@/redux_store/contributions/contributionAPI";
 import toast from "react-hot-toast";
 import { tryCatch } from "@/config/try-catch";
-import { getLeaderList } from "@/redux_store/complaints/complaintsApi";
-import { complaintActions } from "@/redux_store/complaints/complaintSlice";
 import { Shortarray } from "@/app/user/profile/settings/edit-profile/components/EditInput";
 
 interface ContributionFormProps {
@@ -50,22 +48,11 @@ type DESC_VALS = "others" | "ration" | "clothes";
 const CONTRIBUTION_TYPE = ["money", "ration", "clothes", "others"];
 const MONEY_MODE = ["cash", "cheque"];
 export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd, isEdit, selectedValue }) => {
+  const dispatch = cusDispatch();
   const [selfContributor, setSelfContributor] = useState(true);
   const { userDetails } = cusSelector((st) => st.auth);
   const { leaderlist } = cusSelector((st) => st.complaints);
   const { handleSubmit, register, setValue, watch, formState: { errors }, } = useForm<ContributionFormFields>();
-
-  const dispatch = cusDispatch();
-  const getLeader = async () => {
-    tryCatch(
-      async () => {
-        if (userDetails?.id) {
-          const data = await getLeaderList(userDetails?.id);
-          dispatch(complaintActions.setLeader(data));
-        }
-      }
-    )
-  };
 
   useEffect(() => {
     if (isEdit) {
@@ -87,10 +74,7 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
       }
 
     }
-    getLeader()
   }, [dispatch, userDetails]);
-
-
 
   const formSubmitHandler = async (data: ContributionFormFields) => {
     const body = {

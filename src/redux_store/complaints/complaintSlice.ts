@@ -1,4 +1,4 @@
-import { ErrObj, RequestComplaintDetails,LeaderDetails } from '@/utils/typesUtils'
+import { ErrObj, RequestComplaintDetails, LeaderDetails } from '@/utils/typesUtils'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ComplaintState {
@@ -12,7 +12,7 @@ const init: ComplaintState = {
   complaints: [],
   submitting: false,
   err: { errTxt: '', isErr: false },
-  leaderlist:[]
+  leaderlist: []
 }
 
 export const complaintSlice = createSlice({
@@ -20,18 +20,18 @@ export const complaintSlice = createSlice({
   initialState: init,
   reducers: {
     storeComplaints(state, action: PayloadAction<RequestComplaintDetails[]>) {
-      state.complaints = action.payload
+      state.complaints = Array.isArray(action.payload) ? action.payload : []
     },
     setSubmitting(state, action: PayloadAction<boolean>) {
       state.submitting = action.payload
     },
     setLeader(state, action: PayloadAction<LeaderDetails[]>) {
-      state.leaderlist = action.payload
+      state.leaderlist = Array.isArray(action.payload) ? action.payload : []
     },
     setError(state, action: PayloadAction<ErrObj>) {
       state.err = action.payload
     },
-    
+
   },
 })
 

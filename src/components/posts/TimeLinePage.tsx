@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Post } from "./Post";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { StoriesBox } from "../timlineComponents/StoriesBox";
@@ -8,26 +8,19 @@ import { GetPostsForCitizen } from "@/redux_store/post/postApi";
 import { postActions } from "@/redux_store/post/postSlice";
 import { AgendaPost } from "./AgendaPost";
 import { PollPost } from "./polls/PollPost";
-import { useRouter } from "next/navigation";
 interface TimeLinePageProps { }
 
 export const TimeLinePage: FC<TimeLinePageProps> = () => {
   const postData: any = cusSelector((state: RootState) => state.post.allPosts);
   const dispatch = cusDispatch();
   const { userDetails } = cusSelector((st) => st.auth);
+
   const Getpost = async () => {
     if (userDetails?.id) {
       const data = await GetPostsForCitizen(userDetails?.id);
-      if (data?.length > 0) {
-        dispatch(postActions.setPost(data));
-      }
+      if (data?.length > 0) { dispatch(postActions.setPost(data)) }
     }
   };
-  useEffect(() => {
-    (async () => {
-      await Getpost();
-    })();
-  }, [userDetails]);
 
   return (
     <div className="flex-1 flex flex-col gap-5 max-[1200px]:w-full">

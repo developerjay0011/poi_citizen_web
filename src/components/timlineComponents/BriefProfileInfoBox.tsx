@@ -15,10 +15,7 @@ interface BriefProfileInfoBoxProps { }
 
 export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
   const { userDetails } = cusSelector((st) => st.auth);
-  const [showLikes, setShowLikes] = useState(true);
 
-  const showLike = () => setShowLikes(true);
-  const hideLike = () => setShowLikes(false);
 
   return (
     <>
@@ -28,15 +25,15 @@ export const BriefProfileInfoBox: FC<BriefProfileInfoBoxProps> = () => {
           <CustomImage
             src={getImageUrl(userDetails?.image)}
             alt="profile pic"
-            width={100}
-            height={100}
-            className="w-[4.75rem] rounded-full aspect-square object-cover object-center max-[1400px]:w-[4.5rem] max-[1300px]:w-[4rem]"
+            width={50}
+            height={50}
+            className="w-[4rem] rounded-full aspect-square object-cover object-center max-[1400px]:w-[4.5rem] max-[1300px]:w-[4rem]"
           />
 
           <div className="flex flex-col gap-1">
             <Link
               href={ProtectedRoutes.userProfile}
-              className="text-lg font-[600] max-[1300px]:text-[1.05rem] hover:text-orange-500 transition-all capitalize"
+              className="text-md font-[600] max-[1300px]:text-[1.05rem] hover:text-orange-500 transition-all capitalize"
             >
               {userDetails?.username}
             </Link>

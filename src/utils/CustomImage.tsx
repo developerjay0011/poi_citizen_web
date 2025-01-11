@@ -11,6 +11,7 @@ interface CustomImageProps extends ImageProps {
 const CustomImage: React.FC<CustomImageProps> = ({ src, alt, className, ...props }) => {
   const [imageError, setImageError] = useState(false);
   const imageSrc = !src ? NoImg : imageError ? NoImg : src;
+
   return (
     <Image
       {...props}
@@ -19,6 +20,7 @@ const CustomImage: React.FC<CustomImageProps> = ({ src, alt, className, ...props
       onLoadingComplete={(result) => {
         if (result.naturalWidth === 0) setImageError(true);
       }}
+      onLoadCapture={() => setImageError(false)}
       onError={() => setImageError(true)}
       loading="lazy"
       className={className}

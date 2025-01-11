@@ -1,21 +1,19 @@
 "use client";
 import { Comment, Like, PostDetails } from "@/utils/typesUtils";
-import { dateConverter, dateConverter2 } from "@/utils/utility";
+import { dateConverter2 } from "@/utils/utility";
 import { FC, useState } from "react";
-import { BiShareAlt, BiSolidMessageAltDetail } from "react-icons/bi";
-import { BsFillHeartFill, BsHeart, BsThreeDots } from "react-icons/bs";
+import { BiSolidMessageAltDetail } from "react-icons/bi";
+import { BsFillHeartFill, BsHeart } from "react-icons/bs";
 import { AnimatePresence } from "framer-motion";
 import { motion as m } from "framer-motion";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { NewCommentForm } from "../common-forms/NewCommentForm";
 import { SingleComment } from "./SingleComment";
 import { LikePost, UnlikePostorStory, } from "@/redux_store/post/postApi";
-import toast from "react-hot-toast";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import PostGrid from "../PostGrid";
 import { Shortlistbytime, islike } from "./utils";
-import { tryCatch } from "@/config/try-catch";
 import Link from "next/link";
 
 
@@ -30,11 +28,14 @@ interface PostProps extends PostDetails {
 }
 
 export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData, }) => {
+  const { userDetails } = cusSelector((st) => st.auth);
   const [firstTime, setFirstTime] = useState(true);
   const [showComments, setShowComments] = useState(false);
-  const { userDetails } = cusSelector((st) => st.auth);
-  var is_like = islike(post?.likes, userDetails?.id)
+  var isLike = islike(post?.likes, userDetails?.id)
+  const [is_like, setIslike] = useState(isLike);
+  const [likeNumber, setLikeNumber] = useState(post?.likes?.length || 0);
   const [showLikeAnimation, setShowLikeAnimation] = useState((post?.likes as Like[])?.some((el) => el.userId === userDetails?.id));
+
   const handleLike = async () => {
     const likeBody = {
       postid: post?.id,
@@ -49,16 +50,12 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
       post_leaderid: post?.leaderid,
       userid: userDetails?.id,
     };
-    tryCatch(
-      async () => {
-        if (!is_like) {
-          await LikePost(likeBody);
-          Getpost();
-        } else {
-          await UnlikePostorStory(UnlikeBody);
-          Getpost();
-        }
-      })
+    const liker_status = !is_like ? await LikePost(likeBody) : await UnlikePostorStory(UnlikeBody)
+    if (liker_status?.success) {
+      setIslike(!is_like)
+      setLikeNumber(!is_like ? likeNumber + 1 : likeNumber - 1)
+    }
+    Getpost();
   };
 
 
@@ -119,7 +116,7 @@ export const Post: FC<PostProps> = ({ userdetails, post, Getpost, index, allData
           {is_like ? (<BsFillHeartFill className="text-lg" />) : (<BsHeart className="text-lg" />)}
           {!firstTime && (<BsFillHeartFill className={`text-lg overlay ${showLikeAnimation ? "fadeOut" : "fadeIn"}`} />)}
           <span className="text-[14px] absolute -top-4 left-4 font-[500]">
-            {post?.likes?.length}
+            {likeNumber}
           </span>
         </button>
         <button

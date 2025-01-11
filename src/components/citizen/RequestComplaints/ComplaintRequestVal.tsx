@@ -3,15 +3,11 @@ import { FC, useEffect, useRef, useState } from "react";
 import { BsCalendarDate } from "react-icons/bs";
 import { Attachments, ToDetails } from "@/utils/typesUtils";
 import { AnimatePresence } from "framer-motion";
-import { ToDetailsBox } from "./ToDetailsBox";
-import Image from "next/image";
-import { MdDelete, MdDownload, MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
-import { dateConverter } from "@/utils/utility";
 import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import moment from "moment";
-import { IoMdEye } from "react-icons/io";
 import { TicketTimeLine } from "./TicketTimeLine";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProtectedRoutes } from "@/constants/routes";
@@ -50,9 +46,6 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
   requestComplaintDeleteFn,
   submitting,
   createdDate,
-  signature,
-  attachments,
-  requestComplaintEditFn,
   el,
   updatedata,
   id
@@ -86,11 +79,11 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
       }
     }
   }, [(types == "complaint_status" || types == "suggestion_status" || types == "request_status") && referenceid == id, showStatus, leaderid])
+
   useEffect(() => {
-    if (descRef.current && Number.parseInt(getComputedStyle(descRef.current).height) === 164) {
-      setShowExpandBtn(true);
-    }
+    if (descRef.current && Number.parseInt(getComputedStyle(descRef.current).height) === 164) { setShowExpandBtn(true) }
   }, []);
+
   return (
     <>
       <li className="border self-start rounded-md flex flex-col p-3 gap-3 bg-gray-50 border-gray-300">

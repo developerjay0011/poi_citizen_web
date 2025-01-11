@@ -157,7 +157,6 @@ export const NewPostBox: FC<NewPostBoxProps> = ({ updatePost }) => {
             <CustomImage
               src={(userDetails?.useimage as string) || NoImg}
               alt="user image"
-              priority={true}
               width={1000}
               height={1000}
               className="rounded-full w-14 overflow-hidden bg-red-500 aspect-square object-center object-cover self-start"

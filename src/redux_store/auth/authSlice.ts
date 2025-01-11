@@ -53,16 +53,16 @@ export const authSlice = createSlice({
       };
     },
     Settrendingleader(state, action) {
-      state.trendingleader = action.payload;
+      state.trendingleader = Array.isArray(action.payload) ? action.payload : []
     },
     setBirthdayList(state, action: PayloadAction<any | null>) {
-      state.birthdaylist = action.payload;
+      state.birthdaylist = Array.isArray(action.payload) ? action.payload : []
     },
     setLeaderData(state, action: PayloadAction<any | null>) {
       state.leaderData = action.payload;
     },
     setLeaderlist(state, action: PayloadAction<any | null>) {
-      state.leaderlist = action.payload;
+      state.leaderlist = Array.isArray(action.payload) ? action.payload : []
     },
     setDropDownOption(state, action: PayloadAction<any | null>) {
       state.dropdownOptions = action.payload;

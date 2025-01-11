@@ -11,31 +11,17 @@ import moment from "moment";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { authActions } from "@/redux_store/auth/authSlice";
 
-import { RootState } from "@/redux_store";
 import { ProtectedRoutes } from "@/constants/routes";
 import { EditCitizenProfile, getProfile } from "@/redux_store/auth/authAPI";
 import { tryCatch } from "@/config/try-catch";
-import { ErrorMessage } from "@hookform/error-message";
 import { FaSignature } from "react-icons/fa";
 import { BsX } from "react-icons/bs";
 import { getImageUrl } from "@/config/get-image-url";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
+
 interface EditFormProps { }
-
 const genders = ["male", "female", "others"];
-
-const EDUCATIONS = [
-  "10th Pass",
-  "12th Pass",
-  "Under Graduate",
-  "Post Graduate",
-  "P.H.D",
-];
-
-interface UserDetail {
-  token: string;
-  id: string;
-}
+const EDUCATIONS = ["10th Pass", "12th Pass", "Under Graduate", "Post Graduate", "P.H.D",];
 
 const EditForm: FC<EditFormProps> = () => {
   const { userDetails, dropdownOptions } = cusSelector((st) => st.auth);
@@ -84,6 +70,7 @@ const EditForm: FC<EditFormProps> = () => {
         }
       })
   };
+
   useEffect(() => {
     setSignature(userDetails?.signature)
     setValue("username", userDetails?.username || "");
@@ -104,6 +91,7 @@ const EditForm: FC<EditFormProps> = () => {
     setValue("parliamentaryid", userDetails?.parliamentaryid || "");
     setValue("assemblyid", userDetails?.assemblyid || "");
   }, [userDetails?.username, dropdownOptions?.states]);
+
   useEffect(() => {
     setValue("parliamentaryid", userDetails?.parliamentaryid || "");
     setValue("assemblyid", userDetails?.assemblyid || "");
@@ -409,7 +397,6 @@ const EditForm: FC<EditFormProps> = () => {
             <Image
               src={signature?.includes('base64') ? signature : getImageUrl(signature)}
               alt=""
-              priority={true}
               width={1000}
               height={1000}
               className="w-20 aspect-square object-cover object-center bg-white"

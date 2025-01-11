@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence } from 'framer-motion'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
 import { ContributionForm } from '../forms/ContributionsForm'
 import { cusDispatch, cusSelector } from '@/redux_store/cusHooks'
@@ -24,9 +24,8 @@ export const ContributionPage: FC = () => {
   const closeForm = () => setShowContributionForm(false)
   const dispatch = cusDispatch();
   const { userDetails } = cusSelector((st) => st.auth);
-  const searchFilteredRequests = contributions.filter((el) =>
-    searchString ? el.id.toLowerCase().includes(searchString) : el
-  ).slice(0, sort == "All" ? contributions?.length : sort);
+  const searchFilteredRequests = contributions?.filter((el) => searchString ? el.id.toLowerCase().includes(searchString) : el).slice(0, sort == "All" ? contributions?.length : sort);
+
   const getContributions = async () => {
     tryCatch(
       async () => {
@@ -37,9 +36,6 @@ export const ContributionPage: FC = () => {
       }
     )
   };
-  useEffect(() => {
-    getContributions()
-  }, [dispatch, userDetails]);
 
   const requestDeleteFn = async () => {
     tryCatch(
@@ -81,7 +77,7 @@ export const ContributionPage: FC = () => {
                     <option value='5'>5</option>
                     <option value='10'>10</option>
                     <option value='25'>25</option>
-                     <option value="All">All</option>
+                    <option value="All">All</option>
                   </select>
                 </label>
               </div>

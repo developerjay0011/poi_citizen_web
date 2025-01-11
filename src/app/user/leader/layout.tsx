@@ -9,9 +9,8 @@ import { getImageUrl } from "@/config/get-image-url";
 import CustomImage from "@/utils/CustomImage";
 import { useSearchParams } from 'next/navigation'
 import { LeaderNavbar } from "@/components/leader/LeaderNavbar";
-import { getFollowering, getFollowers, getLeaderAddedStories, GetLeaderAddedPosts } from "@/redux_store/leader/leaderAPI";
+import { getFollowering, getFollowers } from "@/redux_store/leader/leaderAPI";
 import { Leaderdata } from "./Leaderdata";
-import { LEADER_IDS } from "@/utils/typesUtils";
 
 const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
   const { leaderData } = cusSelector((st) => st.auth);
@@ -33,10 +32,6 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
         setFollowers(followingRes as [])
         const followering = await getFollowering(id as string)
         setFollowing(followering as [])
-        // const storiesForLeader = await getLeaderAddedStories(id as string, { userImage: leaderData?.image, image: leaderData?.image, name: leaderData?.personal_info?.last_name && leaderData?.personal_info?.first_name ? leaderData?.personal_info?.first_name + " " + leaderData?.personal_info?.last_name : leaderData?.personal_info?.first_name, leaderid: id }) as any
-        // setStories(storiesForLeader)
-        // const leaderpost = await GetLeaderAddedPosts(id) as any
-        // setPost(leaderpost)
       }
     })();
   }, [id]);
@@ -107,16 +102,15 @@ const LeaderProfileLayout: FC<{ children: ReactNode }> = () => {
         </div>
       </section>
       <section>
-        {<Leaderdata
+        <Leaderdata
           type={type}
           leader_id={id}
           following={following}
           followers={followers}
           stories={stories}
           posts={posts}
-        />}
+        />
       </section>
-
     </div>
   );
 };

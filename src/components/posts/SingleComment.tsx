@@ -1,10 +1,6 @@
 import { cusSelector } from "@/redux_store/cusHooks";
 import { Comment, NestedComment } from "@/utils/typesUtils";
-import Image from "next/image";
 import { FC, FormEvent, useEffect, useState } from "react";
-import { BsThreeDots } from "react-icons/bs";
-import { PostCommentOptions } from "./PostCommentOptions";
-import { AnimatePresence } from "framer-motion";
 import { RiReplyFill } from "react-icons/ri";
 import { motion as m } from "framer-motion";
 import { BiPlusCircle } from "react-icons/bi";
@@ -26,16 +22,15 @@ interface SingleCommentProps extends Comment {
   post: any
 }
 
-export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, postPerMedia, newNestedCommentHandler, likeChangeHandler, comment_text, comments, post }) => {
+export const SingleComment: FC<SingleCommentProps> = ({ username, id, postPerMedia, newNestedCommentHandler, likeChangeHandler, comment_text, comments, post }) => {
   const { userDetails } = cusSelector((st) => st.auth);
   const [firstTime, setFirstTime] = useState(true);
   const [showNestedComments, setShowNestedComments] = useState(false);
-  const [showCommentOptions, setShowCommentOptions] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState<any>();
   const [commentReply, setCommentReply] = useState("");
   const [name, setName] = useState("");
-  const deleteCommentHandler = () => { };
   var is_like = islike(comments?.likes, userDetails?.id)
+
   const handleLike = async (id: string) => {
     const likeBody = {
       commentid: id,
@@ -54,22 +49,24 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
     };
     tryCatch(
       async () => {
-      if (!is_like) {
-        const data = await LikeComment(likeBody);
-        likeChangeHandler();
-        toast.success(data.message);
-      } else {
-        const data = await UnLikeComment(UnlikeBody);
-        toast.success(data.message);
-        likeChangeHandler()
-      }
-    })
+        if (!is_like) {
+          const data = await LikeComment(likeBody);
+          likeChangeHandler();
+          toast.success(data.message);
+        } else {
+          const data = await UnLikeComment(UnlikeBody);
+          toast.success(data.message);
+          likeChangeHandler()
+        }
+      })
   };
+
   useEffect(() => {
     if (!commentReply.startsWith(name)) {
       setShowNestedComments(false)
     }
   }, [name, commentReply])
+
   const addNewNestedComment = async (e: FormEvent) => {
     e.preventDefault();
     if (commentReply.length === 0) return;
@@ -186,7 +183,6 @@ export const SingleComment: FC<SingleCommentProps> = ({ username, id, userId, po
               <form className="flex items-end bg-white gap-3 pt-3" onSubmit={addNewNestedComment}>
                 <CustomImage
                   src={getImageUrl(userDetails?.image)}
-                  priority={true}
                   alt="user dp"
                   width={1000}
                   height={1000}

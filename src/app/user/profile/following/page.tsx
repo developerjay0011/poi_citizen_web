@@ -1,9 +1,8 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import MODI from '@/assets/politicians-images/narendar_modi.jpg'
 import { PeoplesComponentWrapper } from '@/utils/PeoplesComponentWrapper'
 import { Follower } from '@/components/peoples/Follower'
-import { ShortcutsBox } from '@/components/timlineComponents/ShortcutsBox'
 import { cusDispatch, cusSelector } from '@/redux_store/cusHooks'
 import { fetchCitizenFollowingList, fetchUnFollowLeader } from '@/redux_store/follow/followAPI'
 import { followActions } from '@/redux_store/follow/followSlice'
@@ -19,9 +18,7 @@ const CitizenProfileFollowingsPage = () => {
     const data = await fetchCitizenFollowingList(userDetails?.id);
     dispatch(followActions.Following(data));
   }
-  useEffect(() => {
-    getFollowingList()
-  }, [dispatch, userDetails])
+
   const handleUnFollower = async (id: string) => {
     const postBody = {
       senderid: userDetails?.id,
@@ -35,6 +32,7 @@ const CitizenProfileFollowingsPage = () => {
       toast.error(response?.message);
     }
   };
+
   return (
     <>
       <div className='flex-grow'>

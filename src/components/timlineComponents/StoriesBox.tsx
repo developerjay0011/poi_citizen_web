@@ -1,36 +1,14 @@
-import { RootState } from "@/redux_store";
-import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
+import { cusSelector } from "@/redux_store/cusHooks";
 import { CommonBox } from "@/utils/CommonBox";
-import { GenerateId } from "@/utils/utility";
 import Image from "next/image";
-import Link from "next/link";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import Stories from "react-insta-stories";
 import Modal from "react-modal";
-import { ProtectedRoutes } from "@/constants/routes";
 import { getImageUrl } from "@/config/get-image-url";
-import { GetStoriesForCitizen } from "@/redux_store/post/postApi";
-import { postActions } from "@/redux_store/post/postSlice";
 interface StoriesBoxProps { }
 
 export const StoriesBox: FC<StoriesBoxProps> = () => {
-  const { userDetails } = cusSelector((st) => st.auth);
-  const id = GenerateId();
   const { stories } = cusSelector((state) => state.post);
-  const dispatch = cusDispatch();
-  const citizenid = userDetails?.id;
-  const fetchStories = async () => {
-    if (citizenid) {
-      const data = await GetStoriesForCitizen(citizenid);
-      dispatch(postActions.storeStories(data as any));
-    }
-  };
-
-  useEffect(() => {
-    fetchStories()
-  }, [citizenid]);
-
-
 
   return stories?.length > 0 && (
     <CommonBox title="Stories" cusJSX={[]}>

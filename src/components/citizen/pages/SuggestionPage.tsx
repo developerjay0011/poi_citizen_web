@@ -45,6 +45,7 @@ export const SuggestionPage: FC = () => {
         }
       })
   };
+
   const addNewSuggestionHandler = async (suggestion: any) => {
     const formData = new FormData();
     formData.append("id", isEdit ? selectedValue?.id : "");
@@ -77,6 +78,7 @@ export const SuggestionPage: FC = () => {
       })
     closeForm();
   };
+
   const handleDetele = async (id: string) => {
     tryCatch(
       async () => {
@@ -87,9 +89,6 @@ export const SuggestionPage: FC = () => {
         }
       })
   };
-  useEffect(() => {
-    getSuggestion()
-  }, [dispatch, userDetails?.id])
 
 
   return (

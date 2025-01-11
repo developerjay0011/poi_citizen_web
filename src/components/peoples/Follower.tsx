@@ -18,7 +18,6 @@ export const Follower: FC<FollowerProps> = ({ displayImg, data, handleUnfollow, 
   return (
     <div className='border rounded-md bg-white p-4 flex gap-2 items-center relative'>
       <CustomImage
-        priority={true}
         src={getImageUrl(data?.image)}
         alt='user display pic'
         width={1000}

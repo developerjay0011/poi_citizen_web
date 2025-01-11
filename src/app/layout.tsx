@@ -1,7 +1,7 @@
 import './globals.scss'
 import type { Metadata } from 'next'
 import { CusProvider } from '@/redux_store/CusProvider' // Provider for Managing state using REDUX
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, useEffect } from 'react'
 
 export const metadata: Metadata = {
   title: 'Politician Of India | Home',
@@ -10,12 +10,10 @@ export const metadata: Metadata = {
 
 const RootLayout: FC<{ children: ReactNode }> = ({ children }) => {
 
+
   return (
     <html lang='en'>
-      {/* <body className={font.className + ' font-normal '}> */}
-      <body >
-        <div>
-        </div>
+      <body>
         <CusProvider>{children}</CusProvider>
       </body>
     </html>

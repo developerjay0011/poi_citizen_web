@@ -147,9 +147,7 @@ export const Input: FC<InputProps> = ({
   )
 }
 export const Shortarray = (selectOptions: any, key = "value") => {
-  const clonedOptions = [...selectOptions]; // Clone the array
-  const sortedOptions = clonedOptions.sort((a: any, b: any) => {
-    return a[key].toLowerCase().localeCompare(b[key].toLowerCase());
-  });
+  const clonedOptions = Array.isArray(selectOptions) ? [...selectOptions] : []
+  const sortedOptions = clonedOptions?.sort((a: any, b: any) => { return a[key].toLowerCase().localeCompare(b[key].toLowerCase()); });
   return sortedOptions;
 }

@@ -2,10 +2,9 @@
 import { CitizenProfileNavbar } from "@/components/citizen/CitizenProfileNavbar";
 import { ProtectedRoutes } from "@/constants/routes";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
-import Image from "next/image";
 import Link from "next/link";
 import { BsPencilSquare } from "react-icons/bs";
-import { ReactNode, FC, useEffect, ChangeEvent } from "react";
+import { ReactNode, FC, ChangeEvent } from "react";
 import { getProfile, uploadProfileImage } from "@/redux_store/auth/authAPI";
 import { authActions } from "@/redux_store/auth/authSlice";
 import toast from "react-hot-toast";
@@ -15,15 +14,6 @@ import CustomImage from "@/utils/CustomImage";
 const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const { userDetails } = cusSelector((st) => st.auth);
   const dispatch = cusDispatch();
-
-  useEffect(() => {
-    (async () => {
-      if (userDetails?.id) {
-        const res = await getProfile(userDetails?.id, dispatch);
-        dispatch(authActions.logIn(res));
-      }
-    })();
-  }, [dispatch, userDetails?.id]);
 
   const onChangeHandler = async (e: ChangeEvent<HTMLInputElement>, fieldName: string) => {
     const files = e.target.files as FileList;
@@ -40,6 +30,7 @@ const CitizenProfileLayout: FC<{ children: ReactNode }> = ({ children }) => {
       }
     }
   };
+
   return (
     <div className="flex flex-col gap-5">
       <section className="flex flex-col text-sky-950 border-b border-l border-r w-full">

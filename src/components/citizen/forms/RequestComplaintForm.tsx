@@ -4,14 +4,14 @@ import { AnimatePresence, motion as m } from "framer-motion";
 import { BiX } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import { BsFolderFill, BsX } from "react-icons/bs";
+import { BsFolderFill } from "react-icons/bs";
 import { PDFPreviewCP } from "@/utils/PDFPreviewCP";
 import { GenerateId, convertFileToBase64 } from "@/utils/utility";
 import { ImageMultiSelectIP } from "@/utils/ImageMultiSelectIP";
-import Image, { StaticImageData } from "next/image";
+import { StaticImageData } from "next/image";
 import { Attachments, ErrObj, RequestComplaintData } from "@/utils/typesUtils";
 import { cusSelector } from "@/redux_store/cusHooks";
-import { Input, Shortarray } from "@/app/user/profile/settings/edit-profile/components/EditInput";
+import { Shortarray } from "@/app/user/profile/settings/edit-profile/components/EditInput";
 import { getImageUrl } from "@/config/get-image-url";
 
 const FORM_HEADINGS = {
@@ -26,8 +26,8 @@ interface RequestComplaintFormProps {
   submitting: boolean;
   err: ErrObj;
   type: keyof typeof FORM_HEADINGS;
-  isEdit: boolean,
-  selectedValue: any
+  isEdit: boolean;
+  selectedValue: any;
 }
 
 export interface RequestComplaintFormFields {
@@ -38,7 +38,7 @@ export interface RequestComplaintFormFields {
   signatureDoc: string | FileList;
   attachments: Attachments[];
   attachmentsDoc: Attachments[];
-  category: any
+  category: any;
 }
 
 export interface BriefLeaderDetails {
@@ -50,23 +50,34 @@ export interface BriefLeaderDetails {
   requestComplaintStatus: string;
   isSeen: string;
   requestComplaintSeenDate: string;
-  state: string
-  consituency: string
+  state: string;
+  consituency: string;
 }
 
 let firstTime = true;
 
-
-export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, submitHandler, err, submitting, type, isEdit, selectedValue }) => {
+export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
+  onClose,
+  submitHandler,
+  err,
+  submitting,
+  type,
+  isEdit,
+  selectedValue,
+}) => {
   const [showPreview, setShowPreview] = useState(false);
   const [attachments, setAttachments] = useState<Attachments[]>([]);
   const [attachmentsDoc, setAttachmentsDoc] = useState<Attachments[]>([]);
   const { leaderlist } = cusSelector((st) => st.complaints);
   const { userDetails, dropdownOptions } = cusSelector((st) => st.auth);
+  const { handleSubmit, register, setValue, getValues, formState: { errors }, } = useForm<RequestComplaintFormFields>();
 
-  const { handleSubmit, register, setValue, trigger, getValues, formState: { errors }, } = useForm<RequestComplaintFormFields>();
   const formSubmitHandler = (data: any) => {
-    submitHandler({ ...data, attachmentsDoc, category_name: dropdownOptions?.categories?.find((el) => el.id === data?.category)?.category, });
+    submitHandler({
+      ...data,
+      attachmentsDoc,
+      category_name: dropdownOptions?.categories?.find((el) => el.id === data?.category)?.category,
+    });
     firstTime = false;
   };
 
@@ -76,17 +87,27 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
       onClose();
     }
   }, [onClose, err, submitting]);
+
   useEffect(() => {
     if (isEdit) {
       setValue("subject", selectedValue?.subject);
       setValue("description", selectedValue?.description);
       setValue("category" as any, selectedValue?.categoryid);
-      setValue("to", selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })));
-      // setSignature(selectedValue?.signature)
-      setAttachments(selectedValue?.attachments)
+      setValue(
+        "to",
+        selectedValue?.to.map((item: any) => ({
+          ...item,
+          id: item?.leaderid,
+          username: item?.name,
+        }))
+      );
+      setAttachments(selectedValue?.attachments);
     }
   }, []);
+
   const setToFieldValue = (val: any[] | "") => setValue("to", val);
+
+
   const addAttachmentsHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files as FileList;
 
@@ -99,30 +120,25 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
 
       setAttachments((lst) => {
         const oldData = [...lst];
-
         oldData.push({
           file: fileData,
           id: GenerateId(),
           type: file.type,
         });
-
         return oldData;
       });
 
       setAttachmentsDoc((lst) => {
         const oldData = [...lst];
-
         oldData.push({
           file: file as any,
           id: GenerateId(),
           type: file.type,
         });
-
         return oldData;
       });
     }
   };
-
 
   return (
     <>
@@ -193,21 +209,6 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({ onClose, s
                 </label>
               </section>
 
-              {/* <Input
-                errors={errors}
-                id={"category" as any}
-                selectField={{
-                  title: "Category",
-                  options: dropdownOptions?.categories?.map((el) => ({ id: el?.id, value: el.category })),
-                }}
-                register={register as any}
-                title="Category"
-                type="select"
-                required
-                validations={{
-                  required: "Category is required",
-                }}
-              /> */}
               <section className="grid gap-5 grid-cols-2 gap-y-7 max-[650px]:grid-cols-1 max-[650px]:gap-y-4">
                 <label htmlFor="subject" className={`flex flex-col gap-2`}>
                   <span className="capitalize font-[500]">

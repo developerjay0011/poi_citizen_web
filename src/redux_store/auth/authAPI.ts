@@ -4,6 +4,8 @@ import { tryCatch } from "@/config/try-catch";
 import { APIRoutes } from "@/constants/routes";
 import { ForgotPassword, LoginData, RegisterData } from "@/utils/typesUtils";
 import { authActions } from "./authSlice";
+import { CITIZEN_USER_INFO } from "@/constants/common";
+import { setCookie } from "cookies-next";
 
 // user Login Api
 export const fetchLogin = async (resBody: LoginData) => {
@@ -84,7 +86,7 @@ export const fetchTrendingLeaderList = async () => {
   return tryCatch(
     async () => {
       const res = await Axios.get(APIRoutes.TrendingLeaderList);
-      return res.data;
+      return Array.isArray(res.data) ? res.data : []
     }
   );
 };
@@ -92,14 +94,11 @@ export const fetchTrendingLeaderList = async () => {
 
 
 export const getProfile = async (citizenid: string, dispatch: any) => {
-  return tryCatch(
-    async () => {
-      const res = await Axios.get(insertVariables(APIRoutes.getSingleCitizen, { citizenid }));
-      if (res?.data) { } else {
-        dispatch(authActions.logOut())
-      }
-      return res.data;
-    }
+  return tryCatch(async () => {
+    const res = await Axios.get(insertVariables(APIRoutes.getSingleCitizen, { citizenid }));
+    if (res?.data) { await setCookie(CITIZEN_USER_INFO, res?.data); } else { dispatch(authActions.logOut()) }
+    return res.data;
+  }
   );
 };
 
@@ -126,7 +125,7 @@ export const GetBirthdayList = async () => {
   return tryCatch(
     async () => {
       const res = await Axios.get(APIRoutes.GetBirthdayList);
-      return res.data;
+      return Array.isArray(res.data) ? res.data : []
     }
   );
 };

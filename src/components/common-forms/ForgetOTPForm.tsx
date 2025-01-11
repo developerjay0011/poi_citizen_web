@@ -11,10 +11,7 @@ interface ForgetOTPFormProps {
 
 let curOtpIndex: number = 0
 
-export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
-  proceedFn,
-  number,
-}) => {
+export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({ proceedFn, number, }) => {
   const [OTP, setOTP] = useState(['', '', '', '', '', ''])
   const [activeOtpIndex, setActiveOtpIndex] = useState(0)
   const [registering, setRegistering] = useState(false);
@@ -37,10 +34,10 @@ export const ForgetOTPForm: FC<ForgetOTPFormProps> = ({
       setRegistering(false);
     }
   };
+
   const otpInpRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    otpInpRef.current?.focus()
-  }, [activeOtpIndex])
+
+  useEffect(() => { otpInpRef.current?.focus() }, [activeOtpIndex])
 
   const otpChangeHandleHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const userEnteredOtp = [...OTP]

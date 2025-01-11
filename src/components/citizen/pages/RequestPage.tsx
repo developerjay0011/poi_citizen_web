@@ -79,13 +79,7 @@ export const RequestPage: FC = () => {
 
   };
 
-  useEffect(() => {
-    getRequests()
-  }, [dispatch, userDetails])
-
-  const searchFilteredRequests = requests.filter((el) =>
-    searchString ? el.subject.toLowerCase().includes(searchString) : el
-  ).slice(0, sort == "All" ? requests?.length : sort);
+  const searchFilteredRequests = requests?.filter((el) => searchString ? el.subject.toLowerCase().includes(searchString) : el).slice(0, sort == "All" ? requests?.length : sort);
 
   const handleDetele = async (id: string) => {
     tryCatch(
