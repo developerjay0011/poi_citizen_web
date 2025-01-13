@@ -47,12 +47,6 @@ export const TopNavbar: FC<TopNavbarProps> = () => {
     });
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!token) { router.push(AuthRoutes.login) }
-  }, [dispatch, userDetails?.id, token]);
-
-
-
   const searchFilterFunction = (text: string) => {
     if (text) {
       const newData = leaderlist?.filter(

@@ -2,7 +2,9 @@
 import { FC, ReactNode, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { store, persistor } from '.'
+import { PersistGate } from 'redux-persist/integration/react'
 import { cusDispatch } from './cusHooks'
+
 import { usePathname } from 'next/navigation'
 import { authActions } from './auth/authSlice'
 import { Toaster } from 'react-hot-toast'
@@ -23,7 +25,6 @@ import { contributionsActions } from './contributions/contributionsSlice'
 import { GetContributions } from './contributions/contributionAPI'
 import { CITIZEN_USER_INFO } from '@/constants/common'
 import { getCookie } from "cookies-next";
-import { PersistGate } from 'redux-persist/integration/react'
 import Logo from "@/assets/favicon.png";
 import Image from 'next/image'
 

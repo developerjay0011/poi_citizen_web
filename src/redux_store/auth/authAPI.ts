@@ -4,9 +4,15 @@ import { tryCatch } from "@/config/try-catch";
 import { APIRoutes } from "@/constants/routes";
 import { ForgotPassword, LoginData, RegisterData } from "@/utils/typesUtils";
 import { authActions } from "./authSlice";
-import { CITIZEN_USER_INFO } from "@/constants/common";
-import { setCookie } from "cookies-next";
+import { CITIZEN_TOKEN_KEY, CITIZEN_USER_INFO } from "@/constants/common";
+import { getCookie, setCookie } from "cookies-next";
+import { persistor } from "..";
 
+export const LogoutUser = async (dispatch: any, type?: any) => {
+  dispatch(authActions.logOut(type as any))
+  window.location.href = '/'
+  persistor.purge();
+}
 // user Login Api
 export const fetchLogin = async (resBody: LoginData) => {
   return tryCatch(
@@ -95,8 +101,13 @@ export const fetchTrendingLeaderList = async () => {
 
 export const getProfile = async (citizenid: string, dispatch: any) => {
   return tryCatch(async () => {
+    let token: any = getCookie(CITIZEN_TOKEN_KEY);
+    if (!token) {
+      LogoutUser(dispatch)
+      return
+    }
     const res = await Axios.get(insertVariables(APIRoutes.getSingleCitizen, { citizenid }));
-    if (res?.data) { await setCookie(CITIZEN_USER_INFO, res?.data); } else { dispatch(authActions.logOut()) }
+    if (res?.data) { await setCookie(CITIZEN_USER_INFO, res?.data); } else { LogoutUser(dispatch) }
     return res.data;
   }
   );

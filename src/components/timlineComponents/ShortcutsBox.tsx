@@ -16,6 +16,7 @@ import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { AuthRoutes, ProtectedRoutes } from "@/constants/routes";
 import { CloseAccount, DeactiveAccount } from "@/redux_store/citizen/citizenApi";
+import { LogoutUser } from "@/redux_store/auth/authAPI";
 
 interface ShortcutsBoxProps { }
 
@@ -69,8 +70,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     const data = await DeactiveAccount(userDetails?.id);
     if (data?.success) {
       setShowConfirmBox(false);
-      dispatch(authActions.logOut())
-      window.location.href = '/'
+      LogoutUser(dispatch)
       router.push(AuthRoutes.login);
     }
   };
@@ -78,8 +78,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
     const data = await CloseAccount(userDetails?.id);
     if (data?.success) {
       setShowCloseConfirmBox(false);
-      dispatch(authActions.logOut())
-      window.location.href = '/'
+      LogoutUser(dispatch)
       router.push(AuthRoutes.login);
     }
   };
@@ -90,7 +89,7 @@ export const ShortcutsBox: FC<ShortcutsBoxProps> = () => {
         {Shortcuts.map((el) => (
           <ShortcutBtn {...el} key={el.id} />
         ))}
-        <button onClick={() => { dispatch(authActions.logOut()), window.location.href = '/' }}>
+        <button onClick={() => { LogoutUser(dispatch) }}>
           <ShortcutBtn Icon={FaPowerOff} title="logout" route="/" />
         </button>
         <button
