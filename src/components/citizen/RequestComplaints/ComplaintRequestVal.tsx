@@ -175,11 +175,6 @@ export const ComplaintRequestVal: FC<ComplaintRequestValProps> = ({
         </div>
       </li>
       <AnimatePresence mode="wait">
-        {/* {showToDetails && (
-          <ToDetailsBox onClose={() => setShowToDetails(false)} toList={to} />
-        )} */}
-      </AnimatePresence>
-      <AnimatePresence mode="wait">
         {showConfirmBox && (
           <ConfirmDialogBox
             noAllowed={submitting}

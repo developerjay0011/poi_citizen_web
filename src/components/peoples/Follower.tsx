@@ -1,12 +1,11 @@
 import { getImageUrl } from '@/config/get-image-url'
 import CustomImage from '@/utils/CustomImage'
-import Image, { StaticImageData } from 'next/image'
+import { StaticImageData } from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
-import { BsThreeDots } from 'react-icons/bs'
 
 interface FollowerProps {
-  displayImg: string | StaticImageData
+  displayImg?: string | StaticImageData
   data: any,
   item?: any
   handleUnfollow: (id: string) => void

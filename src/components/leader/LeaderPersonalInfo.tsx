@@ -11,12 +11,10 @@ import {
   FaPhone,
   FaUser,
 } from "react-icons/fa6";
-import { MdBloodtype } from "react-icons/md";
 import { RootState } from "@/redux_store";
 import moment from "moment";
+
 interface LeaderPersonalInfoProps { }
-
-
 
 export const LeaderPersonalInfo: FC<LeaderPersonalInfoProps> = () => {
   const leaderData: any = cusSelector((state: RootState) => state.auth.leaderData);

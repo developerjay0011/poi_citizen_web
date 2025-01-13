@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { RequestComplaintForm } from "@/components/citizen/forms/RequestComplaintForm";
@@ -13,12 +13,6 @@ import {
 import toast from "react-hot-toast";
 import { requestActions } from "@/redux_store/requests/requestSlice";
 import { tryCatch } from "@/config/try-catch";
-
-interface UserDetails {
-  token: string;
-  id: string;
-  displayPic: string;
-}
 
 export const RequestPage: FC = () => {
   const { userDetails } = cusSelector((st) => st.auth);

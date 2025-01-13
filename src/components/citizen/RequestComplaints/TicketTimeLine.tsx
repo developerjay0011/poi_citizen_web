@@ -1,6 +1,6 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { BiX } from 'react-icons/bi'
-import { AnimatePresence, motion as m } from 'framer-motion'
+import { motion as m } from 'framer-motion'
 import moment from 'moment'
 import { FaFileAlt } from "react-icons/fa";
 import { getImageUrl } from '@/config/get-image-url';

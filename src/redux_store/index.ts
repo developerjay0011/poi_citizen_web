@@ -1,4 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+
 import { complaintSlice } from './complaints/complaintSlice'
 import { requestSlice } from './requests/requestSlice'
 import { suggestionSlice } from './suggestions/suggestionSlice'
@@ -8,24 +11,46 @@ import { followSlice } from './follow/followSlice'
 import { contributionsSlice } from './contributions/contributionsSlice'
 import { commonSlice } from './common/commonSlice'
 
-
-
-export const store = configureStore({
-  reducer: {
-    complaints: complaintSlice.reducer,
-    requests: requestSlice.reducer,
-    suggestions: suggestionSlice.reducer,
-    auth: authSlice.reducer,
-    post: postSlice.reducer,
-    follow: followSlice.reducer,
-    contribution: contributionsSlice.reducer,
-    common: commonSlice.reducer
-  },
+const rootReducer = combineReducers({
+  complaints: complaintSlice.reducer,
+  requests: requestSlice.reducer,
+  suggestions: suggestionSlice.reducer,
+  auth: authSlice.reducer,
+  post: postSlice.reducer,
+  follow: followSlice.reducer,
+  contribution: contributionsSlice.reducer,
+  common: commonSlice.reducer,
 })
 
-// types to configure custom useSelector and useDispatch hooks for better auto compeletion through TS
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth', 'post', 'follow', 'common'],
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [
+          'persist/PERSIST',
+          'persist/REHYDRATE',
+          'persist/PAUSE',
+          'persist/REGISTER',
+          'persist/FLUSH',
+          'persist/PURGE',
+        ],
+      },
+    }),
+})
+
+export const persistor = persistStore(store)
+
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-// to get the redux store data outside of react component
+
 export const getReduxStoreValues = store.getState

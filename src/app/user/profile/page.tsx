@@ -12,7 +12,6 @@ const CitizenProfilePage: FC = () => {
 
       <div className='flex-1 flex flex-col gap-5'>
         <CitizenMoreInfo />
-        {/* <CitizenFollowingList /> */}
       </div>
     </div>
   )

@@ -11,19 +11,14 @@ const CitizenHomePage = () => {
   const { birthdaylist } = cusSelector((st) => st.auth);
 
   return (
-    <section className="w-full relative">
-      <div className="flex gap-5">
-        {/* LEFT FEED */}
+    <section className="w-full relative min-h-screen">
+      <div className="flex gap-5 h-full">
         <div className="flex flex-col gap-5 self-start max-[1200px]:hidden w-[23%]">
           {birthdaylist?.length > 0 && <BirthdayNotifications />}
           <TrendingLeaders />
         </div>
-
-        {/* <CitizenFeed /> */}
         <TimeLinePage />
-
-        {/* RIGHT FEED */}
-        <div className="flex flex-col self-start gap-5 max-[1200px]:hidden">
+        <div className="flex flex-col self-start gap-5 max-[1200px]:hidden w-[23%]">
           <BriefProfileInfoBox />
           <ShortcutsBox />
         </div>

@@ -1,5 +1,4 @@
 'use client'
-import { CitizenFeed } from '@/components/citizen/CitizenFeed'
 import { TimeLinePage } from '@/components/posts/TimeLinePage'
 import { BriefProfileInfoBox } from '@/components/timlineComponents/BriefProfileInfoBox'
 import { ShortcutsBox } from '@/components/timlineComponents/ShortcutsBox'
@@ -16,7 +15,6 @@ const CitizenProfileFeedPage: FC = () => {
           <ShortcutsBox />
         </div>
 
-        {/* <CitizenFeed /> */}
         <TimeLinePage />
 
         {/* RIGHT FEED */}

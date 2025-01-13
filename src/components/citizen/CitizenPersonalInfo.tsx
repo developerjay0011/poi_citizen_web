@@ -14,29 +14,7 @@ import {
 import { MdBloodtype } from "react-icons/md";
 import { RootState } from "@/redux_store";
 import moment from "moment";
-interface CitizenPersonalInfoProps {}
-
-interface UserDetail {
-  token: string;
-  id: string;
-}
-
-interface UserDetails {
-  firstname: string;
-  email: string;
-  phoneNo: string;
-  gender: string;
-  dob: string;
-  bloodGroup: string;
-  higherEducation: string;
-  country: string;
-  socialMedia: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-  };
-  about: string;
-}
+interface CitizenPersonalInfoProps { }
 
 export const CitizenPersonalInfo: FC<CitizenPersonalInfoProps> = () => {
   const userDetails: any = cusSelector(
@@ -116,9 +94,8 @@ const PersonalBriefInfo: FC<{
           <span className="font-[500] capitalize text-[15px]">{heading}</span>
         </p>
         <p
-          className={`text-[14px] pl-7 ${
-            heading.toLowerCase().includes("about") && "text-justify"
-          }`}
+          className={`text-[14px] pl-7 ${heading.toLowerCase().includes("about") && "text-justify"
+            }`}
         >
           {data}
         </p>

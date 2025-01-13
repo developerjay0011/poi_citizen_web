@@ -47,6 +47,7 @@ export interface ContributionFormFields {
 type DESC_VALS = "others" | "ration" | "clothes";
 const CONTRIBUTION_TYPE = ["money", "ration", "clothes", "others"];
 const MONEY_MODE = ["cash", "cheque"];
+
 export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd, isEdit, selectedValue }) => {
   const dispatch = cusDispatch();
   const [selfContributor, setSelfContributor] = useState(true);

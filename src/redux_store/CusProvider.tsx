@@ -1,7 +1,7 @@
 'use client'
 import { FC, ReactNode, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
-import { store } from '.'
+import { store, persistor } from '.'
 import { cusDispatch } from './cusHooks'
 import { usePathname } from 'next/navigation'
 import { authActions } from './auth/authSlice'
@@ -22,17 +22,42 @@ import { commonActions } from './common/commonSlice'
 import { contributionsActions } from './contributions/contributionsSlice'
 import { GetContributions } from './contributions/contributionAPI'
 import { CITIZEN_USER_INFO } from '@/constants/common'
-import { setCookie, getCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
+import { PersistGate } from 'redux-persist/integration/react'
+import Logo from "@/assets/favicon.png";
+import Image from 'next/image'
 
 interface CusProviderProps {
   children: ReactNode
 }
 
+const LoadingPage = () => {
+  return (
+    <div className='h-screen w-full flex items-center justify-center justify-center flex-col bg-red'>
+      <Image
+        src={Logo}
+        alt="poi logo"
+        className="h-[13rem] w-auto self-center max-lg:m-auto max-lg:h-[10rem]"
+      />
+      <div style={{ width: '40px', height: '40px', border: '5px solid #ccc', borderTop: '5px solid orange', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+
 export const CusProvider: FC<CusProviderProps> = ({ children }) => {
   return (
     <Provider store={store}>
-      <Toaster position="top-center" />
-      <AuthLayer>{children}</AuthLayer>
+      <PersistGate loading={LoadingPage()} persistor={persistor}>
+        <Toaster position="top-center" />
+        <AuthLayer>{children}</AuthLayer>
+      </PersistGate>
     </Provider>
   )
 }

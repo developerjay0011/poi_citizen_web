@@ -2,10 +2,8 @@
 import { ProtectedRoutes } from "@/constants/routes";
 import { authActions } from "@/redux_store/auth/authSlice";
 import { cusDispatch } from "@/redux_store/cusHooks";
-import { ConfirmDialogBox } from "@/utils/ConfirmDialogBox";
 import { ShortcutBtn } from "@/utils/ShortcutBtn";
-import { AnimatePresence } from "framer-motion";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { FaEdit } from "react-icons/fa";
 import { FaPowerOff, FaUser } from "react-icons/fa6";
 

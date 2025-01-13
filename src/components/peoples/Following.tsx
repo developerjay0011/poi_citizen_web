@@ -20,9 +20,6 @@ export const Following: FC<FollowerProps> = ({ displayImg, name, count = 0, item
 
   return (
     <li className='border rounded-md bg-white p-4 flex gap-2 items-center relative'>
-      {/* <button className='absolute top-2 right-3 text-xl'>
-        <BsThreeDots />
-      </button> */}
       <CustomImage
         src={getImageUrl(displayImg)}
         alt='user display pic'

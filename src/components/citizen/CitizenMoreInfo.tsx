@@ -1,8 +1,8 @@
 "use client";
 import { CommonBox } from "@/utils/CommonBox";
 import Link from "next/link";
-import { FC, ReactNode, useEffect, useState } from "react";
-import { FaFacebook, FaInstagram, FaRedhat, FaTwitter, FaAddressCard, FaStar, FaSign } from "react-icons/fa";
+import { FC, ReactNode } from "react";
+import { FaFacebook, FaInstagram, FaTwitter, FaAddressCard, FaStar } from "react-icons/fa";
 import { IoMdShare } from "react-icons/io";
 import { cusSelector } from "@/redux_store/cusHooks";
 import { FaSignature } from "react-icons/fa6";
@@ -10,27 +10,6 @@ import Image from "next/image";
 import { getImageUrl } from "@/config/get-image-url";
 
 interface CitizenMoreInfoProps { }
-interface UserDetail {
-  token: string;
-  id: string;
-}
-
-interface UserDetails {
-  firstname: string;
-  email: string;
-  phoneNo: string;
-  gender: string;
-  dob: string;
-  bloodGroup: string;
-  higherEducation: string;
-  country: string;
-  socialMedia: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-  };
-  about: string;
-}
 
 export const CitizenMoreInfo: FC<CitizenMoreInfoProps> = () => {
   const { userDetails } = cusSelector((st) => st.auth);

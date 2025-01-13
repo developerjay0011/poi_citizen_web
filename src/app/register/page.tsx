@@ -4,11 +4,9 @@ import { LoginLayout } from '@/layouts/LoginLayout'
 
 const RegisterPage = () => {
   return (
-    <>
-      <LoginLayout>
-        <RegisterForm />
-      </LoginLayout>
-    </>
+    <LoginLayout>
+      <RegisterForm />
+    </LoginLayout>
   )
 }
 

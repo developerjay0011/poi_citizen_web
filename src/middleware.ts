@@ -1,4 +1,4 @@
-import { CITIZEN_IP, CITIZEN_TOKEN_KEY } from '@/constants/common';
+import { CITIZEN_TOKEN_KEY } from '@/constants/common';
 import { NextRequest, NextResponse } from 'next/server';
 import { AuthRoutes, ProtectedRoutes } from './constants/routes';
 

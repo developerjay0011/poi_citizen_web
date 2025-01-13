@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import MODI from '@/assets/politicians-images/narendar_modi.jpg'
 import { PeoplesComponentWrapper } from '@/utils/PeoplesComponentWrapper'
 import { Follower } from '@/components/peoples/Follower'
 import { cusDispatch, cusSelector } from '@/redux_store/cusHooks'
@@ -44,7 +43,7 @@ const CitizenProfileFollowingsPage = () => {
             {following?.length > 0 &&
               following.map((el: any, index: number) => {
                 return (
-                  <Follower key={index} handleUnfollow={handleUnFollower} data={el} displayImg={MODI} />
+                  <Follower key={index} handleUnfollow={handleUnFollower} data={el} />
                 );
               })}
           </ul>

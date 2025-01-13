@@ -1,8 +1,7 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
-import { RequestComplaintData } from "@/utils/typesUtils";
 import { cusDispatch, cusSelector } from "@/redux_store/cusHooks";
 import { RequestComplaintForm } from "../forms/RequestComplaintForm";
 import {
@@ -14,12 +13,6 @@ import { RequestsAndComplaints } from "../RequestComplaints/RequestsAndComplaint
 import toast from "react-hot-toast";
 import { suggestionActions } from "@/redux_store/suggestions/suggestionSlice";
 import { tryCatch } from "@/config/try-catch";
-
-interface UserDetails {
-  token: string;
-  id: string;
-  displayPic: string;
-}
 
 export const SuggestionPage: FC = () => {
   const [searchString, setSearchString] = useState("");
