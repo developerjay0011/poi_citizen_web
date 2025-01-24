@@ -10,7 +10,7 @@ import toast from 'react-hot-toast'
 import { Shortarray } from '@/app/user/profile/settings/edit-profile/components/EditInput'
 
 interface ImageMultiSelectIPProps {
-  options: LeaderDetails[]
+  options: LeaderDetails[] | any[]
   placeholder: string
   setValue: (val: LeaderDetails[] | '') => void
   title: string
@@ -30,9 +30,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
     []
   )
 
-  const filteredOptions = options.filter((el: any) =>
-    filterStr ? el.name.toLowerCase().includes(filterStr) : el
-  )
+  const filteredOptions = options?.map((i) => ({ ...i, id: i?.leaderid })).filter((el: any) => filterStr ? el.name.toLowerCase().includes(filterStr) : el)
   const listdata = Shortarray(filteredOptions, "name")
 
   useEffect(() => {
@@ -51,6 +49,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
   useEffect(() => {
     selectedLeaders.length > 0 ? setValue(selectedLeaders) : setValue('')
   }, [selectedLeaders, setValue])
+
 
   return (
     <>
@@ -148,7 +147,7 @@ export const ImageMultiSelectIP: FC<ImageMultiSelectIPProps> = ({
                       <div className='flex flex-col text-sm'>
                         <h6 className='font-medium capitalize'>{el.name}</h6>
                         <p className='text-gray-500 capitalize text-align-left'>
-                          {el.designation}{el.state ? `(${el.state})` : ''}{el.consituency ? `(${el.consituency})` : ''}({el.political_party})
+                          {el.designation}{el.state ? `(${el.state})` : ''}{el.consituency ? `(${el.consituency})` : ''}{el.political_party ? `(${el.political_party})` : ""}
                         </p>
                       </div>
                     </li>

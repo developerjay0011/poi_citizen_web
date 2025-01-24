@@ -15,6 +15,8 @@ import {
 import toast from "react-hot-toast";
 import { tryCatch } from "@/config/try-catch";
 import { Shortarray } from "@/app/user/profile/settings/edit-profile/components/EditInput";
+import CustomImage from "@/utils/CustomImage";
+import { getImageUrl } from "@/config/get-image-url";
 
 interface ContributionFormProps {
   onClose: () => void;
@@ -52,8 +54,8 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
   const dispatch = cusDispatch();
   const [selfContributor, setSelfContributor] = useState(true);
   const { userDetails } = cusSelector((st) => st.auth);
-  const { leaderlist } = cusSelector((st) => st.complaints);
   const { handleSubmit, register, setValue, watch, formState: { errors }, } = useForm<ContributionFormFields>();
+  const { following } = cusSelector((st) => st.follow);
 
   useEffect(() => {
     if (isEdit) {
@@ -321,8 +323,8 @@ export const ContributionForm: FC<ContributionFormProps> = ({ onClose, handleAdd
                     })}
                   >
                     <option value="">select leader</option>
-                    {Shortarray(leaderlist, "name").map((el: any) => (
-                      <option value={el.id} key={el.id}>
+                    {Shortarray(following, "name").map((el: any) => (
+                      <option value={el.leaderid} key={el.leaderid}>
                         {el.name}
                       </option>
                     ))}

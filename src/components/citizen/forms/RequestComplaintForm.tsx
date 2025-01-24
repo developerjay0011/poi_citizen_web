@@ -68,9 +68,11 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
   const [showPreview, setShowPreview] = useState(false);
   const [attachments, setAttachments] = useState<Attachments[]>([]);
   const [attachmentsDoc, setAttachmentsDoc] = useState<Attachments[]>([]);
-  const { leaderlist } = cusSelector((st) => st.complaints);
+  const { following } = cusSelector((st) => st.follow);
   const { userDetails, dropdownOptions } = cusSelector((st) => st.auth);
   const { handleSubmit, register, setValue, getValues, formState: { errors }, } = useForm<RequestComplaintFormFields>();
+
+
 
   const formSubmitHandler = (data: any) => {
     submitHandler({
@@ -237,7 +239,7 @@ export const RequestComplaintForm: FC<RequestComplaintFormProps> = ({
                   title={"to"}
                   svalue={isEdit ? selectedValue?.to.map((item: any) => ({ ...item, id: item?.leaderid, username: item?.name })) : []}
                   placeholder="select leader"
-                  options={leaderlist.map((el: any) => el)}
+                  options={following.map((el: any) => el)}
                   setValue={(value: any) => { setToFieldValue(value) }}
                 />
 
