@@ -1,3 +1,5 @@
+'use client'
+
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
@@ -25,7 +27,8 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'post', 'follow', 'common'],
+  whitelist: ['auth', 'follow', 'common'],
+  timeout: 2000,
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

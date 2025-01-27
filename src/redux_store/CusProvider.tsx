@@ -69,6 +69,26 @@ const getDashboard = [
     onCall: async (id: any, dispatch: any) => {
       if (id) {
         try {
+          const res = await GetPostsForCitizen(id);
+          return res;
+        } catch (error) {
+          console.error("Error fetching posts for citizen:", error);
+          return null;
+        }
+      }
+      return null;
+    },
+    onSave: (res: any, dispatch: any) => {
+      if (res) {
+        dispatch(postActions.setPost(res))
+      }
+    }
+  },
+  {
+    tab: ["user"],
+    onCall: async (id: any, dispatch: any) => {
+      if (id) {
+        try {
           const res = await fetchCitizenFollowingList(id);
           return res; // Return the response
         } catch (error) {
@@ -82,26 +102,6 @@ const getDashboard = [
     onSave: (res: any, dispatch: any) => {
       if (res) { //check if res is not null
         dispatch(followActions.Following(res))
-      }
-    }
-  },
-  {
-    tab: ["user"],
-    onCall: async (id: any, dispatch: any) => {
-      if (id) {
-        try {
-          const res = await GetPostsForCitizen(id);
-          return res;
-        } catch (error) {
-          console.error("Error fetching posts for citizen:", error);
-          return null;
-        }
-      }
-      return null;
-    },
-    onSave: (res: any, dispatch: any) => {
-      if (res) {
-        dispatch(postActions.setPost(res))
       }
     }
   },
@@ -299,9 +299,11 @@ const AuthLayer: FC<{ children: ReactNode }> = ({ children }) => {
     try {
       setTimeout(async () => {
         for (let i = 0; i < getDashboard.length; i++) {
-          const element = getDashboard[i];
-          const res = await element?.onCall(userDetails?.id, dispatch)
-          element?.onSave(res, dispatch);
+          setTimeout(async () => {
+            const element = getDashboard[i];
+            const res = await element?.onCall(userDetails?.id, dispatch)
+            element?.onSave(res, dispatch);
+          }, 1000);
         }
       }, timeout);
     } catch (error) {
@@ -322,8 +324,10 @@ const AuthLayer: FC<{ children: ReactNode }> = ({ children }) => {
       for (let i = 0; i < aplist.length; i++) {
         const element = aplist[i];
         if (element?.tab?.includes(path)) {
-          const res = await element?.onCall(userDetails?.id, dispatch);
-          element?.onSave(res, dispatch);
+          setTimeout(async () => {
+            const res = await element?.onCall(userDetails?.id, dispatch);
+            element?.onSave(res, dispatch);
+          }, 1000);
         }
       }
       if (userData == null) { GetHomePage(userDetails, 4000) }

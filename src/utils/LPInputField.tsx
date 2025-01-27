@@ -10,7 +10,7 @@ interface LoginFormFieldsProps {
   register: UseFormRegister<RegisterFormFields | LoginFormFields>
   id: keyof RegisterFormFields | keyof LoginFormFields
   type: HTMLInputTypeAttribute
-  validations?: RegisterOptions
+  validations?: RegisterOptions | undefined
   title: string
   Icon: JSX.ElementType
   iconSize: string
