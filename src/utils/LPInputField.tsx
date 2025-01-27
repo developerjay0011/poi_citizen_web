@@ -5,12 +5,16 @@ import { LoginFormFields, RegisterFormFields } from '@/utils/typesUtils'
 import { ErrorMessage } from '@hookform/error-message'
 import { HiEye, HiEyeOff } from 'react-icons/hi'
 
+type FormFields = LoginFormFields | RegisterFormFields;
+type FieldName = keyof FormFields;
+
+
 interface LoginFormFieldsProps {
   errors: FieldErrors
   register: UseFormRegister<RegisterFormFields | LoginFormFields>
   id: keyof RegisterFormFields | keyof LoginFormFields
   type: HTMLInputTypeAttribute
-  validations?: RegisterOptions | undefined
+  validations?: RegisterOptions<FormFields, FieldName>
   title: string
   Icon: JSX.ElementType
   iconSize: string
@@ -45,7 +49,7 @@ export const LPInputField: FC<LoginFormFieldsProps> = ({
         className={`w-full pt-10 pb-5 pl-16  outline-none transition-all num_inp ${errors[id] ? 'errInp' : 'bg-transparent focusEvent'
           }`}
         id={id}
-        {...register(id, validations)}
+        {...register(id, validations as any)}
       />
       <Icon
         className={`${iconSize} absolute top-1/2 left-5 translate-y-[-50%] ${errors[id] ? 'text-red-500' : 'text-sky-800'
