@@ -13,6 +13,22 @@ import { followSlice } from './follow/followSlice'
 import { contributionsSlice } from './contributions/contributionsSlice'
 import { commonSlice } from './common/commonSlice'
 
+const createNoopStorage = () => {
+  return {
+    getItem(_key: any) {
+      return Promise.resolve(null);
+    },
+    setItem(_key: any, value: any) {
+      return Promise.resolve(value);
+    },
+    removeItem(_key: any) {
+      return Promise.resolve();
+    },
+  };
+};
+
+let reduxStorage = (typeof window !== 'undefined' ? storage : createNoopStorage());
+
 const rootReducer = combineReducers({
   complaints: complaintSlice.reducer,
   requests: requestSlice.reducer,
@@ -26,28 +42,27 @@ const rootReducer = combineReducers({
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: reduxStorage,
   whitelist: ['auth', 'follow', 'common'],
-  timeout: 2000,
+  timeout: 1000,
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          'persist/PERSIST',
-          'persist/REHYDRATE',
-          'persist/PAUSE',
-          'persist/REGISTER',
-          'persist/FLUSH',
-          'persist/PURGE',
-        ],
-      },
-    }),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [
+        'persist/PERSIST',
+        'persist/REHYDRATE',
+        'persist/PAUSE',
+        'persist/REGISTER',
+        'persist/FLUSH',
+        'persist/PURGE',
+      ],
+    },
+  }),
 })
 
 export const persistor = persistStore(store)

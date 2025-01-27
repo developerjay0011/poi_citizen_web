@@ -1,27 +1,11 @@
 'use client'
-import { FC, ReactNode, useEffect } from 'react'
+import { FC, ReactNode } from 'react'
 import { LeftNavbar } from '@/components/LeftNavbar'
 import { RightNavbar } from '@/components/RightNavbar'
 import { TopNavbar } from '@/components/TopNavbar'
-import toast from 'react-hot-toast'
 import Notificationpage from '@/utils/firebase/notification'
 
 const CitizenLayout: FC<{ children: ReactNode }> = ({ children }) => {
-
-
-  useEffect(() => {
-    window.addEventListener('load', () => {
-      const handleNetworkChange = () => {
-        if (navigator.onLine) {
-          toast.success('Online')
-        } else {
-          toast.error('offline')
-        }
-      }
-      window.addEventListener('online', handleNetworkChange)
-      window.addEventListener('offline', handleNetworkChange)
-    })
-  }, [])
 
   return (
     <>

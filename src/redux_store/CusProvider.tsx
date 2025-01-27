@@ -55,7 +55,7 @@ const LoadingPage = () => {
 export const CusProvider: FC<CusProviderProps> = ({ children }) => {
   return (
     <Provider store={store}>
-      <PersistGate loading={LoadingPage()} persistor={persistor}>
+      <PersistGate loading={<LoadingPage />} persistor={persistor}>
         <Toaster position="top-center" />
         <AuthLayer>{children}</AuthLayer>
       </PersistGate>

@@ -1,19 +1,20 @@
 import {
   RegisterOptions,
-  UseFormRegisterReturn,
   FieldErrors,
   UseFormRegister,
 } from 'react-hook-form'
 import { FC, HTMLInputTypeAttribute } from 'react'
-import { FaUser } from 'react-icons/fa'
 import { LoginFormFields, RegisterFormFields } from '@/utils/typesUtils'
+
+type FormFields = LoginFormFields | RegisterFormFields;
+type FieldName = keyof FormFields;
 
 interface LoginFormFieldsProps {
   errors: FieldErrors
-  register: UseFormRegister<RegisterFormFields | LoginFormFields>
-  id: keyof RegisterFormFields | keyof LoginFormFields
+  register: UseFormRegister<FormFields>
+  id: FieldName
   type: HTMLInputTypeAttribute
-  validations?: RegisterOptions | undefined
+  validations?: RegisterOptions<FormFields, FieldName>
   title: string
   Icon: JSX.ElementType
 }
