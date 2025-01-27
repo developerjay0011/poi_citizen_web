@@ -19,7 +19,6 @@ export const AddPost = async (formData: any) => {
 
 export const GetPostsForCitizen = async (citizenid: string) => {
   return tryCatch(async () => {
-    console.log("citizenid", citizenid)
     const res = await Axios.get(insertVariables(APIRoutes.GetPostsForCitizen, { citizenid }));
     var data = Array.isArray(res.data) ? res.data : [];
     return ConvertCommonpost(data as any);

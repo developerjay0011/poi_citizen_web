@@ -10,7 +10,6 @@ const Axios = axios.create({
 Axios.interceptors.request.use((config: any) => {
     const token = getCookie(CITIZEN_TOKEN_KEY);
     const headers = config.headers;
-    console.log("headers", token)
     return {
         ...config,
         headers: {
