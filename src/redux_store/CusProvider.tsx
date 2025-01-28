@@ -142,23 +142,6 @@ const getDashboard = [
       }
     }
   },
-  {
-    tab: ["user"],
-    onCall: async (id: any, dispatch: any) => {
-      try {
-        const res = await fetchTrendingLeaderList();
-        return res;
-      } catch (error) {
-        console.error("Error fetching trending leader list:", error);
-        return null;
-      }
-    },
-    onSave: (res: any, dispatch: any) => {
-      if (res) {
-        dispatch(authActions.Settrendingleader(res))
-      }
-    }
-  },
 ];
 
 const aplist = [
@@ -232,6 +215,23 @@ const getAny = [
   {
     tab: ["any"],
     onCall: async (id: any, dispatch: any) => {
+      try {
+        const res = await fetchTrendingLeaderList();
+        return res;
+      } catch (error) {
+        console.error("Error fetching trending leader list:", error);
+        return null;
+      }
+    },
+    onSave: (res: any, dispatch: any) => {
+      if (res) {
+        dispatch(authActions.Settrendingleader(res))
+      }
+    }
+  },
+  {
+    tab: ["any"],
+    onCall: async (id: any, dispatch: any) => {
       if (id) {
         try {
           const res = await getLeaderList(id);
@@ -290,6 +290,8 @@ const AuthLayer: FC<{ children: ReactNode }> = ({ children }) => {
   const dispatch = cusDispatch()
   const curRoute = usePathname();
   const [userData, setUserData] = useState<any>(null)
+  const [loadFirst, setloadFirst] = useState<any>(false)
+  const [loadedUser, setloadedUser] = useState<any>(false)
   const path: any = curRoute?.split("/").at(-1)?.includes("-") ? curRoute?.split("/").at(-1)?.replaceAll("-", " ") : curRoute?.split("/").at(-1) || ""
   let userDetails: any = getCookie(CITIZEN_USER_INFO);
   userDetails = userDetails && JSON.parse(userDetails);
@@ -312,42 +314,62 @@ const AuthLayer: FC<{ children: ReactNode }> = ({ children }) => {
   }
 
   const getApiCall = async () => {
-    if (userDetails?.id && userData == null) {
-      dispatch(authActions.logIn(userDetails));
-      const res = await getProfile(userDetails?.id, dispatch)
-      dispatch(authActions.logIn(res));
-    }
-    if (path == "user") {
-      await GetHomePage(userDetails)
-    }
-    if (path != "user") {
-      for (let i = 0; i < aplist.length; i++) {
-        const element = aplist[i];
-        if (element?.tab?.includes(path)) {
-          setTimeout(async () => {
-            const res = await element?.onCall(userDetails?.id, dispatch);
-            element?.onSave(res, dispatch);
-          }, 1000);
-        }
+    for (let i = 0; i < aplist.length; i++) {
+      const element = aplist[i];
+      if (element?.tab?.includes(path)) {
+        setTimeout(async () => {
+          const res = await element?.onCall(userDetails?.id, dispatch);
+          element?.onSave(res, dispatch);
+        }, 1000);
       }
-      if (userData == null) { GetHomePage(userDetails, 4000) }
     }
-    setUserData(userDetails)
   }
 
-  useEffect(() => { getApiCall() }, [path]);
+  const initialLoad = async () => {
+    try {
+      setloadFirst(false)
+      if (path == "user" && userDetails?.id) {
+        setloadedUser(true)
+        await GetHomePage(userDetails)
+      }
+      if (path != "user") {
+        await getApiCall()
+        if (!loadedUser && userDetails?.id) {
+          await GetHomePage(userDetails, 1000)
+        }
+      }
+      setloadFirst(true)
+    } catch (error) {
+      setloadFirst(true)
+    }
+  }
 
   useEffect(() => {
-    setUserData(null);
+    (async () => { await initialLoad(); })()
+  }, [path]);
+
+  useEffect(() => {
     (async () => {
-      for (let i = 0; i < getAny.length; i++) {
-        const element = getAny[i];
-        const res = await element?.onCall(userDetails?.id, dispatch);
-        element?.onSave(res, dispatch);
+      if (loadFirst) {
+        setTimeout(async () => {
+          for (let i = 0; i < getAny.length; i++) {
+            const element = getAny[i];
+            const res = await element?.onCall(userDetails?.id, dispatch);
+            element?.onSave(res, dispatch);
+          }
+        }, 1000);
+      } else {
+        setUserData(null);
+        if (userDetails?.id && userData == null) {
+          dispatch(authActions.logIn(userDetails));
+          const res = await getProfile(userDetails?.id, dispatch)
+          dispatch(authActions.logIn(res));
+          setUserData(res)
+        }
+        setloadedUser(false)
       }
     })()
-  }, []);
-
+  }, [loadFirst]);
 
   return children
 }
